@@ -1,56 +1,30 @@
-import Head from "next/head";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import Header from "@/components/Header";
-import CoinComponent from "@/components/Main/CoinComponent";
 
-export default function Home() {
+const CoinComponent = () => {
   return (
-    <Container>
-      <Wrapper>
-        <Header text={"모든 정보"} />
-        <Body>
-          <CoinComponent />
-          <CoinComponent />
-          <CoinComponent />
-          <CoinComponent />
-        </Body>
-      </Wrapper>
-    </Container>
+    <Info>
+      <CoinIcon>
+        <Image
+          src="https://static.upbit.com/logos/BTC.png"
+          width={34}
+          height={34}
+        />
+      </CoinIcon>
+      <CoinContainer>
+        <CoinNameBox>
+          <CoinKrName>비트코인</CoinKrName>
+          <CoinEnName>KRW-BTC</CoinEnName>
+        </CoinNameBox>
+        <CoinInfoBox>
+          <CoinCurrentPrice>36,485,000</CoinCurrentPrice>
+          <CoinPercent>+0.40%</CoinPercent>
+        </CoinInfoBox>
+      </CoinContainer>
+    </Info>
   );
-}
-
-const Container = styled.div`
-  width: 100%;
-  height: 100vh;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  max-width: 840px;
-  background-color: #e0e9f8;
-  border: 1px solid black;
-  color: #0d1f3c;
-`;
-const Body = styled.div`
-  position: absolute;
-  top: 130px;
-  height: 100%;
-  width: 100%;
-  max-width: 840px;
-  background-color: white;
-  border-radius: 20px;
-  padding: 20px;
-`;
-
-const CoinInfo = styled.div`
+};
+const Info = styled.div`
   height: 60px;
   display: flex;
   align-items: center;
@@ -110,3 +84,5 @@ const CoinPercent = styled.p`
   font-weight: 600;
   color: #75bf72;
 `;
+
+export default CoinComponent;
