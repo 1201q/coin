@@ -1,30 +1,32 @@
 import Image from "next/image";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 
-const CoinComponent = () => {
+const CoinComponent = ({ icon, krName, code, price, percent }) => {
   return (
-    <Info>
+    <Info whileTap={{ scale: 0.97 }}>
       <CoinIcon>
         <Image
-          src="https://static.upbit.com/logos/BTC.png"
+          src={`https://static.upbit.com/logos/${icon}.png`}
+          alt={icon}
           width={34}
           height={34}
         />
       </CoinIcon>
       <CoinContainer>
         <CoinNameBox>
-          <CoinKrName>비트코인</CoinKrName>
-          <CoinEnName>KRW-BTC</CoinEnName>
+          <CoinKrName>{krName}</CoinKrName>
+          <CoinCode>{code}</CoinCode>
         </CoinNameBox>
         <CoinInfoBox>
-          <CoinCurrentPrice>36,485,000</CoinCurrentPrice>
-          <CoinPercent>+0.40%</CoinPercent>
+          <Price>{price}원</Price>
+          <Percent>{percent}</Percent>
         </CoinInfoBox>
       </CoinContainer>
     </Info>
   );
 };
-const Info = styled.div`
+const Info = styled(motion.div)`
   height: 60px;
   display: flex;
   align-items: center;
@@ -66,20 +68,20 @@ const CoinKrName = styled.p`
   color: #0d1f3c;
 `;
 
-const CoinEnName = styled.p`
+const CoinCode = styled.p`
   font-size: 13px;
   font-weight: 400;
 
   color: #485068;
 `;
 
-const CoinCurrentPrice = styled.p`
+const Price = styled.p`
   font-size: 17px;
   font-weight: 600;
   color: #0d1f3c;
 `;
 
-const CoinPercent = styled.p`
+const Percent = styled.p`
   font-size: 15px;
   font-weight: 600;
   color: #75bf72;

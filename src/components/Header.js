@@ -1,40 +1,44 @@
 import styled from "styled-components";
 
-const Header = ({ text, onTextClick }) => {
+const Header = ({
+  text,
+  onTextClick,
+  bgColor = "#e0e9f8",
+  fontColor = "#0d1f3c",
+}) => {
   return (
-    <Container>
+    <Container headercolor={fontColor} headerbgcolor={bgColor}>
       <Wrapper>
         <HeaderText>{text}</HeaderText>
+        <OtherText></OtherText>
       </Wrapper>
     </Container>
   );
 };
 
 const Container = styled.div`
-  position: absolute;
   width: 100%;
   max-width: 840px;
-  height: 92px;
-  color: #0d1f3c;
-  background-color: #e0e9f8;
+  height: 130px;
+  color: ${(props) => props.headercolor};
+  background-color: ${(props) => props.headerbgcolor};
 `;
 const Wrapper = styled.div`
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
   height: 100%;
 `;
-
 const HeaderText = styled.p`
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 600;
-  line-height: 32px;
+  margin-top: 50px;
 `;
-
-const Text = styled.p`
-  font-size: 26px;
-  font-weight: 600;
-  line-height: 32px;
+const OtherText = styled.div`
+  height: 48px;
+  margin-top: 8px;
+  color: #485068;
 `;
 
 export default Header;

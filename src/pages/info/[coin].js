@@ -1,25 +1,27 @@
 import styled from "styled-components";
 import Header from "@/components/Header";
-import CoinComponent from "@/components/Main/CoinComponent";
-import axios from "axios";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import List from "@/components/List";
+import axios from "axios";
 import { motion } from "framer-motion";
 
-export default function Home({ coinList }) {
+const Info = ({ coinList, params }) => {
+  const router = useRouter();
   return (
     <Container>
       <Wrapper>
-        <Header text={"리스트"} />
+        <Header text={params.coin} bgColor={"#347af0"} fontColor={"white"} />
+        {/* coinInfo는 임시 */}
+        <CoinInfo></CoinInfo>
         <motion.div layoutId="coinList">
           <List coinList={coinList} />
         </motion.div>
       </Wrapper>
     </Container>
   );
-}
+};
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ params: params }) {
   const res = await axios
     .get("https://api.upbit.com/v1/market/all")
     .then((res) => {
@@ -32,12 +34,11 @@ export async function getServerSideProps() {
     }
   });
 
-  return { props: { coinList } };
+  return { props: { params, coinList } };
 }
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -49,6 +50,14 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   max-width: 840px;
-  background-color: #e0e9f8;
+  background-color: #347af0;
+
   color: #0d1f3c;
 `;
+
+const CoinInfo = styled.div`
+  height: 400px;
+  background-color: #347af0;
+`;
+
+export default Info;
