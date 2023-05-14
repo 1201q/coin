@@ -15,7 +15,7 @@ const Info = ({ coinList, params }) => {
         <Header text={params.coin} bgColor={"#347af0"} fontColor={"white"} />
         <CoinInfo />
         <motion.div layoutId="coinList">
-          <List coinList={coinList} />
+          <List coinList={coinList} params={params} />
         </motion.div>
       </Wrapper>
     </Container>
