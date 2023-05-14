@@ -4,15 +4,16 @@ import { useRouter } from "next/router";
 import List from "@/components/List";
 import axios from "axios";
 import { motion } from "framer-motion";
+import CoinInfo from "@/components/CoinInfo";
 
 const Info = ({ coinList, params }) => {
   const router = useRouter();
+
   return (
     <Container>
       <Wrapper>
         <Header text={params.coin} bgColor={"#347af0"} fontColor={"white"} />
-        {/* coinInfo는 임시 */}
-        <CoinInfo></CoinInfo>
+        <CoinInfo />
         <motion.div layoutId="coinList">
           <List coinList={coinList} />
         </motion.div>
@@ -53,11 +54,6 @@ const Wrapper = styled.div`
   background-color: #347af0;
 
   color: #0d1f3c;
-`;
-
-const CoinInfo = styled.div`
-  height: 400px;
-  background-color: #347af0;
 `;
 
 export default Info;
