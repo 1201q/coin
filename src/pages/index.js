@@ -1,16 +1,54 @@
 import styled from "styled-components";
 import Header from "@/components/Header";
-import CoinComponent from "@/components/Main/CoinComponent";
 import axios from "axios";
 import Link from "next/link";
 import List from "@/components/List";
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home({ coinList }) {
+  const [data, setData] = useState(0);
+  const wsRef = useRef(null);
+
+  useEffect(() => {
+    startWebsocket();
+
+    return () => {
+      closeWebsocket();
+    };
+  }, []);
+
+  function startWebsocket() {
+    const ws = new WebSocket("wss://api.upbit.com/websocket/v1");
+    wsRef.current = ws;
+    try {
+      ws.onopen = () => {
+        ws.send(`[{"ticket" : "2"}, {"type" : "ticker","codes": ["KRW-BTC"]}]`);
+        console.log("코인리스트 웹소켓 열림");
+      };
+
+      ws.onmessage = async (e) => {
+        const { data } = e;
+        const text = await new Response(data).json();
+
+        console.log(text);
+        setData(text.trade_price);
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  function closeWebsocket() {
+    if (wsRef.current) {
+      wsRef.current.close();
+    }
+  }
+
   return (
     <Container>
       <Wrapper>
-        <Header text={"리스트"} />
+        <Header text={"리스트"} /> {data}
         <motion.div layoutId="coinList">
           <List coinList={coinList} />
         </motion.div>
