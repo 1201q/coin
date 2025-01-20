@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { firstValueFrom, map } from 'rxjs';
-import { MarketInfo } from './types/upbit.entity';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { MarketInfo } from "./types/upbit.entity";
+import { Cron, CronExpression } from "@nestjs/schedule";
 import { WebsocketService } from './websocket.service';
 
 @Injectable()

@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { UpbitModule } from './upbit/upbit.module';
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { UpbitModule } from "./upbit/upbit.module";
 
 @Module({
   imports: [UpbitModule],

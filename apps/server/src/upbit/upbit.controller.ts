@@ -1,21 +1,20 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from "@nestjs/common";
 
 import {
   CandleParamsDto,
   GetCandleDto,
-  GetMarketInfoDto,
   GetOrderbookSnapshotDto,
   GetTickerSnapshotDto,
   GetTradeDto,
-} from './types/upbit.dto';
-import { SnapshotService } from './snapshot.service';
+} from "./types/upbit.dto";
+import { SnapshotService } from "./snapshot.service";
 
-@Controller('upbit')
+@Controller("upbit")
 export class UpbitController {
   constructor(private readonly snapshotService: SnapshotService) {}
 
   // 캔들 조회
-  @Get('candle/:type')
+  @Get("candle/:type")
   async getCandle(
     @Param() params: CandleParamsDto,
     @Query() query: GetCandleDto,
@@ -23,17 +22,17 @@ export class UpbitController {
     return this.snapshotService.getCandleData(params, query);
   }
 
-  @Get('orderbook')
+  @Get("orderbook")
   async getOrderbookSnapshot(@Query() query: GetOrderbookSnapshotDto) {
     return this.snapshotService.getOrderbookData(query.market);
   }
 
-  @Get('allticker/:type')
+  @Get("allticker/:type")
   async getAllTickerSnapshot(@Param() params: GetTickerSnapshotDto) {
     return this.snapshotService.getAllTickerData(params.type);
   }
 
-  @Get('trade')
+  @Get("trade")
   async getTradeSnapshot(@Query() query: GetTradeDto) {
     return this.snapshotService.getTradeData(query);
   }
