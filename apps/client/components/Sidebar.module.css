@@ -1,0 +1,9 @@
+.container {
+  width: 70px;
+  background-color: #f2f4f6;
+  transition: width 0.2s;
+}
+
+.expanded {
+  width: 150px;
+}

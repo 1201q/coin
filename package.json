@@ -1,0 +1,18 @@
+{
+  "name": "mycoin",
+  "workspaces": [
+    "apps/client",
+    "apps/server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "npm run dev --prefix apps/client",
+    "dev:server": "npm run start:dev --prefix apps/server",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "npm run build --prefix apps/client",
+    "build:server": "npm run build --prefix apps/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
