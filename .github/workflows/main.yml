@@ -27,7 +27,7 @@ jobs:
         with:
           host: ${{secrets.SSH_HOST}}
           username: ${{secrets.SSH_USERNAME}}
-          password: ${{secrets.SSH_PASSWORD}}
+          key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
           source: "nginx.conf,docker-compose.yml"
           target: /home/ubuntu/coin
@@ -38,7 +38,7 @@ jobs:
         with:
           host: ${{secrets.SSH_HOST}}
           username: ${{secrets.SSH_USERNAME}}
-          password: ${{secrets.SSH_PASSWORD}}
+          key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
           script: |
             cd /home/ubuntu/coin
