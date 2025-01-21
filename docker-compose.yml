@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: 1201q/coin:${GITHUB_SHA}
+    image: 1201q/coin:latest
     container_name: coin
     restart: always
     expose:

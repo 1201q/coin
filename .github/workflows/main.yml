@@ -19,8 +19,8 @@ jobs:
 
       - name: Build and release to DockerHub
         run: |
-          docker build -t ${{secrets.DOCKERHUB_USERNAME}}/coin:${{github.sha}} ./apps/server
-          docker push ${{secrets.DOCKERHUB_USERNAME}}/coin:${{github.sha}}
+          docker build -t ${{secrets.DOCKERHUB_USERNAME}}/coin ./apps/server
+          docker push ${{secrets.DOCKERHUB_USERNAME}}/coin
 
       - name: Send files
         uses: appleboy/scp-action@master
@@ -42,9 +42,9 @@ jobs:
           port: ${{secrets.SSH_PORT}}
           script: |
             cd /home/ubuntu/coin
-            docker pull ${{secrets.DOCKERHUB_USERNAME}}/coin:${{github.sha}}
-            
-            envsubst < docker-compose.yml > docker-compose-processed.yml
-            docker-compose -f docker-compose-processed.yml down
-            docker-compose -f docker-compose-processed.yml up -d
-            docker image prune -f
+            sudo su
+            docker system prune -f
+            docker-compose down
+            docker-compose pull
+            docker-compose up -d --build
+
