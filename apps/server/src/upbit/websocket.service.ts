@@ -78,7 +78,7 @@ export class WebsocketService implements OnModuleInit, OnModuleDestroy {
   }
 
   private connectTradeSocket() {
-    this.tradeSocket = new WebSocket('wss://api.upbit.com/websocket/v1');
+    this.tradeSocket = new WebSocket("wss://api.upbit.com/websocket/v1");
 
     this.tradeSocket.on('open', () => {
       if (this.marketCodes.length > 0) {
