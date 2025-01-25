@@ -11,11 +11,10 @@ import {
 import { Server, Socket } from "socket.io";
 
 import { SocketType, WebsocketService } from "./websocket.service";
-import { Orderbook, Trade } from "./types/upbit.entity";
 import { Subscription } from "rxjs";
 import { MarketService } from "./market.service";
 
-@WebSocketGateway({ cors: true, namespace: "ws" })
+@WebSocketGateway({ cors: true, namespace: "ws", transports: ["websocket"] })
 @Injectable()
 export class WebsocketGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -31,14 +30,24 @@ export class WebsocketGateway
     private readonly marketService: MarketService,
   ) {}
 
+  getConnectedClientCount() {
+    return this.currentClients.size;
+  }
+
   handleConnection(client: Socket) {
     this.logger.log(`클라이언트 연결: ${client.id}`);
     this.currentClients.set(client.id, "");
+    this.logger.log(
+      `현재 연결된 클라이언트 수: ${this.getConnectedClientCount()}`,
+    );
   }
   handleDisconnect(client: Socket) {
     this.unsubscribeAll(client);
     this.currentClients.delete(client.id);
     this.logger.log(`클라이언트 해제: ${client.id}`);
+    this.logger.log(
+      `현재 연결된 클라이언트 수: ${this.getConnectedClientCount()}`,
+    );
   }
 
   private unsubscribeAll(client: Socket) {
