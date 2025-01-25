@@ -5,6 +5,7 @@ import { firstValueFrom, map } from 'rxjs';
 
 import { CandleData } from './types/upbit.entity';
 import { CandleParamsDto, GetCandleDto, GetTradeDto } from './types/upbit.dto';
+import { WebsocketService } from './websocket.service';
 
 @Injectable()
 export class SnapshotService {
@@ -73,4 +74,6 @@ export class SnapshotService {
 
     return this.fetch<TickerSnapshot>(fetchUrl);
   }
+
+
 }

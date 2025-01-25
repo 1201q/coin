@@ -18,5 +18,5 @@ export default async function Home() {
     });
   console.log(data); // 데이터 출력
 
-  return <div>{data ? data[0].trade_price : "없음"}</div>;
+  return <div>1{data ? data[0].trade_price : "없음1"}</div>;
 }
