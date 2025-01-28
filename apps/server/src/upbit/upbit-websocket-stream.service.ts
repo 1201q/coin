@@ -4,22 +4,23 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from "@nestjs/common";
-import { BehaviorSubject, Subject, Subscription } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import * as WebSocket from "ws";
 import { Orderbook, Ticker, Trade } from "./types/upbit.entity";
 
 export type SocketType = "ticker" | "orderbook" | "trade";
 
 @Injectable()
-export class WebsocketService implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(WebsocketService.name);
+export class UpbitWebsocketStreamService
+  implements OnModuleInit, OnModuleDestroy
+{
+  private readonly logger = new Logger(UpbitWebsocketStreamService.name);
   private sockets = new Map<SocketType, WebSocket>();
   private streams = {
     ticker: new Subject<Ticker>(),
     orderbook: new Map<string, BehaviorSubject<Orderbook>>(),
     trade: new Map<string, BehaviorSubject<Trade>>(),
   };
-  private subscriptions = new Map<string, Map<string, Subscription>>();
 
   onModuleInit() {
     this.initSockets();
@@ -63,12 +64,18 @@ export class WebsocketService implements OnModuleInit, OnModuleDestroy {
   ) {
     const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
 
-    socket.on("open", () => this.logger.log(`소켓 생성: ${type}`));
+    socket.on("open", () => {
+      this.logger.log(`소켓 생성: ${type}`);
+    });
+
     socket.on("message", (data) =>
       this.processMessage(type, data.toString(), onMessage),
     );
 
-    socket.on("close", () => this.logger.warn(`소켓 닫힘: ${type}`));
+    socket.on("close", () => {
+      this.logger.warn(`소켓 닫힘: ${type}`);
+    });
+
     socket.on("error", (error) => {
       this.logger.error(`소켓 오류: ${type}/${error.message}`);
     });
@@ -103,12 +110,6 @@ export class WebsocketService implements OnModuleInit, OnModuleDestroy {
   }
 
   /////////////////////////////// 데이터 방출
-  private handleTickerStream = (data: Ticker) => this.streams.ticker.next(data);
-  private handleTradeStream = (data: Trade) =>
-    this.updateStream(this.streams.trade, data);
-  private handleOrderbookStream = (data: Orderbook) =>
-    this.updateStream(this.streams.orderbook, data);
-
   private updateStream<T extends { code: string }>(
     streamMap: Map<string, BehaviorSubject<T>>,
     data: T,
@@ -117,6 +118,18 @@ export class WebsocketService implements OnModuleInit, OnModuleDestroy {
     streamMap.set(data.code, stream);
     stream.next(data);
   }
+
+  private handleTickerStream = (data: Ticker) => {
+    this.streams.ticker.next(data);
+  };
+
+  private handleTradeStream = (data: Trade) => {
+    this.updateStream(this.streams.trade, data);
+  };
+
+  private handleOrderbookStream = (data: Orderbook) => {
+    this.updateStream(this.streams.orderbook, data);
+  };
 
   // snapshot 도착 데이터를 초기값으로 설정
   private handleSnapshotData(type: SocketType, data: any) {
@@ -138,6 +151,13 @@ export class WebsocketService implements OnModuleInit, OnModuleDestroy {
   }
 
   /////////////////////////////// 데이터 구독
+  private getStream<T>(
+    streamMap: Map<string, BehaviorSubject<T>>,
+    code: string,
+  ) {
+    return streamMap.get(code) || new BehaviorSubject<T>(null);
+  }
+
   subscribeTickerStream(callback: (data: Ticker) => void) {
     return this.streams.ticker.asObservable().subscribe(callback);
   }
@@ -152,47 +172,5 @@ export class WebsocketService implements OnModuleInit, OnModuleDestroy {
     return this.getStream(this.streams.orderbook, code)
       .asObservable()
       .subscribe(callback);
-  }
-
-  private getStream<T>(
-    streamMap: Map<string, BehaviorSubject<T>>,
-    code: string,
-  ) {
-    return streamMap.get(code) || new BehaviorSubject<T>(null);
-  }
-
-  unsubscribeStream(
-    type: SocketType,
-    clientId: string,
-    code: string = type === "ticker" && "all",
-  ) {
-    const subscriptions = this.subscriptions.get(clientId);
-    const key = `${type}/${code}`;
-    subscriptions?.get(key)?.unsubscribe();
-    subscriptions.delete(key);
-
-    this.logger.log(`수신 해제/${key}: ${clientId}`);
-  }
-
-  saveSubscription(
-    type: SocketType,
-    clientId: string,
-    code: string = type === "ticker" && "all",
-    subscription: Subscription,
-  ) {
-    if (!this.subscriptions.has(clientId)) {
-      this.subscriptions.set(clientId, new Map());
-    }
-    const key = `${type}/${code}`;
-    this.subscriptions.get(clientId).set(key, subscription);
-    this.logger.log(`수신 시작/${key}: ${clientId}`);
-  }
-
-  getSubscriptions(clientId: string) {
-    return this.subscriptions.get(clientId);
-  }
-
-  deleteSubscriptions(clientId: string) {
-    this.subscriptions.delete(clientId);
   }
 }

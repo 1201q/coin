@@ -1,11 +1,10 @@
-import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
-import { MarketType, Orderbook, TickerSnapshot } from './types/upbit.entity';
-import { firstValueFrom, map } from 'rxjs';
+import { HttpService } from "@nestjs/axios";
+import { Injectable, Logger } from "@nestjs/common";
+import { MarketType, Orderbook, TickerSnapshot } from "./types/upbit.entity";
+import { firstValueFrom, map } from "rxjs";
 
-import { CandleData } from './types/upbit.entity';
-import { CandleParamsDto, GetCandleDto, GetTradeDto } from './types/upbit.dto';
-import { WebsocketService } from './websocket.service';
+import { CandleData } from "./types/upbit.entity";
+import { CandleParamsDto, GetCandleDto, GetTradeDto } from "./types/upbit.dto";
 
 @Injectable()
 export class SnapshotService {
@@ -25,7 +24,7 @@ export class SnapshotService {
 
     const base = `https://api.upbit.com/v1/candles`;
     const url =
-      type === 'minutes' ? `${base}/${type}/${unit}` : `${base}/${type}`;
+      type === "minutes" ? `${base}/${type}/${unit}` : `${base}/${type}`;
 
     const queryParams: Record<string, string | number> = {
       market,
@@ -74,6 +73,4 @@ export class SnapshotService {
 
     return this.fetch<TickerSnapshot>(fetchUrl);
   }
-
-
 }

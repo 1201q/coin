@@ -3,15 +3,15 @@ import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { firstValueFrom, map } from "rxjs";
 import { MarketInfo } from "./types/upbit.entity";
 import { Cron, CronExpression } from "@nestjs/schedule";
-import { WebsocketService } from "./websocket.service";
+import { UpbitWebsocketStreamService } from "./upbit-websocket-stream.service";
 
 @Injectable()
-export class MarketService implements OnModuleInit {
+export class UpbitMarketUpdaterService implements OnModuleInit {
   constructor(
     private readonly httpService: HttpService,
-    private readonly webSocketService: WebsocketService,
+    private readonly upbitWebsocketStreamService: UpbitWebsocketStreamService,
   ) {}
-  private readonly logger = new Logger(MarketService.name);
+  private readonly logger = new Logger(UpbitMarketUpdaterService.name);
   private marketList: MarketInfo[] = [];
   private marketCodes: string[] = [];
 
@@ -38,7 +38,7 @@ export class MarketService implements OnModuleInit {
       this.marketCodes = currentCodes;
       this.logger.log("마켓 데이터 갱신: " + currentCodes.length);
 
-      this.webSocketService.updateMarketCodes(this.marketCodes);
+      this.upbitWebsocketStreamService.updateMarketCodes(this.marketCodes);
     } else {
       this.logger.log("기존과 같음.");
     }

@@ -1,21 +1,24 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 
-import { UpbitController } from './upbit.controller';
-import { HttpModule } from '@nestjs/axios';
-import { WebsocketService } from './websocket.service';
-import { WebsocketGateway } from './websocket.gateway';
-import { MarketService } from './market.service';
-import { ScheduleModule } from '@nestjs/schedule';
-import { SnapshotService } from './snapshot.service';
+import { UpbitController } from "./upbit.controller";
+import { HttpModule } from "@nestjs/axios";
+
+import { UpbitMarketUpdaterService } from "./upbit-market-updater.service";
+import { ScheduleModule } from "@nestjs/schedule";
+import { SnapshotService } from "./snapshot.service";
+import { SocketGateway } from "./socket.gateway";
+import { UpbitWebsocketStreamService } from "./upbit-websocket-stream.service";
+import { SubscriptionService } from "./subscription.service";
 
 @Module({
   imports: [HttpModule, ScheduleModule.forRoot()],
   controllers: [UpbitController],
   providers: [
-    MarketService,
-    WebsocketService,
-    WebsocketGateway,
+    UpbitMarketUpdaterService,
     SnapshotService,
+    UpbitWebsocketStreamService,
+    SocketGateway,
+    SubscriptionService,
   ],
 })
 export class UpbitModule {}

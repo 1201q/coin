@@ -8,7 +8,6 @@ import {
   GetTradeDto,
 } from "./types/upbit.dto";
 import { SnapshotService } from "./snapshot.service";
-import { WebsocketService } from "./websocket.service";
 
 @Controller("upbit")
 export class UpbitController {
@@ -32,8 +31,6 @@ export class UpbitController {
   async getAllTickerSnapshot(@Param() params: GetTickerSnapshotDto) {
     return this.snapshotService.getAllTickerData(params.type);
   }
-
-
 
   @Get("trade")
   async getTradeSnapshot(@Query() query: GetTradeDto) {
