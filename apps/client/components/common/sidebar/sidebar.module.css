@@ -1,0 +1,50 @@
+.logoContainer {
+  height: var(--header-height);
+}
+
+.navContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  row-gap: 15px;
+}
+
+.button {
+  width: 39px;
+  height: 39px;
+  border: none;
+  border-radius: 7px;
+  background-color: white;
+  transition: background-color 0.15s;
+}
+
+.svg {
+  width: 22px;
+  height: 22px;
+  fill: var(--main-gray-color);
+}
+
+.buttonText {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--main-gray-color);
+}
+
+.hovered button,
+.selected button {
+  background-color: var(--main-blue-hover-color);
+}
+
+.hovered p,
+.selected p {
+  font-weight: 900;
+  color: var(--main-blue-color);
+}
+
+.hovered svg,
+.selected svg {
+  fill: var(--main-blue-color);
+}

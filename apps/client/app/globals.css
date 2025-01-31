@@ -1,3 +1,17 @@
+:root {
+  --sidebar-width: 60px;
+  --header-height: 50px;
+  --form-width: 250px;
+  --order-height: 170px;
+
+  --border-main-color: rgb(209, 217, 224);
+
+  --main-blue-hover-color: rgba(0, 82, 254, 0.08);
+  --main-blue-color: rgba(0, 82, 254, 0.6);
+
+  --main-gray-color: rgba(91, 97, 110, 0.7);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -23,4 +37,10 @@ img,
 video {
   max-width: 100%;
   height: auto;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
 }

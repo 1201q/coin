@@ -1,5 +1,5 @@
-import Sidebar from '@/components/common/sidebar/Sidebar';
-import styles from './main.module.css';
+import Sidebar from "@/components/common/sidebar/Sidebar";
+import styles from "./main.module.css";
 
 interface Props {
   params: Promise<{ code: string }>;
@@ -14,7 +14,7 @@ export default async function MarketCodePage(props: Props) {
         <Sidebar />
       </div>
       <div className={styles.contentsContainer}>
-        <div className={styles.headerContainer}>{code && code}</div>
+        <div className={styles.headerContainer}>2</div>
         <div className={styles.marketContainer}>
           <div className={styles.flexContainer}>
             <div className={styles.leftContainer}>
