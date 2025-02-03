@@ -1,6 +1,6 @@
 'use client';
 
-import { TickerSnapshot } from '../../../../server/src/upbit/types/upbit.entity';
+import { TickerSnapshot } from '@/types/upbit';
 import styles from './search.dialog.module.css';
 import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';

@@ -1,5 +1,5 @@
 import SearchDialog from './SearchDialog';
-import { TickerSnapshot } from '../../../../server/src/upbit/types/upbit.entity';
+import { TickerSnapshot } from '@/types/upbit';
 
 export default async function CoinListServer() {
   const data: TickerSnapshot[] = await fetch(
