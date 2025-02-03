@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0px 10px;
+}
+
+.titleContainer {
+  height: 100%;
+}
+
+.controlContainer {
+  height: 100%;
+}

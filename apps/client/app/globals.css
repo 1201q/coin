@@ -7,9 +7,13 @@
   --border-main-color: rgb(209, 217, 224);
 
   --main-blue-hover-color: rgba(0, 82, 254, 0.08);
-  --main-blue-color: rgba(0, 82, 254, 0.6);
-
+  --main-blue-color: rgba(0, 82, 254, 0.7);
   --main-gray-color: rgba(91, 97, 110, 0.7);
+
+  --main-red-color: rgb(240, 97, 109);
+
+  --font-gray-color: rgb(138, 145, 158);
+  --font-black-color: rgb(51, 61, 75);
 }
 
 * {
