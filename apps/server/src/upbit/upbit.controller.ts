@@ -8,10 +8,14 @@ import {
   GetTradeDto,
 } from "./types/upbit.dto";
 import { SnapshotService } from "./snapshot.service";
+import { UpbitMarketUpdaterService } from "./upbit-market-updater.service";
 
 @Controller("upbit")
 export class UpbitController {
-  constructor(private readonly snapshotService: SnapshotService) {}
+  constructor(
+    private readonly snapshotService: SnapshotService,
+    private readonly marketService: UpbitMarketUpdaterService,
+  ) {}
 
   // 캔들 조회
   @Get("candle/:type")
@@ -25,6 +29,11 @@ export class UpbitController {
   @Get("orderbook")
   async getOrderbookSnapshot(@Query() query: GetOrderbookSnapshotDto) {
     return this.snapshotService.getOrderbookData(query.market);
+  }
+
+  @Get("market")
+  async getMarketData() {
+    return this.marketService.getMarketList();
   }
 
   @Get("allticker/:type")
