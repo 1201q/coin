@@ -107,6 +107,9 @@
   align-items: center;
   height: 180px;
   line-height: 200%;
+
+  transition: background-color 0.5s;
+  transition-delay: 2s;
 }
 
 .alertText {

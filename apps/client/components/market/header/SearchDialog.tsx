@@ -6,21 +6,14 @@ import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { isSearchDialogOpenAtom } from '@/store/ui';
-import {
-  ChangeEvent,
-  useDeferredValue,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
 
 export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
   const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
   const [keyword, setKeyword] = useState('');
-  const defferedKeyword = useDeferredValue(keyword);
+  const [debouncedKeyword, setDebouncedKeyword] = useState('');
+
   const markets = useAtomValue(allMarketAtom);
 
   const bgRef = useRef<HTMLDivElement>(null);
@@ -40,12 +33,20 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
     };
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
 
   const filteredMarkets = useMemo(() => {
-    const lowerKeyword = defferedKeyword.toLowerCase();
+    const lowerKeyword = debouncedKeyword.toLowerCase();
 
     return markets
       .filter((item) => {
@@ -59,7 +60,7 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
         );
       })
       .map((item) => item.market);
-  }, [defferedKeyword, markets]);
+  }, [debouncedKeyword, markets]);
 
   const filteredData = useMemo(() => {
     const marketSet = new Set(filteredMarkets);
