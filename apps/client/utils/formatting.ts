@@ -39,3 +39,7 @@ export const signedComma = (tradePrice: number, target: number) => {
     ? `-${comma(tradePrice, absValue)}`
     : comma(tradePrice, absValue);
 };
+
+export const plusMark = (changeRate: number) => {
+  return changeRate > 0 ? '+' : '';
+};

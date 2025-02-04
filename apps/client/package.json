@@ -11,9 +11,12 @@
     "@svgr/webpack": "^8.1.0",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.0.6",
+    "jotai": "^2.11.3",
+    "jotai-cache": "^0.5.0",
     "next": "15.1.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@eslint/create-config": "^1.4.0",

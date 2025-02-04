@@ -1,4 +1,5 @@
-import "./globals.css";
+import JotaiProvider from '@/components/common/provider/JotaiProvider';
+import './globals.css';
 
 export default function RootLayout({
   children,
@@ -7,7 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <JotaiProvider>{children}</JotaiProvider>
+      </body>
     </html>
   );
 }

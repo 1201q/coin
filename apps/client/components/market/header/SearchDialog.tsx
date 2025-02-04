@@ -46,6 +46,7 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
               tradePrice={item.trade_price}
               changePrice={item.signed_change_price}
               changeRate={item.signed_change_rate}
+              change={item.change}
             />
           ))}
         </div>
