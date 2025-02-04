@@ -4,12 +4,24 @@ import { TickerSnapshot } from '@/types/upbit';
 import styles from './search.dialog.module.css';
 import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { isSearchDialogOpenAtom } from '@/store/ui';
-import { useEffect, useRef } from 'react';
+import {
+  ChangeEvent,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
+import { allMarketAtom } from '@/store/atom';
 
 export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
   const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
+  const [keyword, setKeyword] = useState('');
+  const defferedKeyword = useDeferredValue(keyword);
+  const markets = useAtomValue(allMarketAtom);
 
   const bgRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,6 +40,32 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
     };
   }, []);
 
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+
+  const filteredMarkets = useMemo(() => {
+    const lowerKeyword = defferedKeyword.toLowerCase();
+
+    return markets
+      .filter((item) => {
+        return (
+          item.market.split('-')[1].toLowerCase().includes(lowerKeyword) ||
+          item.korean_name.toLowerCase().includes(lowerKeyword) ||
+          item.english_name
+            .toLowerCase()
+            .replaceAll(' ', '')
+            .includes(lowerKeyword)
+        );
+      })
+      .map((item) => item.market);
+  }, [defferedKeyword, markets]);
+
+  const filteredData = useMemo(() => {
+    const marketSet = new Set(filteredMarkets);
+    return data.filter((item) => marketSet.has(item.market));
+  }, [filteredMarkets, data]);
+
   return (
     <div className={styles.container} ref={bgRef}>
       <div className={styles.dialogContainer}>
@@ -38,12 +76,15 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
               <div className={styles.searchIconBox}>
                 <SearchIcon width={14} height={14} />
               </div>
+
               <div className={styles.inputBox}>
                 <input
                   type="text"
                   placeholder="검색어를 입력하세요"
                   ref={inputRef}
                   maxLength={20}
+                  value={keyword}
+                  onChange={onChange}
                 />
               </div>
             </div>
@@ -65,17 +106,26 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
         </div>
         {/* 코인 리스트 */}
         <div className={styles.contentsContainer}>
-          {data.map((item) => (
-            <SearchDialogItem
-              key={item.market}
-              market={item.market}
-              accTradePrice={item.acc_trade_price_24h}
-              tradePrice={item.trade_price}
-              changePrice={item.signed_change_price}
-              changeRate={item.signed_change_rate}
-              change={item.change}
-            />
-          ))}
+          {filteredData.length > 0 ? (
+            filteredData.map((item) => (
+              <SearchDialogItem
+                key={item.market}
+                market={item.market}
+                accTradePrice={item.acc_trade_price_24h}
+                tradePrice={item.trade_price}
+                changePrice={item.signed_change_price}
+                changeRate={item.signed_change_rate}
+                change={item.change}
+              />
+            ))
+          ) : (
+            <div className={styles.noresultContainer}>
+              <p className={styles.alertText}>검색결과를 찾을 수 없습니다</p>
+              <p className={`${styles.listHeaderText}`}>
+                다른 검색어로 다시 시도해보세요
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
