@@ -4,9 +4,10 @@ import { rate, acc, comma, signedComma, plusMark } from '@/utils/formatting';
 import styles from './search.dialog.module.css';
 import Image from 'next/image';
 import React from 'react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { marketAtom } from '@/store/atom';
 import Link from 'next/link';
+import { isSearchDialogOpenAtom } from '@/store/ui';
 
 interface Props {
   market: string;
@@ -25,6 +26,7 @@ const SearchDialogItem = ({
   changeRate,
 }: Props) => {
   const code = market.split('-')[1];
+  const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
   const getMarket = useAtomValue(marketAtom);
 
   const getColor = (changeRate: number) => {
@@ -38,7 +40,13 @@ const SearchDialogItem = ({
   };
 
   return (
-    <Link href={`/market/${market}`} className={styles.listContainer}>
+    <Link
+      href={`/market/${market}`}
+      onClick={() => {
+        setIsDialogOpen(false);
+      }}
+      className={styles.listContainer}
+    >
       {/* 코인명 */}
       <div className={`${styles.listBox} ${styles.left}`}>
         <div className={styles.logoBox}>

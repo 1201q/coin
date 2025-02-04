@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import styles from './marketheader.module.css';
 import MarketInfo from './MarketInfo';
 import MarketSearch from './MarketSearch';
+import { useAtomValue } from 'jotai';
+import { isSearchDialogOpenAtom } from '@/store/ui';
 
 export default function MarketHeader({
   children,
@@ -12,14 +13,10 @@ export default function MarketHeader({
   children: React.ReactNode;
   market: string;
 }) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isDialogOpen = useAtomValue(isSearchDialogOpenAtom);
   return (
     <div className={styles.container}>
-      <MarketSearch
-        market={market}
-        isDialogOpen={isDialogOpen}
-        setIsDialogOpen={setIsDialogOpen}
-      />
+      <MarketSearch market={market} />
       <MarketInfo />
       {isDialogOpen && <>{children}</>}
     </div>

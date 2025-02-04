@@ -4,10 +4,30 @@ import { TickerSnapshot } from '@/types/upbit';
 import styles from './search.dialog.module.css';
 import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';
+import { useSetAtom } from 'jotai';
+import { isSearchDialogOpenAtom } from '@/store/ui';
+import { useEffect, useRef } from 'react';
 
 export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
+  const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
+
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  const handleBackgroundClick = (e: MouseEvent) => {
+    if (bgRef.current && bgRef.current === e.target) {
+      setIsDialogOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleBackgroundClick);
+    return () => {
+      document.removeEventListener('mousedown', handleBackgroundClick);
+    };
+  }, []);
+
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={bgRef}>
       <div className={styles.dialogContainer}>
         {/* title */}
         <div className={styles.titleContainer}>
