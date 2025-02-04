@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import SearchDialog from './SearchDialog';
 import { TickerSnapshot } from '@/types/upbit';
 

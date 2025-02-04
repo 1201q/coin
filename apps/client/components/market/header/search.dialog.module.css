@@ -4,7 +4,7 @@
   position: fixed;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.25);
   z-index: 98;
 }
 
@@ -67,6 +67,7 @@
 
 .listHeaderContainer {
   display: flex;
+  align-items: flex-end;
   height: 40px;
   padding: 0px 12px;
   border-bottom: 1px solid var(--border-main-color);
@@ -75,7 +76,7 @@
 
 .listHeaderBox {
   flex: 1;
-  height: calc(100% - 4px);
+  height: calc(100% - 2px);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -88,7 +89,7 @@
 }
 
 .listHeaderText {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--font-gray-color);
 }
 
@@ -150,24 +151,4 @@
   overflow: hidden;
   word-break: break-all;
   text-overflow: ellipsis;
-}
-
-.small {
-  font-size: 11px;
-}
-
-.thin {
-  font-weight: 500;
-}
-
-.red {
-  color: var(--main-red-color);
-}
-
-.blue {
-  color: var(--main-blue-color);
-}
-
-.equal {
-  color: var(--font-gray-color);
 }

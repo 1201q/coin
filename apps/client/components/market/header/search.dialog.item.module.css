@@ -1,0 +1,77 @@
+.listContainer {
+  display: flex;
+  height: 50px;
+  padding: 0px 12px;
+  gap: 5px;
+}
+
+.listContainer:hover {
+  background-color: #f2f4f6;
+  transition: background-color 0.15s;
+}
+
+.logoBox {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.listBox {
+  flex: 1;
+  height: calc(100%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  column-gap: 8px;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.left {
+  flex: 1.5;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.text {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--font-black-color);
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all;
+  text-overflow: ellipsis;
+}
+
+.small {
+  font-size: 11px;
+}
+
+.thin {
+  font-weight: 500;
+}
+
+.red {
+  color: var(--main-red-color);
+}
+
+.blue {
+  color: var(--main-blue-color);
+}
+
+.equal {
+  color: var(--font-gray-color);
+}

@@ -12,6 +12,7 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
   const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
 
   const bgRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleBackgroundClick = (e: MouseEvent) => {
     if (bgRef.current && bgRef.current === e.target) {
@@ -20,6 +21,7 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
   };
 
   useEffect(() => {
+    inputRef.current?.focus();
     document.addEventListener('mousedown', handleBackgroundClick);
     return () => {
       document.removeEventListener('mousedown', handleBackgroundClick);
@@ -37,7 +39,12 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
                 <SearchIcon width={14} height={14} />
               </div>
               <div className={styles.inputBox}>
-                <input type="text" placeholder="검색어를 입력하세요" />
+                <input
+                  type="text"
+                  placeholder="검색어를 입력하세요"
+                  ref={inputRef}
+                  maxLength={20}
+                />
               </div>
             </div>
           </div>

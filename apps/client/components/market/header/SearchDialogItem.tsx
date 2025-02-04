@@ -1,7 +1,7 @@
 'use client';
 
 import { rate, acc, comma, signedComma, plusMark } from '@/utils/formatting';
-import styles from './search.dialog.module.css';
+import styles from './search.dialog.item.module.css';
 import Image from 'next/image';
 import React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -60,6 +60,12 @@ const SearchDialogItem = ({
         <div className={styles.flex}>
           <span className={styles.text}>
             {getMarket(market)?.korean_name || ''}
+          </span>
+          <span
+            className={`${styles.text} ${styles.small} ${styles.thin} ${styles.equal}`}
+            style={{ marginLeft: '1px' }}
+          >
+            {code}
           </span>
         </div>
       </div>
