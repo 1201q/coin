@@ -7,14 +7,16 @@ import MarketSearch from './MarketSearch';
 
 export default function MarketHeader({
   children,
+  market,
 }: {
   children: React.ReactNode;
+  market: string;
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <div className={styles.container}>
       <MarketSearch
-        code={'KRW-BTC'}
+        market={market}
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
       />

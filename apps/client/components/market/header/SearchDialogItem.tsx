@@ -4,8 +4,9 @@ import { rate, acc, comma, signedComma, plusMark } from '@/utils/formatting';
 import styles from './search.dialog.module.css';
 import Image from 'next/image';
 import React from 'react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { marketAtom } from '@/store/atom';
+import Link from 'next/link';
 
 interface Props {
   market: string;
@@ -37,15 +38,17 @@ const SearchDialogItem = ({
   };
 
   return (
-    <div className={styles.listContainer}>
+    <Link href={`/market/${market}`} className={styles.listContainer}>
       {/* 코인명 */}
       <div className={`${styles.listBox} ${styles.left}`}>
-        <Image
-          src={`https://static.upbit.com/logos/${code}.png`}
-          width={19}
-          height={19}
-          alt="logo"
-        />
+        <div className={styles.logoBox}>
+          <Image
+            src={`https://static.upbit.com/logos/${code}.png`}
+            width={19}
+            height={19}
+            alt="logo"
+          />
+        </div>
         <div className={styles.flex}>
           <span className={styles.text}>
             {getMarket(market)?.korean_name || ''}
@@ -84,7 +87,7 @@ const SearchDialogItem = ({
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 export default SearchDialogItem;

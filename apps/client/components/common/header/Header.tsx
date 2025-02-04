@@ -2,11 +2,15 @@ import styles from './header.module.css';
 import MarketHeader from '@/components/market/header/MarketHeader';
 import CoinListServer from '@/components/market/header/CoinListServer';
 
-export default function Header() {
+interface Props {
+  market: string;
+}
+
+export default function Header({ market }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
-        <MarketHeader>
+        <MarketHeader market={market}>
           <CoinListServer />
         </MarketHeader>
       </div>

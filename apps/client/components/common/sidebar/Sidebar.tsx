@@ -10,7 +10,7 @@ import { useCallback, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 const MENU = [
-  { id: 'market', href: '/market/BTC', icon: ChartIcon, label: '정보' },
+  { id: 'market', href: '/market/KRW-BTC', icon: ChartIcon, label: '정보' },
   { id: 'wallet', href: '/wallet', icon: WalletIcon, label: '지갑' },
   { id: 'orders', href: '/orders', icon: NoteIcon, label: '주문' },
 ];

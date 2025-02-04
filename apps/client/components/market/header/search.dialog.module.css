@@ -106,6 +106,13 @@
   gap: 5px;
 }
 
+.logoBox {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 .listBox {
   flex: 1;
   height: calc(100%);

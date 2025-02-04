@@ -16,7 +16,7 @@ export default async function MarketCodePage(props: Props) {
       </div>
       <div className={styles.contentsContainer}>
         <div className={styles.headerContainer}>
-          <Header />
+          <Header market={code} />
         </div>
         <div className={styles.marketContainer}>
           <div className={styles.flexContainer}>
