@@ -4,6 +4,8 @@ import { rate, acc, comma, signedComma, plusMark } from '@/utils/formatting';
 import styles from './search.dialog.module.css';
 import Image from 'next/image';
 import React from 'react';
+import { useAtom, useAtomValue } from 'jotai';
+import { marketAtom } from '@/store/atom';
 
 interface Props {
   market: string;
@@ -22,6 +24,7 @@ const SearchDialogItem = ({
   changeRate,
 }: Props) => {
   const code = market.split('-')[1];
+  const getMarket = useAtomValue(marketAtom);
 
   const getColor = (changeRate: number) => {
     if (changeRate > 0) {
@@ -44,7 +47,9 @@ const SearchDialogItem = ({
           alt="logo"
         />
         <div className={styles.flex}>
-          <span className={styles.text}>{market}</span>
+          <span className={styles.text}>
+            {getMarket(market)?.korean_name || ''}
+          </span>
         </div>
       </div>
       {/* 현재가 */}
