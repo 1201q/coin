@@ -17,25 +17,29 @@ export class SubscriptionService {
   ) {}
   private readonly logger = new Logger(SubscriptionService.name);
 
-  ticker(client: Socket) {
+  ticker(client: Socket): { success: boolean; message: string } {
     if (this.tickerSubscriptions.has(client.id)) {
-      this.unsubscribeTickerStream(client);
-      this.logger.log(`이미 구독중인 클라이언트: ${client.id}`);
-      return;
+      this.logger.warn(`이미 ticker를 구독중인 클라이언트: ${client.id}`);
+      return { success: false, message: "이미 ticker를 구독 중입니다." };
     }
 
     const subscription = this.upbitWebsocketStreamService.subscribeTickerStream(
       (data) => {
-        client.compress(true).emit("ticker", data);
+        client.emit("ticker", data);
       },
     );
 
     this.tickerSubscriptions.set(client.id, subscription);
-    this.logger.log(`클라이언트 구독: ${client.id}`);
+    this.logger.log(`ticker 구독: ${client.id}`);
+
+    return { success: true, message: "ticker 구독 성공!" };
   }
 
-  join(client: Socket, coinCode: string) {
-    this.leaveJoinedRoom(client);
+  join(
+    client: Socket,
+    coinCode: string,
+  ): { success: boolean; message: string; leftRoom?: string } {
+    const { leftRoom, leftSuccess } = this.leaveJoinedRoom(client);
 
     let subscriptions = this.roomSubspriptions.get(coinCode);
 
@@ -45,15 +49,15 @@ export class SubscriptionService {
     }
 
     if (subscriptions.has(client.id)) {
-      this.logger.log(`이미 구독중인 클라이언트: ${client.id}/${coinCode}`);
-      return;
+      this.logger.warn(`이미 구독중인 클라이언트: ${client.id}/${coinCode}`);
+      return { success: false, message: `이미 ${coinCode}를 구독 중입니다.` };
     }
 
     const tradeSubscription =
       this.upbitWebsocketStreamService.subscribeTradeStream(
         coinCode,
         (data) => {
-          client.compress(true).emit("trade", data);
+          client.emit("trade", data);
         },
       );
 
@@ -61,7 +65,7 @@ export class SubscriptionService {
       this.upbitWebsocketStreamService.subscribeOrderbookStream(
         coinCode,
         (data) => {
-          client.compress(true).emit("orderbook", data);
+          client.emit("orderbook", data);
         },
       );
 
@@ -69,7 +73,14 @@ export class SubscriptionService {
       trade: tradeSubscription,
       orderbook: orderbookSubscription,
     });
+
     this.logger.log(`클라이언트 구독: ${client.id}/${coinCode}`);
+
+    return {
+      success: true,
+      message: `${coinCode}를 구독했습니다.`,
+      leftRoom: leftSuccess ? leftRoom : null,
+    };
   }
 
   leave(client: Socket, coinCode: string) {
@@ -77,7 +88,7 @@ export class SubscriptionService {
     const subscriptions = this.roomSubspriptions.get(coinCode);
 
     if (!subscriptions || !subscriptions.has(client.id)) {
-      this.logger.log(`구독중이 아닌 클라이언트: ${clientId}/${coinCode}`);
+      this.logger.warn(`구독중이 아닌 클라이언트: ${clientId}/${coinCode}`);
       return;
     }
 
@@ -103,14 +114,26 @@ export class SubscriptionService {
 
     if (currentCoinCode) {
       this.leave(client, currentCoinCode);
+      return { leftRoom: currentCoinCode, leftSuccess: true };
     }
+    return { leftRoom: currentCoinCode, leftSuccess: false };
   }
 
-  unsubscribeTickerStream(client: Socket) {
+  unsubscribeTickerStream(client: Socket): {
+    success: boolean;
+    message: string;
+  } {
     const subscription = this.tickerSubscriptions.get(client.id);
     if (subscription) {
       subscription.unsubscribe();
       this.tickerSubscriptions.delete(client.id);
+      this.logger.log(`ticker 구독해제: ${client.id}`);
+
+      return { success: true, message: "ticker 구독해제 성공!" };
+    } else {
+      this.logger.warn(`ticker를 구독중이 아닌 클라이언트: ${client.id}`);
+
+      return { success: false, message: "ticker가 구독중이 아닙니다." };
     }
   }
 

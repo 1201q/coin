@@ -39,8 +39,6 @@ export class UpbitMarketUpdaterService implements OnModuleInit {
       this.logger.log("마켓 데이터 갱신: " + currentCodes.length);
 
       this.upbitWebsocketStreamService.updateMarketCodes(this.marketCodes);
-    } else {
-      this.logger.log("기존과 같음.");
     }
   }
 

@@ -6,6 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
   WsResponse,
+  WsException,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 
@@ -39,26 +40,69 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.subscriptionService.leaveJoinedRoom(client);
 
       return {
-        event: "error",
-        data: `${marketCode} 는 유효하지 않은 마켓 코드입니다.`,
+        event: "join",
+        data: {
+          status: "fail",
+          message: `${marketCode}는 유효하지 않은 마켓 코드입니다.`,
+          submitCode: marketCode,
+        },
       };
     }
 
-    this.subscriptionService.join(client, marketCode);
-    return { event: "ok", data: `${marketCode} 참가 성공` };
+    const result = this.subscriptionService.join(client, marketCode);
+
+    if (!result.success) {
+      return {
+        event: "join",
+        data: {
+          status: "fail",
+          message: result.message,
+        },
+      };
+    }
+
+    return {
+      event: "join",
+      data: {
+        status: "success",
+        message: result.message,
+        submitCode: marketCode,
+        leftRoom: result.leftRoom,
+      },
+    };
   }
 
   @SubscribeMessage("ticker")
   subscribeTicker(client: Socket) {
-    this.subscriptionService.ticker(client);
+    const result = this.subscriptionService.ticker(client);
 
-    return { event: "ok", data: `ticker 구독 성공` };
+    if (!result.success) {
+      return {
+        event: "ticker:start",
+        data: { status: "fail", message: result.message },
+      };
+    }
+
+    return {
+      event: "ticker:start",
+      data: { status: "success", message: result.message },
+    };
   }
 
   @SubscribeMessage("ticker:stop")
   unsubscribeTicker(client: Socket) {
-    this.subscriptionService.unsubscribeTickerStream(client);
+    const result = this.subscriptionService.unsubscribeTickerStream(client);
 
-    return { event: "ok", data: `ticker 구독해제 성공` };
+    if (!result.success) {
+      return {
+        event: "ticker:stop",
+        data: { status: "fail", message: result.message },
+      };
+    }
+
+    return {
+      event: "ticker:stop",
+      data: { status: "success", message: result.message },
+    };
   }
 }
