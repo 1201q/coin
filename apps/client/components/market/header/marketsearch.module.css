@@ -12,7 +12,7 @@
   padding: 0px 8px;
   border-radius: 16px;
   height: 34px;
-  background-color: #f2f4f6;
+  background-color: var(--bg-gray-color);
   cursor: pointer;
 }
 
@@ -49,7 +49,7 @@
 
 .slash {
   font-size: 12px;
-  margin-right: 1px;
+  margin-right: 2px;
   color: var(--font-darkgray-color);
 }
 

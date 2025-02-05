@@ -4,13 +4,13 @@
   --form-width: 250px;
   --order-height: 170px;
 
-  --main-gray-hover-color: #f9fafc;
+  --main-gray-hover-color: #f3f4f6;
   --main-blue-hover-color: rgba(0, 82, 254, 0.08);
   --main-red-color: rgb(240, 97, 109);
   --main-blue-color: rgba(0, 82, 254, 0.7);
   --main-gray-color: rgba(91, 97, 110, 0.7);
 
-  --bg-gray-color: #f1f5f9;
+  --bg-gray-color: #f3f4f6;
 
   --border-main-color: rgb(209, 217, 224);
   --border-main2-color: #ededed;

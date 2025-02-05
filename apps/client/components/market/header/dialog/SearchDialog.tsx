@@ -8,10 +8,14 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { isSearchDialogOpenAtom } from '@/store/ui';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
+import { motion } from 'framer-motion';
+
+const TABS = ['마켓', '즐겨찾기'];
 
 export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
   const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
   const [keyword, setKeyword] = useState('');
+  const [selectedTab, setSelectedTab] = useState(TABS[0]);
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
 
   const markets = useAtomValue(allMarketAtom);
@@ -72,37 +76,53 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
       <div className={styles.dialogContainer}>
         {/* title */}
         <div className={styles.titleContainer}>
+          <div className={styles.tabmenuContainer}>
+            {TABS.map((tab) => (
+              <div
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`${styles.tabmenu} ${selectedTab === tab ? styles.selected : ''}`}
+              >
+                <span>{tab}</span>
+                {selectedTab === tab && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className={styles.indicator}
+                  ></motion.div>
+                )}
+              </div>
+            ))}
+          </div>
           <div className={styles.searchContainer}>
-            <div className={styles.searchBox}>
-              <div className={styles.searchIconBox}>
-                <SearchIcon width={14} height={14} />
-              </div>
+            <div className={styles.searchIconBox}>
+              <SearchIcon width={11} height={11} />
+            </div>
 
-              <div className={styles.inputBox}>
-                <input
-                  type="text"
-                  placeholder="검색어를 입력하세요"
-                  ref={inputRef}
-                  maxLength={20}
-                  value={keyword}
-                  onChange={onChange}
-                />
-              </div>
+            <div className={styles.inputBox}>
+              <input
+                type="text"
+                placeholder="검색어를 입력하세요"
+                ref={inputRef}
+                maxLength={20}
+                value={keyword}
+                onChange={onChange}
+              />
             </div>
           </div>
-          <div className={styles.listHeaderContainer}>
-            <div className={`${styles.listHeaderBox} ${styles.left}`}>
-              <span className={`${styles.listHeaderText}`}>코인명</span>
-            </div>
-            <div className={styles.listHeaderBox}>
-              <span className={styles.listHeaderText}>현재가</span>
-            </div>
-            <div className={styles.listHeaderBox}>
-              <span className={styles.listHeaderText}>어제보다</span>
-            </div>
-            <div className={styles.listHeaderBox}>
-              <span className={styles.listHeaderText}>거래대금</span>
-            </div>
+        </div>
+        {/* 리스트 헤더 */}
+        <div className={styles.listHeaderContainer}>
+          <div className={`${styles.listHeaderBox} ${styles.left}`}>
+            <span className={`${styles.listHeaderText}`}>코인명</span>
+          </div>
+          <div className={styles.listHeaderBox}>
+            <span className={styles.listHeaderText}>현재가</span>
+          </div>
+          <div className={styles.listHeaderBox}>
+            <span className={styles.listHeaderText}>어제보다</span>
+          </div>
+          <div className={styles.listHeaderBox}>
+            <span className={styles.listHeaderText}>거래대금</span>
           </div>
         </div>
         {/* 코인 리스트 */}
