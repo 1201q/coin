@@ -1,6 +1,7 @@
 'use client';
 
 import { allMarketAtom } from '@/store/atom';
+import { socketService } from '@/utils/websocket';
 import { Provider, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 

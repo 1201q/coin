@@ -9,7 +9,14 @@ const nextConfig: NextConfig = {
 
     return config;
   },
-
+  async rewrites() {
+    return [
+      {
+        source: '/ws',
+        destination: 'https://api.coingosu.live/ws',
+      },
+    ];
+  },
   images: {
     domains: ['static.upbit.com'],
   },
