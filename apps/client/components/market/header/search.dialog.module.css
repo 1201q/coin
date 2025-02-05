@@ -30,7 +30,7 @@
 }
 
 .searchContainer {
-  padding: 12px 12px 6px 12px;
+  padding: 15px 15px 5px 15px;
 }
 
 .searchBox {
@@ -69,14 +69,14 @@
   display: flex;
   align-items: flex-end;
   height: 40px;
-  padding: 0px 12px;
-  border-bottom: 1px solid var(--border-main-color);
+  padding: 0px 15px;
+
   gap: 5px;
 }
 
 .listHeaderBox {
   flex: 1;
-  height: calc(100% - 2px);
+  height: calc(100% - 5px);
   display: flex;
   align-items: center;
   justify-content: flex-end;

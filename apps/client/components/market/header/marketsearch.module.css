@@ -25,8 +25,8 @@
 }
 
 .textContainer {
-  margin-bottom: 2px;
-  padding-right: 5px;
+  margin-bottom: 0px;
+  padding-right: 2px;
 }
 
 .textContainer p {
@@ -34,6 +34,23 @@
   font-weight: 700;
   margin-bottom: 0px;
   color: gray;
+}
+
+.korea {
+  font-weight: 700;
+  margin-right: 3px;
+}
+
+.code {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--font-darkgray-color);
+}
+
+.slash {
+  font-size: 12px;
+  margin-right: 1px;
+  color: var(--font-darkgray-color);
 }
 
 .open {

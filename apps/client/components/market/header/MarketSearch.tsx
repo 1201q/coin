@@ -35,7 +35,9 @@ export default function MarketSearch({ market }: Props) {
           />
         </div>
         <div className={styles.textContainer}>
-          <p>{getMarket(market)?.korean_name}</p>
+          <span className={styles.korea}>{getMarket(market)?.korean_name}</span>
+          <span className={styles.slash}>/</span>
+          <span className={styles.code}>{code}</span>
         </div>
       </div>
     </div>

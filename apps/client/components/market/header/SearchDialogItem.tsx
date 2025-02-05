@@ -63,7 +63,7 @@ const SearchDialogItem = ({
           </span>
           <span
             className={`${styles.text} ${styles.small} ${styles.thin} ${styles.equal}`}
-            style={{ marginLeft: '1px' }}
+            style={{ marginLeft: '0.5px' }}
           >
             {code}
           </span>
@@ -71,13 +71,17 @@ const SearchDialogItem = ({
       </div>
       {/* 현재가 */}
       <div className={styles.listBox}>
-        <span className={`${styles.text} ${getColor(changeRate)}`}>
+        <span
+          className={`${styles.text} ${getColor(changeRate)} ${styles.number}`}
+        >
           {comma(tradePrice, tradePrice)}
         </span>
       </div>
       {/* 어제보디 */}
       <div className={styles.listBox}>
-        <span className={`${styles.text} ${getColor(changeRate)}`}>
+        <span
+          className={`${styles.text}  ${styles.number} ${getColor(changeRate)}`}
+        >
           {plusMark(changeRate)}
           {rate(changeRate)}%
         </span>
@@ -85,7 +89,9 @@ const SearchDialogItem = ({
       {/* 거래대금 */}
       <div className={styles.listBox}>
         <div className={`${styles.flex} ${styles.right}`}>
-          <span className={styles.text}>{acc(accTradePrice)}</span>
+          <span className={`${styles.text}  ${styles.number}`}>
+            {acc(accTradePrice)}
+          </span>
           <span
             className={`${styles.text} ${styles.small} ${styles.thin} ${styles.equal}`}
           >

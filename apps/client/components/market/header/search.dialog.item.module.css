@@ -1,8 +1,9 @@
 .listContainer {
   display: flex;
-  height: 50px;
-  padding: 0px 12px;
+  height: 46px;
+  padding: 0px 15px;
   gap: 5px;
+  margin: 2px 0px;
 }
 
 .listContainer:hover {
@@ -44,8 +45,8 @@
 }
 
 .text {
-  font-weight: 700;
-  font-size: 13px;
+  font-weight: 500;
+  font-size: 14px;
   color: var(--font-black-color);
   line-height: 1.2;
   display: -webkit-box;
@@ -57,12 +58,16 @@
   text-overflow: ellipsis;
 }
 
+.number {
+  letter-spacing: -0.5px;
+}
+
 .small {
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .thin {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .red {
