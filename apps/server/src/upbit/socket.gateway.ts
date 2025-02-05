@@ -72,6 +72,30 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     };
   }
 
+  @SubscribeMessage("leave")
+  leaveRoom(client: Socket) {
+    const result = this.subscriptionService.leaveJoinedRoom(client);
+
+    if (!result.leftSuccess) {
+      return {
+        event: "leave",
+        data: {
+          status: "fail",
+          message: "방을 나갈 수 없습니다.",
+        },
+      };
+    }
+
+    return {
+      event: "leave",
+      data: {
+        status: "success",
+        message: "방을 나갔습니다.",
+        leftRoom: result.leftRoom,
+      },
+    };
+  }
+
   @SubscribeMessage("ticker")
   subscribeTicker(client: Socket) {
     const result = this.subscriptionService.ticker(client);
