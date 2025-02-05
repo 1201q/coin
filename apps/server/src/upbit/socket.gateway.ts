@@ -109,7 +109,11 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     return {
       event: "ticker:start",
-      data: { status: "success", message: result.message },
+      data: {
+        status: "success",
+        message: result.message,
+        count: this.marketService.getMarketCount(),
+      },
     };
   }
 

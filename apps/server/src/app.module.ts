@@ -6,5 +6,6 @@ import { UpbitModule } from "./upbit/upbit.module";
   imports: [UpbitModule],
   controllers: [AppController],
   providers: [],
+  exports: [],
 })
 export class AppModule {}

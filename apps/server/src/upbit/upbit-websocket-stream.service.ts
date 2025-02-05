@@ -7,6 +7,7 @@ import {
 import { BehaviorSubject, Subject } from "rxjs";
 import * as WebSocket from "ws";
 import { Orderbook, Ticker, Trade } from "./types/upbit.entity";
+import { AppLogger } from "src/logger.service";
 
 export type SocketType = "ticker" | "orderbook" | "trade";
 
@@ -14,7 +15,7 @@ export type SocketType = "ticker" | "orderbook" | "trade";
 export class UpbitWebsocketStreamService
   implements OnModuleInit, OnModuleDestroy
 {
-  private readonly logger = new Logger(UpbitWebsocketStreamService.name);
+  constructor(private readonly logger: AppLogger) {}
   private sockets = new Map<SocketType, WebSocket>();
   private streams = {
     ticker: new Subject<Ticker>(),
@@ -47,11 +48,11 @@ export class UpbitWebsocketStreamService
         );
 
         if (allOpen) {
-          this.logger.log(`웹소켓: 모든 소켓이 열렸습니다.`);
+          this.logger.log(`✅ 웹소켓: 모든 소켓이 열렸습니다.`);
           resolve();
         } else {
-          this.logger.log(`웹소켓: 아직 소켓이 열리지 않았습니다.`);
-          setTimeout(check, 1000);
+          this.logger.log(`⚠️ 웹소켓: 아직 소켓이 열리지 않았습니다.`);
+          setTimeout(check, 2000);
         }
       };
       check();
@@ -65,7 +66,7 @@ export class UpbitWebsocketStreamService
     const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
 
     socket.on("open", () => {
-      this.logger.log(`소켓 생성: ${type}`);
+      this.logger.log(`⏳ 소켓 생성: ${type}`);
     });
 
     socket.on("message", (data) =>
@@ -73,11 +74,11 @@ export class UpbitWebsocketStreamService
     );
 
     socket.on("close", () => {
-      this.logger.warn(`소켓 닫힘: ${type}`);
+      this.logger.warn(`⚠️ 소켓 닫힘: ${type}`);
     });
 
     socket.on("error", (error) => {
-      this.logger.error(`소켓 오류: ${type}/${error.message}`);
+      this.logger.error(`❌ 소켓 오류: ${type}/${error.message}`);
     });
 
     this.sockets.set(type, socket);
@@ -105,7 +106,8 @@ export class UpbitWebsocketStreamService
     if (socket.readyState === WebSocket.OPEN && codes.length > 0) {
       const message = [{ ticket: `${type}/ws` }, { type: type, codes: codes }];
       socket.send(JSON.stringify(message));
-      this.logger.log(`업비트 구독: ${type}/${codes.length}개`);
+
+      this.logger.log(`📌 업비트 구독: ${type}/${codes.length}개`);
     }
   }
 
@@ -143,6 +145,7 @@ export class UpbitWebsocketStreamService
   // 마켓 리스트에 변경 일어나면 해당 변경사항을 업비트 웹소켓 서버에 전달
   // market 서비스가 호출
   updateMarketCodes(newMarketCodes: string[]) {
+    this.logger.log(`🔄🔄 소켓 서비스에서 마켓 업데이트를 호출`);
     this.checkAllSocketsOpen().then(() => {
       this.sockets.forEach((_, type) => {
         this.subscribeToUpbit(type, newMarketCodes);

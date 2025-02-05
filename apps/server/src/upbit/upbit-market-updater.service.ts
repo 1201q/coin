@@ -4,14 +4,16 @@ import { firstValueFrom, map } from "rxjs";
 import { MarketInfo } from "./types/upbit.entity";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { UpbitWebsocketStreamService } from "./upbit-websocket-stream.service";
+import { AppLogger } from "src/logger.service";
 
 @Injectable()
 export class UpbitMarketUpdaterService implements OnModuleInit {
   constructor(
     private readonly httpService: HttpService,
     private readonly upbitWebsocketStreamService: UpbitWebsocketStreamService,
+    private readonly logger: AppLogger,
   ) {}
-  private readonly logger = new Logger(UpbitMarketUpdaterService.name);
+
   private marketList: MarketInfo[] = [];
   private marketCodes: string[] = [];
 
@@ -36,9 +38,11 @@ export class UpbitMarketUpdaterService implements OnModuleInit {
     if (JSON.stringify(currentCodes) !== JSON.stringify(this.marketCodes)) {
       this.marketList = currentMarkets;
       this.marketCodes = currentCodes;
-      this.logger.log("마켓 데이터 갱신: " + currentCodes.length);
+      this.logger.log("🔄 마켓 데이터 갱신: " + currentCodes.length);
 
       this.upbitWebsocketStreamService.updateMarketCodes(this.marketCodes);
+    } else {
+      this.logger.log("🔄 마켓 데이터 갱신: 변동 없음");
     }
   }
 
@@ -52,6 +56,10 @@ export class UpbitMarketUpdaterService implements OnModuleInit {
 
   getMarketCodes() {
     return this.marketCodes;
+  }
+
+  getMarketCount() {
+    return this.marketCodes.length;
   }
 
   isValidMarketCode(code: string) {

@@ -9,9 +9,10 @@ import { SnapshotService } from "./snapshot.service";
 import { SocketGateway } from "./socket.gateway";
 import { UpbitWebsocketStreamService } from "./upbit-websocket-stream.service";
 import { SubscriptionService } from "./subscription.service";
+import { LoggerModule } from "src/logger.module";
 
 @Module({
-  imports: [HttpModule, ScheduleModule.forRoot()],
+  imports: [LoggerModule, HttpModule, ScheduleModule.forRoot()],
   controllers: [UpbitController],
   providers: [
     UpbitMarketUpdaterService,

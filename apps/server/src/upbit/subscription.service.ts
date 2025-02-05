@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { Subscription } from "rxjs";
 import { Socket } from "socket.io";
 import { UpbitWebsocketStreamService } from "./upbit-websocket-stream.service";
+import { AppLogger } from "src/logger.service";
 
 @Injectable()
 export class SubscriptionService {
@@ -14,8 +15,8 @@ export class SubscriptionService {
 
   constructor(
     private readonly upbitWebsocketStreamService: UpbitWebsocketStreamService,
+    private readonly logger: AppLogger,
   ) {}
-  private readonly logger = new Logger(SubscriptionService.name);
 
   ticker(client: Socket): { success: boolean; message: string } {
     if (this.tickerSubscriptions.has(client.id)) {
