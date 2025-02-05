@@ -77,18 +77,10 @@ const SearchDialogItem = ({
       </div>
       {/* 어제보디 */}
       <div className={styles.listBox}>
-        <div className={`${styles.flex}  ${styles.right} `}>
-          <span className={`${styles.text} ${getColor(changeRate)}`}>
-            {plusMark(changeRate)}
-            {rate(changeRate)}%
-          </span>
-          <span
-            className={`${styles.text} ${styles.small} ${styles.thin} ${getColor(changeRate)}`}
-          >
-            {plusMark(changeRate)}
-            {signedComma(tradePrice, changePrice)}
-          </span>
-        </div>
+        <span className={`${styles.text} ${getColor(changeRate)}`}>
+          {plusMark(changeRate)}
+          {rate(changeRate)}%
+        </span>
       </div>
       {/* 거래대금 */}
       <div className={styles.listBox}>

@@ -22,7 +22,9 @@ export default function MarketSearch({ market }: Props) {
         setIsDialogOpen((prev) => !prev);
       }}
     >
-      <div className={styles.searchContainer}>
+      <div
+        className={`${styles.searchContainer} ${isDialogOpen ? styles.open : ''}`}
+      >
         <div className={styles.logoContainer}>
           <Image
             src={`https://static.upbit.com/logos/${code}.png`}
