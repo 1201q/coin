@@ -1,6 +1,7 @@
 import JotaiProvider from '@/components/common/provider/JotaiProvider';
 import './globals.css';
-
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 import localFont from 'next/font/local';
 
 const pretendard = localFont({
@@ -18,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={pretendard.variable}>
-        <JotaiProvider>{children}</JotaiProvider>
+        <JotaiProvider>
+          {children}
+          <SpeedInsights />
+          <Analytics />
+        </JotaiProvider>
       </body>
     </html>
   );
