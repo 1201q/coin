@@ -34,6 +34,56 @@ export type MarketType = (typeof UPBIT_MARKET_TYPE)[number];
 export type CandleType = (typeof UPBIT_CANDLE_TYPE)[number];
 export type CandleUnit = (typeof UPBIT_CANDLE_UNIT)[number];
 
+export type TickerData = {
+  code: string; // code, market
+  opening_price: number; // 시가
+  high_price: number; // 고가
+  low_price: number; // 저가
+  trade_price: number; // 현재가
+  change: 'RISE' | 'EVEN' | 'FALL'; // 전일 대비
+  signed_change_price: number; // 부호 포함 전일 대비 금액
+  signed_change_rate: number; // 부호 포함 전일 대비 비율
+  acc_trade_volume_24h: number; // 24시간 누적 거래량
+  acc_trade_price_24h: number; // 24시간 누적 거래대금
+  timestamp: number; // 데이터 생성 타임스탬프 (milliseconds)
+};
+
+export const convertTickerData = (
+  data: Ticker | TickerSnapshot,
+): TickerData => {
+  if ('code' in data) {
+    // Ticker
+    return {
+      code: data.code,
+      opening_price: data.opening_price,
+      high_price: data.high_price,
+      low_price: data.low_price,
+      trade_price: data.trade_price,
+      change: data.change,
+      signed_change_price: data.signed_change_price,
+      signed_change_rate: data.signed_change_rate,
+      acc_trade_volume_24h: data.acc_trade_volume_24h,
+      acc_trade_price_24h: data.acc_trade_price_24h,
+      timestamp: data.timestamp,
+    };
+  } else {
+    // tickersnapshot market => code
+    return {
+      code: data.market,
+      opening_price: data.opening_price,
+      high_price: data.high_price,
+      low_price: data.low_price,
+      trade_price: data.trade_price,
+      change: data.change,
+      signed_change_price: data.signed_change_price,
+      signed_change_rate: data.signed_change_rate,
+      acc_trade_volume_24h: data.acc_trade_volume_24h,
+      acc_trade_price_24h: data.acc_trade_price_24h,
+      timestamp: data.timestamp,
+    };
+  }
+};
+
 export type TickerSnapshot = {
   market: string; // 마켓 코드 (ex. KRW-BTC)
   trade_date: string; // 최근 거래 일자 (UTC) yyyyMMdd

@@ -1,7 +1,9 @@
 import Sidebar from '@/components/common/sidebar/Sidebar';
 import styles from './main.module.css';
 import Header from '@/components/common/header/Header';
-import Test from '@/components/Test';
+
+import Status from '@/components/Status';
+import { Suspense } from 'react';
 
 interface Props {
   params: Promise<{ code: string }>;
@@ -25,9 +27,7 @@ export default async function MarketCodePage(props: Props) {
               <div className={styles.centerContainer}>
                 <div className={styles.chartContainer}>2</div>
                 <div className={styles.orderbookContainer}>
-                  <div>
-                    <Test />
-                  </div>
+                  <div>1</div>
                 </div>
               </div>
               <div className={styles.bottomContainer}>3123</div>
@@ -36,6 +36,8 @@ export default async function MarketCodePage(props: Props) {
           </div>
         </div>
       </div>
+
+      <Status />
     </div>
   );
 }
