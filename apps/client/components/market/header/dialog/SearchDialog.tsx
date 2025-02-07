@@ -1,6 +1,6 @@
 'use client';
 
-import { TickerSnapshot } from '@/types/upbit';
+import { TickerData, TickerSnapshot } from '@/types/upbit';
 import styles from './search.dialog.module.css';
 import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';
@@ -9,11 +9,14 @@ import { isSearchDialogOpenAtom } from '@/store/ui';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
 import { motion } from 'framer-motion';
+import { socketService } from '@/utils/websocket';
 
 const TABS = ['마켓', '즐겨찾기'];
 
-export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
+export default function SearchDialog() {
   const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
+
+  const [data, setData] = useState<TickerData[]>([]);
   const [keyword, setKeyword] = useState('');
   const [selectedTab, setSelectedTab] = useState(TABS[0]);
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
@@ -31,8 +34,14 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
 
   useEffect(() => {
     inputRef.current?.focus();
+
+    const subscription = socketService.getAllTickers().subscribe((stream) => {
+      setData(stream);
+    });
+
     document.addEventListener('mousedown', handleBackgroundClick);
     return () => {
+      subscription.unsubscribe();
       document.removeEventListener('mousedown', handleBackgroundClick);
     };
   }, []);
@@ -68,7 +77,7 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
 
   const filteredData = useMemo(() => {
     const marketSet = new Set(filteredMarkets);
-    return data.filter((item) => marketSet.has(item.market));
+    return data.filter((item) => marketSet.has(item.code));
   }, [filteredMarkets, data]);
 
   return (
@@ -126,28 +135,30 @@ export default function SearchDialog({ data }: { data: TickerSnapshot[] }) {
           </div>
         </div>
         {/* 코인 리스트 */}
-        <div className={styles.contentsContainer}>
-          {filteredData.length > 0 ? (
-            filteredData.map((item) => (
-              <SearchDialogItem
-                key={item.market}
-                market={item.market}
-                accTradePrice={item.acc_trade_price_24h}
-                tradePrice={item.trade_price}
-                changePrice={item.signed_change_price}
-                changeRate={item.signed_change_rate}
-                change={item.change}
-              />
-            ))
-          ) : (
-            <div className={styles.noresultContainer}>
-              <p className={styles.alertText}>검색결과를 찾을 수 없습니다</p>
-              <p className={`${styles.listHeaderText}`}>
-                다른 검색어로 다시 시도해보세요
-              </p>
-            </div>
-          )}
-        </div>
+        {data.length === 0 ? (
+          <div className={styles.loadingContainer}></div>
+        ) : (
+          <div className={styles.contentsContainer}>
+            {filteredData.length > 0 ? (
+              filteredData.map((item) => (
+                <SearchDialogItem
+                  key={item.code}
+                  market={item.code}
+                  accTradePrice={item.acc_trade_price_24h}
+                  tradePrice={item.trade_price}
+                  changeRate={item.signed_change_rate}
+                />
+              ))
+            ) : (
+              <div className={styles.noresultContainer}>
+                <p className={styles.alertText}>검색결과를 찾을 수 없습니다</p>
+                <p className={`${styles.listHeaderText}`}>
+                  다른 검색어로 다시 시도해보세요
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

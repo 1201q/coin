@@ -10,9 +10,7 @@ export default function Header({ market }: Props) {
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
-        <MarketHeader market={market}>
-          <CoinListServer />
-        </MarketHeader>
+        <MarketHeader market={market} />
       </div>
       <div className={styles.controlContainer}></div>
     </div>

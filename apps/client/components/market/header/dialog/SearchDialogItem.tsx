@@ -13,16 +13,13 @@ interface Props {
   market: string;
   accTradePrice: number;
   tradePrice: number;
-  changePrice: number;
   changeRate: number;
-  change: 'RISE' | 'EVEN' | 'FALL';
 }
 
 const SearchDialogItem = ({
   market,
   accTradePrice,
   tradePrice,
-  changePrice,
   changeRate,
 }: Props) => {
   const code = market.split('-')[1];
@@ -102,4 +99,4 @@ const SearchDialogItem = ({
     </Link>
   );
 };
-export default SearchDialogItem;
+export default React.memo(SearchDialogItem);
