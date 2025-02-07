@@ -17,7 +17,7 @@ export default function MarketHeader({
   return (
     <div className={styles.container}>
       <MarketSearch market={market} />
-      <MarketInfo />
+      <MarketInfo market={market} />
       {isDialogOpen && <>{children}</>}
     </div>
   );
