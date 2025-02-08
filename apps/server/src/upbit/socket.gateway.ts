@@ -100,19 +100,14 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   subscribeTicker(client: Socket) {
     const result = this.subscriptionService.ticker(client);
 
-    if (!result.success) {
-      return {
-        event: "ticker:start",
-        data: { status: "fail", message: result.message },
-      };
-    }
-
     return {
       event: "ticker:start",
       data: {
-        status: "success",
+        status: result.status,
         message: result.message,
-        count: this.marketService.getMarketCount(),
+        ...((result.success || result.status === "already") && {
+          count: this.marketService.getMarketCount(),
+        }),
       },
     };
   }

@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 import {
   convertTickerData,

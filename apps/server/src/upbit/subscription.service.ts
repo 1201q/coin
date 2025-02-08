@@ -18,10 +18,18 @@ export class SubscriptionService {
     private readonly logger: AppLogger,
   ) {}
 
-  ticker(client: Socket): { success: boolean; message: string } {
+  ticker(client: Socket): {
+    success: boolean;
+    message: string;
+    status: string;
+  } {
     if (this.tickerSubscriptions.has(client.id)) {
       this.logger.warn(`이미 ticker를 구독중인 클라이언트: ${client.id}`);
-      return { success: false, message: "이미 ticker를 구독 중입니다." };
+      return {
+        success: false,
+        message: "이미 ticker를 구독 중입니다.",
+        status: "already",
+      };
     }
 
     const subscription = this.upbitWebsocketStreamService.subscribeTickerStream(
@@ -33,7 +41,7 @@ export class SubscriptionService {
     this.tickerSubscriptions.set(client.id, subscription);
     this.logger.log(`ticker 구독: ${client.id}`);
 
-    return { success: true, message: "ticker 구독 성공!" };
+    return { success: true, message: "ticker 구독 성공!", status: "success" };
   }
 
   join(

@@ -6,6 +6,7 @@ import {
   tickerDataAtom,
   tickerSocketStatusAtom,
 } from '@/store/atom';
+
 import { socketService } from '@/utils/websocket';
 import { useAtom, useAtomValue } from 'jotai';
 import { usePathname } from 'next/navigation';
