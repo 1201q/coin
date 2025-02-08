@@ -107,6 +107,7 @@ export default function MarketInfo({ market }: Props) {
           <Skeleton />
         )}
       </div>
+      coin{coin}/ssr-market:{market}
     </div>
   );
 }
