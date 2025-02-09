@@ -1,6 +1,6 @@
 export interface WsResponse {
   message: string;
-  status: 'success' | 'fail';
+  status: 'success' | 'fail' | 'already';
 }
 
 export interface WsTickerResponse extends WsResponse {

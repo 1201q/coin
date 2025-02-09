@@ -6,6 +6,7 @@ import {
   tickerDataAtom,
   tickerSocketStatusAtom,
 } from '@/store/atom';
+// import { realtimeTickersAtom, syncTickersAtom } from '@/store/websocket';
 
 import { socketService } from '@/utils/websocket';
 import { useAtom, useAtomValue } from 'jotai';
@@ -22,6 +23,8 @@ const Status = () => {
 
   const tickerData = useAtomValue(tickerDataAtom, { delay: 0 });
 
+  // const [realtimeTickers] = useAtom(realtimeTickersAtom);
+
   useEffect(() => {
     setCoin(pathname.split('/')[2]);
   }, []);
@@ -29,6 +32,8 @@ const Status = () => {
   // useEffect(() => {
   //   console.log(tickerData);
   // }, [tickerData]);
+
+  // console.log(realtimeTickers);
 
   return (
     <div
