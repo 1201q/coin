@@ -1,6 +1,6 @@
 'use client';
 
-import Status from '@/components/Status';
+import Websocket from '@/components/Websocket';
 import { allMarketAtom } from '@/store/atom';
 
 import { Provider, useAtomValue } from 'jotai';
@@ -14,7 +14,7 @@ export default function JotaiProvider({
 
   return (
     <Provider>
-      <Status />
+      <Websocket />
       {children}
     </Provider>
   );

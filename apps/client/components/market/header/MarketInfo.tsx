@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import styles from './marketinfo.module.css';
-import { useAtom, useAtomValue } from 'jotai';
-import { selectedCoinAtom } from '@/store/atom';
+import { useAtomValue } from 'jotai';
+
 import { acc, comma, plusMark, rate } from '@/utils/formatting';
+import { selectedTickerAtom } from '@/store/websocket';
 
 interface Props {
   market: string;
@@ -14,10 +15,8 @@ const Skeleton = () => {
   return <div className={styles.skeleton}></div>;
 };
 
-export default function MarketInfo({ market }: Props) {
-  const [coin, setCoin] = useAtom(selectedCoinAtom);
-
-  const loading = coin !== market;
+const MarketInfo = ({ market }: Props) => {
+  const selectedTicker = useAtomValue(selectedTickerAtom)(market);
 
   const getColor = (changeRate: number) => {
     if (changeRate > 0) {
@@ -37,15 +36,11 @@ export default function MarketInfo({ market }: Props) {
     return '';
   };
 
-  useEffect(() => {
-    setCoin(market);
-  }, [market, setCoin]);
-
   return (
     <div className={styles.container}>
-      {/* <div className={styles.infoContainer}>
+      <div className={styles.infoContainer}>
         <span className={styles.header}>어제보다</span>
-        {!loading && selectedTicker ? (
+        {selectedTicker ? (
           <div className={styles.textContainer}>
             <span
               className={`${styles.text} ${styles.num} ${leftMargin(selectedTicker.trade_price)} ${getColor(selectedTicker.signed_change_rate)}`}
@@ -65,7 +60,7 @@ export default function MarketInfo({ market }: Props) {
       </div>
       <div className={styles.infoContainer}>
         <span className={styles.header}>거래대금(24H)</span>
-        {!loading && selectedTicker ? (
+        {selectedTicker ? (
           <div className={styles.textContainer}>
             <span
               className={`${styles.text}  ${styles.num} ${leftMargin(selectedTicker.acc_trade_price_24h)}`}
@@ -80,7 +75,7 @@ export default function MarketInfo({ market }: Props) {
       </div>
       <div className={styles.infoContainer}>
         <span className={styles.header}>고가(24H)</span>
-        {!loading && selectedTicker ? (
+        {selectedTicker ? (
           <div className={styles.textContainer}>
             <span
               className={`${styles.text} ${styles.red} ${leftMargin(selectedTicker.high_price)} ${styles.num}`}
@@ -94,7 +89,7 @@ export default function MarketInfo({ market }: Props) {
       </div>
       <div className={styles.infoContainer}>
         <span className={styles.header}>저가(24H)</span>
-        {!loading && selectedTicker ? (
+        {selectedTicker ? (
           <div className={styles.textContainer}>
             <span
               className={`${styles.text} ${leftMargin(selectedTicker.low_price)} ${styles.blue} ${styles.num}`}
@@ -104,10 +99,10 @@ export default function MarketInfo({ market }: Props) {
           </div>
         ) : (
           <Skeleton />
-        )} */}
-      {/*  */}
-      {/* </div>
-      coin{coin}/ssr-market:{market} */}
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default React.memo(MarketInfo);

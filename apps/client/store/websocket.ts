@@ -39,6 +39,12 @@ const fetchTickersAtom = atomWithDefault(async (get) => {
 });
 
 export const tickersAtom = atom<TickerData[]>();
+export const selectedTickerAtom = atom((get) => {
+  const tickers = get(tickersAtom);
+
+  return (code: string) => tickers?.find((ticker) => ticker.code === code);
+});
+
 export const orderbookAtom = atom<Orderbook>();
 export const tradeAtom = atom<Trade>();
 

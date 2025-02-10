@@ -10,7 +10,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
-const Status = () => {
+const Websocket: React.FC = () => {
   const pathname = usePathname();
 
   const [socket, setSocket] = useAtom(initSocketAtom);
@@ -92,4 +92,4 @@ const Status = () => {
   );
 };
 
-export default Status;
+export default Websocket;
