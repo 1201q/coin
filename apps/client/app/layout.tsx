@@ -3,6 +3,7 @@ import './globals.css';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 import localFont from 'next/font/local';
+import Status from '@/components/Status';
 
 const pretendard = localFont({
   src: '../public/fonts/PretendardVariable.woff2',

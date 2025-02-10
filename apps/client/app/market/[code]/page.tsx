@@ -36,9 +36,9 @@ export default async function MarketCodePage(props: Props) {
           </div>
         </div>
       </div>
-      <Suspense>
+      {/* <Suspense>
         <Status />
-      </Suspense>
+      </Suspense> */}
     </div>
   );
 }

@@ -49,6 +49,7 @@ const Status = () => {
         position: 'fixed',
         top: 0,
         right: 0,
+        zIndex: 20000,
       }}
     >
       <div>

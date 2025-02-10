@@ -16,6 +16,22 @@ import {
 } from '@/types/upbit';
 import { atomWithDefault } from 'jotai/utils';
 
+type SocketEvent = 'connect' | 'disconnect';
+type StatusEvent =
+  | 'ticker:success'
+  | 'ticker:fail'
+  | 'join:success'
+  | 'join:fail'
+  | 'leave:success';
+type EmitEvent = 'ticker' | 'ticker:stop' | 'join' | 'leave';
+type MessageEvent = 'ticker' | 'trade' | 'orderbook';
+
+type WebsocketAtomOptions =
+  | { action: 'socket'; event: SocketEvent; socket: Socket }
+  | { action: 'status'; event: StatusEvent; room?: string }
+  | { action: 'emit'; event: EmitEvent; room?: string }
+  | { action: 'message'; event: MessageEvent; data: any };
+
 const fetchTickersAtom = atomWithDefault(async (get) => {
   const res = await fetch('https://api.coingosu.live/upbit/allticker/KRW');
   const data: TickerSnapshot[] = await res.json();
@@ -61,25 +77,9 @@ const tradeHandlerAtom = atom(
   },
 );
 
-type SocketEvent = 'connect' | 'disconnect';
-type StatusEvent =
-  | 'ticker:success'
-  | 'ticker:fail'
-  | 'join:success'
-  | 'join:fail'
-  | 'leave:success';
-type EmitEvent = 'ticker' | 'ticker:stop' | 'join' | 'leave';
-type MessageEvent = 'ticker' | 'trade' | 'orderbook';
-
-type WebsocketAtomOptions =
-  | { action: 'socket'; event: SocketEvent; socket: Socket }
-  | { action: 'status'; event: StatusEvent; room?: string }
-  | { action: 'emit'; event: EmitEvent; room?: string }
-  | { action: 'message'; event: MessageEvent; data: any };
-
-// export function atomWithWebsocket() {
 const socketClientAtom = atom(null as unknown as Socket);
-const socketStatusAtom = atom(false);
+export const socketStatusAtom = atom(false);
+
 export const tickerStatusAtom = atom(false);
 export const joinedRoomAtom = atom<string | null>(null);
 
@@ -89,23 +89,27 @@ export const initSocketAtom = atom(
     if (update.action === 'emit') {
       const socket = get(socketClientAtom);
 
-      switch (update.event) {
-        case 'ticker': {
-          socket.emit('ticker');
-          break;
+      if (socket) {
+        switch (update.event) {
+          case 'ticker': {
+            socket.emit('ticker');
+            break;
+          }
+          case 'ticker:stop': {
+            socket.emit('ticker:stop');
+            break;
+          }
+          case 'leave': {
+            socket.emit('leave');
+            break;
+          }
+          case 'join': {
+            socket.emit('join', update.room);
+            break;
+          }
         }
-        case 'ticker:stop': {
-          socket.emit('ticker:stop');
-          break;
-        }
-        case 'leave': {
-          socket.emit('leave');
-          break;
-        }
-        case 'join': {
-          socket.emit('join', update.room);
-          break;
-        }
+      } else {
+        console.log('no socket!');
       }
     } else if (update.action === 'status') {
       switch (update.event) {
@@ -121,6 +125,7 @@ export const initSocketAtom = atom(
         }
         case 'join:success': {
           if (update.room) {
+            console.log('join', update.room);
             set(joinedRoomAtom, update.room);
           } else {
             set(joinedRoomAtom, null);
@@ -141,11 +146,15 @@ export const initSocketAtom = atom(
       switch (update.event) {
         case 'connect': {
           set(socketClientAtom, update.socket);
+          set(socketStatusAtom, true);
+
           console.log('connect');
           break;
         }
         case 'disconnect': {
           set(socketClientAtom, update.socket);
+          set(socketStatusAtom, false);
+
           console.log('disconnect');
           break;
         }
@@ -235,18 +244,3 @@ initSocketAtom.onMount = (set) => {
     socket.disconnect();
   };
 };
-
-//   return atom(
-//     (get) => ({
-//       client: get(socketClientAtom),
-//       status: {
-//         socket: get(socketStatusAtom),
-//         ticker: get(tickerStatusAtom),
-//         join: get(joinedRoomAtom),
-//       },
-//     }),
-//     (_get, set, update: WebsocketAtomOptions) => set(initSocketAtom, update),
-//   );
-// }
-
-// export const websocketAtom = atomWithWebsocket();
