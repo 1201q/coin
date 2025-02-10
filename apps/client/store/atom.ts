@@ -1,9 +1,7 @@
 import { atom } from 'jotai';
 import { atomWithCache } from 'jotai-cache';
-import { atomWithObservable } from 'jotai/utils';
-import { MarketInfo, TickerData } from '@/types/upbit';
 
-import { Observable } from 'rxjs';
+import { MarketInfo } from '@/types/upbit';
 
 export const allMarketAtom = atomWithCache<Promise<MarketInfo[]>>(
   async (_get) => {

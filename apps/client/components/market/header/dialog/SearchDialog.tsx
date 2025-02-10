@@ -1,21 +1,22 @@
 'use client';
 
-import { TickerData } from '@/types/upbit';
 import styles from './search.dialog.module.css';
 import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { isSearchDialogOpenAtom } from '@/store/ui';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
 import { motion } from 'framer-motion';
+import { tickersAtom } from '@/store/websocket';
 
 const TABS = ['마켓', '즐겨찾기'];
 
 export default function SearchDialog() {
   const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
 
-  const [data, setData] = useState<TickerData[]>([]);
+  const data = useAtomValue(tickersAtom);
+
   const [keyword, setKeyword] = useState('');
   const [selectedTab, setSelectedTab] = useState(TABS[0]);
   const [debouncedKeyword, setDebouncedKeyword] = useState('');
@@ -71,7 +72,7 @@ export default function SearchDialog() {
 
   const filteredData = useMemo(() => {
     const marketSet = new Set(filteredMarkets);
-    return data.filter((item) => marketSet.has(item.code));
+    return data?.filter((item) => marketSet.has(item.code));
   }, [filteredMarkets, data]);
 
   return (
@@ -129,11 +130,11 @@ export default function SearchDialog() {
           </div>
         </div>
         {/* 코인 리스트 */}
-        {data.length === 0 ? (
+        {!data || data.length === 0 ? (
           <div className={styles.loadingContainer}></div>
         ) : (
           <div className={styles.contentsContainer}>
-            {filteredData.length > 0 ? (
+            {filteredData && filteredData.length > 0 ? (
               filteredData.map((item) => (
                 <SearchDialogItem
                   key={item.code}

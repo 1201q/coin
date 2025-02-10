@@ -42,7 +42,7 @@ export const tickersAtom = atom<TickerData[]>();
 export const orderbookAtom = atom<Orderbook>();
 export const tradeAtom = atom<Trade>();
 
-const tickersHandlerAtom = atom(
+export const tickersHandlerAtom = atom(
   (get) => get(tickersAtom),
   async (get, set, update: Ticker) => {
     const initTickers = await get(fetchTickersAtom);
@@ -63,7 +63,7 @@ const tickersHandlerAtom = atom(
   },
 );
 
-const orderbookHandlerAtom = atom(
+export const orderbookHandlerAtom = atom(
   (get) => get(orderbookAtom),
   (_get, set, update: Orderbook) => {
     set(orderbookAtom, update);

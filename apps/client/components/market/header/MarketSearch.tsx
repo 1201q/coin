@@ -5,6 +5,7 @@ import styles from './marketsearch.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { marketAtom } from '@/store/atom';
 import { isSearchDialogOpenAtom } from '@/store/ui';
+import { tickersAtom } from '@/store/websocket';
 
 interface Props {
   market: string;
