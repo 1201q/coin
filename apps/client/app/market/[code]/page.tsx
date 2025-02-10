@@ -2,9 +2,6 @@ import Sidebar from '@/components/common/sidebar/Sidebar';
 import styles from './main.module.css';
 import Header from '@/components/common/header/Header';
 
-import Status from '@/components/Status';
-import { Suspense } from 'react';
-
 interface Props {
   params: Promise<{ code: string }>;
 }

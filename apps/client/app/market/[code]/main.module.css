@@ -10,6 +10,7 @@
 
 .sidebarContainer {
   width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
   height: 100%;
   background-color: white;
   border-right: 1px solid var(--border-main-color);
@@ -25,6 +26,7 @@
 .headerContainer {
   width: 100%;
   height: var(--header-height);
+  min-height: var(--header-height);
   background-color: white;
   border-bottom: 1px solid var(--border-main-color);
 }
