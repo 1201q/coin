@@ -1,9 +1,9 @@
 'use client';
 
 import { allMarketAtom } from '@/store/atom';
-import { socketService } from '@/utils/websocket';
-import { createStore, Provider, useAtomValue } from 'jotai';
-import { Suspense, useEffect } from 'react';
+
+// import { socketService } from '@/utils/websocket';
+import { createStore, Provider, useAtom, useAtomValue } from 'jotai';
 
 export default function JotaiProvider({
   children,
@@ -12,12 +12,6 @@ export default function JotaiProvider({
 }) {
   const data = useAtomValue(allMarketAtom, { delay: 0 });
   // const ws = useAtomValue(initAtom);
-
-  useEffect(() => {
-    console.log('provider');
-
-    socketService.subscirbeTicker();
-  }, []);
 
   return <Provider>{children}</Provider>;
 }

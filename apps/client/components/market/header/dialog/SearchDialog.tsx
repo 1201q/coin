@@ -1,6 +1,6 @@
 'use client';
 
-import { TickerData, TickerSnapshot } from '@/types/upbit';
+import { TickerData } from '@/types/upbit';
 import styles from './search.dialog.module.css';
 import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';
@@ -9,7 +9,6 @@ import { isSearchDialogOpenAtom } from '@/store/ui';
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
 import { motion } from 'framer-motion';
-import { socketService } from '@/utils/websocket';
 
 const TABS = ['마켓', '즐겨찾기'];
 
@@ -35,13 +34,8 @@ export default function SearchDialog() {
   useEffect(() => {
     inputRef.current?.focus();
 
-    const subscription = socketService.getAllTickers().subscribe((stream) => {
-      setData(stream);
-    });
-
     document.addEventListener('mousedown', handleBackgroundClick);
     return () => {
-      subscription.unsubscribe();
       document.removeEventListener('mousedown', handleBackgroundClick);
     };
   }, []);

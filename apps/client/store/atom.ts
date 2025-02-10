@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { atomWithCache } from 'jotai-cache';
 import { atomWithObservable } from 'jotai/utils';
 import { MarketInfo, TickerData } from '@/types/upbit';
-import { socketService } from '@/utils/websocket';
+
 import { Observable } from 'rxjs';
 
 export const allMarketAtom = atomWithCache<Promise<MarketInfo[]>>(
@@ -20,17 +20,4 @@ export const marketAtom = atom(async (get) => {
     markets.find((item) => item.market === marketCode);
 });
 
-export const tickerSocketStatusAtom = atomWithObservable(() =>
-  socketService.getTickerStatus(),
-);
-
-export const joinedRoomAtom = atomWithObservable(() =>
-  socketService.getJoinedRoom(),
-);
-
 export const selectedCoinAtom = atom<string>('');
-
-export const tickerDataAtom = atomWithObservable((get) => {
-  const code = get(selectedCoinAtom);
-  return socketService.getTicker(code);
-});

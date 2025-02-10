@@ -3,6 +3,7 @@ import styles from './main.module.css';
 import Header from '@/components/common/header/Header';
 
 import Status from '@/components/Status';
+import { Suspense } from 'react';
 
 interface Props {
   params: Promise<{ code: string }>;
@@ -35,8 +36,9 @@ export default async function MarketCodePage(props: Props) {
           </div>
         </div>
       </div>
-
-      <Status />
+      <Suspense>
+        <Status />
+      </Suspense>
     </div>
   );
 }

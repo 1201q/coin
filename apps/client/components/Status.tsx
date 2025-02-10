@@ -1,39 +1,44 @@
 'use client';
 
+import { selectedCoinAtom } from '@/store/atom';
 import {
   joinedRoomAtom,
-  selectedCoinAtom,
-  tickerDataAtom,
-  tickerSocketStatusAtom,
-} from '@/store/atom';
-// import { realtimeTickersAtom, syncTickersAtom } from '@/store/websocket';
+  initSocketAtom,
+  tickerStatusAtom,
+  tickersAtom,
+  orderbookAtom,
+} from '@/store/websocket';
 
-import { socketService } from '@/utils/websocket';
 import { useAtom, useAtomValue } from 'jotai';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const Status = () => {
   const pathname = usePathname();
-  const ticker = useAtomValue(tickerSocketStatusAtom, { delay: 0 });
-  const room = useAtomValue(joinedRoomAtom, { delay: 0 });
+  const ticker = useAtomValue(tickerStatusAtom);
+  const room = useAtomValue(joinedRoomAtom);
   const [value, setValue] = useState('');
 
   const [coin, setCoin] = useAtom(selectedCoinAtom);
 
-  const tickerData = useAtomValue(tickerDataAtom, { delay: 0 });
+  const tickerData = useAtomValue(tickersAtom);
+  const orderbookData = useAtomValue(orderbookAtom);
 
-  // const [realtimeTickers] = useAtom(realtimeTickersAtom);
+  const [client, setClient] = useAtom(initSocketAtom);
 
   useEffect(() => {
     setCoin(pathname.split('/')[2]);
   }, []);
 
-  // useEffect(() => {
-  //   console.log(tickerData);
-  // }, [tickerData]);
+  useEffect(() => {
+    if (tickerData) {
+      console.log(tickerData[0].timestamp);
+    }
+  }, [tickerData]);
 
-  // console.log(realtimeTickers);
+  useEffect(() => {
+    orderbookData && console.log(orderbookData);
+  }, [orderbookData]);
 
   return (
     <div
@@ -62,7 +67,7 @@ const Status = () => {
         />
         <button
           onClick={() => {
-            socketService.subscirbeTicker();
+            setClient({ action: 'emit', event: 'ticker' });
           }}
         >
           ticker 클릭
@@ -70,14 +75,14 @@ const Status = () => {
 
         <button
           onClick={() => {
-            socketService.unsubscirbeTicker();
+            setClient({ action: 'emit', event: 'ticker:stop' });
           }}
         >
           ticker 중단
         </button>
         <button
           onClick={() => {
-            socketService.joinRoom(value);
+            setClient({ action: 'emit', event: 'join', room: value });
           }}
         >
           join
@@ -85,7 +90,7 @@ const Status = () => {
 
         <button
           onClick={() => {
-            socketService.leaveRoom();
+            setClient({ action: 'emit', event: 'leave' });
           }}
         >
           leave

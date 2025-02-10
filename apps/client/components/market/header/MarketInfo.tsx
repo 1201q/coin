@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import styles from './marketinfo.module.css';
 import { useAtom, useAtomValue } from 'jotai';
-import { selectedCoinAtom, tickerDataAtom } from '@/store/atom';
+import { selectedCoinAtom } from '@/store/atom';
 import { acc, comma, plusMark, rate } from '@/utils/formatting';
 
 interface Props {
@@ -16,7 +16,6 @@ const Skeleton = () => {
 
 export default function MarketInfo({ market }: Props) {
   const [coin, setCoin] = useAtom(selectedCoinAtom);
-  const selectedTicker = useAtomValue(tickerDataAtom);
 
   const loading = coin !== market;
 
@@ -44,7 +43,7 @@ export default function MarketInfo({ market }: Props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.infoContainer}>
+      {/* <div className={styles.infoContainer}>
         <span className={styles.header}>어제보다</span>
         {!loading && selectedTicker ? (
           <div className={styles.textContainer}>
@@ -105,9 +104,10 @@ export default function MarketInfo({ market }: Props) {
           </div>
         ) : (
           <Skeleton />
-        )}
-      </div>
-      coin{coin}/ssr-market:{market}
+        )} */}
+      {/*  */}
+      {/* </div>
+      coin{coin}/ssr-market:{market} */}
     </div>
   );
 }

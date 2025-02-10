@@ -10,19 +10,42 @@ import {
   convertTickerData,
   Orderbook,
   Ticker,
+  TickerData,
   TickerSnapshot,
   Trade,
 } from '@/types/upbit';
 import { atomWithDefault } from 'jotai/utils';
 
-export const asyncTickersAtom = atomWithDefault(async (get) => {
+const fetchTickersAtom = atomWithDefault(async (get) => {
   const res = await fetch('https://api.coingosu.live/upbit/allticker/KRW');
   const data: TickerSnapshot[] = await res.json();
   return data.map((item) => convertTickerData(item));
 });
 
-const orderbookAtom = atom<Orderbook>();
-const tradeAtom = atom<Trade>();
+export const tickersAtom = atom<TickerData[]>();
+export const orderbookAtom = atom<Orderbook>();
+export const tradeAtom = atom<Trade>();
+
+const tickersHandlerAtom = atom(
+  (get) => get(tickersAtom),
+  async (get, set, update: Ticker) => {
+    const initTickers = await get(fetchTickersAtom);
+    const prevTickers = get(tickersAtom);
+
+    if (!prevTickers || prevTickers.length === 0) {
+      set(tickersAtom, initTickers);
+    } else {
+      const newTickers = prevTickers.map((item) => {
+        if (item.code === update.code) {
+          return update;
+        }
+        return item;
+      });
+
+      set(tickersAtom, newTickers);
+    }
+  },
+);
 
 const orderbookHandlerAtom = atom(
   (get) => get(orderbookAtom),
@@ -54,168 +77,176 @@ type WebsocketAtomOptions =
   | { action: 'emit'; event: EmitEvent; room?: string }
   | { action: 'message'; event: MessageEvent; data: any };
 
-export function atomWithWebsocket() {
-  const socketClientAtom = atom(null as unknown as Socket);
-  const socketStatusAtom = atom(false);
-  const tickerStatusAtom = atom(false);
-  const joinedRoomAtom = atom<string | null>(null);
+// export function atomWithWebsocket() {
+const socketClientAtom = atom(null as unknown as Socket);
+const socketStatusAtom = atom(false);
+export const tickerStatusAtom = atom(false);
+export const joinedRoomAtom = atom<string | null>(null);
 
-  const initSocketAtom = atom(
-    (get) => get(socketClientAtom),
-    (get, set, update: WebsocketAtomOptions) => {
-      if (update.action === 'emit') {
-        const socket = get(socketClientAtom);
+export const initSocketAtom = atom(
+  (get) => get(socketClientAtom),
+  (get, set, update: WebsocketAtomOptions) => {
+    if (update.action === 'emit') {
+      const socket = get(socketClientAtom);
 
-        switch (update.event) {
-          case 'ticker': {
-            socket.emit('ticker');
-            break;
-          }
-          case 'ticker:stop': {
-            socket.emit('ticker:stop');
-            break;
-          }
-          case 'leave': {
-            socket.emit('leave');
-            break;
-          }
-          case 'join': {
-            socket.emit('join', update.room);
-            break;
-          }
+      switch (update.event) {
+        case 'ticker': {
+          socket.emit('ticker');
+          break;
         }
-      } else if (update.action === 'status') {
-        switch (update.event) {
-          case 'ticker:success': {
-            set(tickerStatusAtom, true);
-            break;
-          }
-          case 'ticker:fail': {
-            set(tickerStatusAtom, false);
-            break;
-          }
-          case 'join:success': {
-            if (update.room) {
-              set(joinedRoomAtom, update.room);
-            } else {
-              set(joinedRoomAtom, null);
-            }
-            break;
-          }
-          case 'join:fail': {
-            set(joinedRoomAtom, null);
-            break;
-          }
-          case 'leave:success': {
-            set(joinedRoomAtom, null);
-            break;
-          }
+        case 'ticker:stop': {
+          socket.emit('ticker:stop');
+          break;
         }
-      } else if (update.action === 'socket') {
-        switch (update.event) {
-          case 'connect': {
-            set(socketClientAtom, update.socket);
-            break;
-          }
-          case 'disconnect': {
-            set(socketClientAtom, update.socket);
-            break;
-          }
+        case 'leave': {
+          socket.emit('leave');
+          break;
         }
-      } else if (update.action === 'message') {
-        switch (update.event) {
-          case 'orderbook': {
-            set(orderbookHandlerAtom, update.data);
-            break;
-          }
-          case 'trade': {
-            set(tradeHandlerAtom, update.data);
-            break;
-          }
+        case 'join': {
+          socket.emit('join', update.room);
+          break;
         }
       }
-    },
+    } else if (update.action === 'status') {
+      switch (update.event) {
+        case 'ticker:success': {
+          set(tickerStatusAtom, true);
+          console.log('ticker:success');
+          break;
+        }
+        case 'ticker:fail': {
+          set(tickerStatusAtom, false);
+          console.log('ticker:fail');
+          break;
+        }
+        case 'join:success': {
+          if (update.room) {
+            set(joinedRoomAtom, update.room);
+          } else {
+            set(joinedRoomAtom, null);
+          }
+          break;
+        }
+        case 'join:fail': {
+          set(joinedRoomAtom, null);
+          break;
+        }
+        case 'leave:success': {
+          console.log('leave:success');
+          set(joinedRoomAtom, null);
+          break;
+        }
+      }
+    } else if (update.action === 'socket') {
+      switch (update.event) {
+        case 'connect': {
+          set(socketClientAtom, update.socket);
+          console.log('connect');
+          break;
+        }
+        case 'disconnect': {
+          set(socketClientAtom, update.socket);
+          console.log('disconnect');
+          break;
+        }
+      }
+    } else if (update.action === 'message') {
+      switch (update.event) {
+        case 'orderbook': {
+          set(orderbookHandlerAtom, update.data);
+          break;
+        }
+        case 'trade': {
+          set(tradeHandlerAtom, update.data);
+          break;
+        }
+        case 'ticker': {
+          set(tickersHandlerAtom, update.data);
+          break;
+        }
+      }
+    }
+  },
+);
+
+initSocketAtom.onMount = (set) => {
+  const socket = io('https://api.coingosu.live/ws', {
+    transports: ['websocket'],
+  });
+
+  // 연결
+  socket.on('connect', () => {
+    set({ action: 'socket', event: 'connect', socket: socket });
+  });
+
+  socket.on('disconnect', () =>
+    set({ action: 'socket', event: 'disconnect', socket: socket }),
   );
 
-  initSocketAtom.onMount = (set) => {
-    const socket = io('https://api.coingosu.live/ws', {
-      transports: ['websocket'],
-    });
+  // ticker 수신 성공 여부
+  socket.on('ticker:start', (msg: WsTickerResponse) => {
+    if (msg.status === 'success') {
+      set({ action: 'status', event: 'ticker:success' });
+    } else if (msg.status !== 'already') {
+      set({ action: 'status', event: 'ticker:fail' });
+    }
+  });
 
-    // 연결
-    socket.on('connect', () =>
-      set({ action: 'socket', event: 'connect', socket: socket }),
-    );
+  // ticker 중지 여부
+  socket.on('ticker:stop', (msg: WsResponse) => {
+    if (msg.status === 'success') {
+      set({ action: 'status', event: 'ticker:fail' });
+    }
+  });
 
-    socket.on('disconnect', () =>
-      set({ action: 'socket', event: 'disconnect', socket: socket }),
-    );
+  // join 데이터 수신 여부
+  socket.on('join', (msg: WsJoinResponse) => {
+    if (msg.status === 'success') {
+      set({ action: 'status', event: 'join:success', room: msg.submitCode });
+    } else if (msg.status === 'fail') {
+      set({ action: 'status', event: 'join:fail' });
+    }
+  });
 
-    // ticker 수신 성공 여부
-    socket.on('ticker:start', (msg: WsTickerResponse) => {
-      if (msg.status === 'success') {
-        set({ action: 'status', event: 'ticker:success' });
-      } else if (msg.status !== 'already') {
-        set({ action: 'status', event: 'ticker:fail' });
-      }
-    });
+  // join room에서 나감 여부
+  socket.on('leave', (msg: WsLeaveResponse) => {
+    if (msg.status === 'success') {
+      set({ action: 'status', event: 'leave:success' });
+    }
+  });
 
-    // ticker 중지 여부
-    socket.on('ticker:stop', (msg: WsResponse) => {
-      if (msg.status === 'success') {
-        set({ action: 'status', event: 'ticker:fail' });
-      }
-    });
+  // ticker 데이터 수신
+  socket.on('ticker', (msg: Ticker) => {
+    set({ action: 'message', event: 'ticker', data: msg });
+  });
 
-    // join 데이터 수신 여부
-    socket.on('join', (msg: WsJoinResponse) => {
-      if (msg.status === 'success') {
-        set({ action: 'status', event: 'join:success', room: msg.submitCode });
-      } else if (msg.status === 'fail') {
-        set({ action: 'status', event: 'join:fail' });
-      }
-    });
+  socket.on('trade', (msg: Trade) => {
+    set({ action: 'message', event: 'trade', data: msg });
+  });
 
-    // join room에서 나감 여부
-    socket.on('leave', (msg: WsLeaveResponse) => {
-      if (msg.status === 'success') {
-        set({ action: 'status', event: 'leave:success' });
-      }
-    });
+  socket.on('orderbook', (msg: any) => {
+    set({ action: 'message', event: 'orderbook', data: msg });
+  });
 
-    // ticker 데이터 수신
-    socket.on('ticker', (msg: Ticker) => {
-      console.log(msg);
-      set({ action: 'message', event: 'ticker', data: msg });
-    });
+  return () => {
+    set({ action: 'status', event: 'leave:success' });
+    set({ action: 'status', event: 'ticker:fail' });
 
-    socket.on('trade', (msg: Trade) => {
-      console.log(msg);
-      set({ action: 'message', event: 'trade', data: msg });
-    });
-
-    socket.on('orderbook', (msg: any) => {
-      console.log(msg);
-      set({ action: 'message', event: 'orderbook', data: msg });
-    });
-
-    return () => {
-      socket.disconnect();
-    };
+    socket.disconnect();
   };
+};
 
-  return atom(
-    (get) => ({
-      client: get(socketClientAtom),
-      status: {
-        socket: get(socketStatusAtom),
-        ticker: get(tickerStatusAtom),
-        join: get(joinedRoomAtom),
-      },
-    }),
-    (_get, set, update: WebsocketAtomOptions) => set(initSocketAtom, update),
-  );
-}
+//   return atom(
+//     (get) => ({
+//       client: get(socketClientAtom),
+//       status: {
+//         socket: get(socketStatusAtom),
+//         ticker: get(tickerStatusAtom),
+//         join: get(joinedRoomAtom),
+//       },
+//     }),
+//     (_get, set, update: WebsocketAtomOptions) => set(initSocketAtom, update),
+//   );
+// }
 
-const [value, set] = useAtom(atomWithWebsocket());
-set({ action: 'emit', event: 'ticker' });
+// export const websocketAtom = atomWithWebsocket();
