@@ -11,6 +11,8 @@ export class UpbitWebsocketStreamService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor(private readonly logger: AppLogger) {}
+
+  private isShuttingDown = false;
   private sockets = new Map<SocketType, WebSocket>();
   private streams = {
     ticker: new Subject<Ticker>(),
@@ -23,6 +25,7 @@ export class UpbitWebsocketStreamService
   }
 
   onModuleDestroy() {
+    this.isShuttingDown = true;
     this.sockets.forEach((socket, type) => {
       socket.close();
       this.logger.log(`웹소켓 종료: ${type}`);
@@ -68,14 +71,19 @@ export class UpbitWebsocketStreamService
       this.processMessage(type, data.toString(), onMessage),
     );
 
-    socket.on("close", () => {
-      this.logger.warn(`⚠️ 소켓 닫힘: ${type}`);
+    socket.on("close", (code, reason) => {
+      this.logger.warn(
+        `⚠️ 소켓 닫힘: ${type} (code: ${code}, reason: ${reason.toString()})`,
+      );
+
       this.sockets.delete(type);
 
-      setTimeout(() => {
-        this.logger.log(`⏳ 소켓 연결 재시도: ${type}`);
-        this.createUpbitSocket(type, onMessage);
-      }, 5000);
+      if (!this.isShuttingDown) {
+        setTimeout(() => {
+          this.logger.log(`⏳ 소켓 연결 재시도: ${type}`);
+          this.createUpbitSocket(type, onMessage);
+        }, 5000);
+      }
     });
 
     socket.on("error", (error) => {

@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -9,6 +9,8 @@ services:
       - "8000"
     networks:
       - app-network
+    environment:
+      TZ: "Asia/Seoul"
 
   nginx:
     image: nginx:latest
@@ -25,7 +27,9 @@ services:
       - app
     networks:
       - app-network
+    environment:
+      TZ: "Asia/Seoul"
+
 networks:
   app-network:
     driver: bridge
-
