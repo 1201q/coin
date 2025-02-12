@@ -35,14 +35,22 @@ type WebsocketAtomOptions =
 const fetchTickersAtom = atomWithDefault(async (get) => {
   const res = await fetch('https://api.coingosu.live/upbit/allticker/KRW');
   const data: TickerSnapshot[] = await res.json();
-  return data.map((item) => convertTickerData(item));
+
+  const tickerMap = new Map<string, TickerData>();
+  data.forEach((item) => {
+    const convertedItem = convertTickerData(item);
+    tickerMap.set(convertedItem.code, convertedItem);
+  });
+
+  return tickerMap;
 });
 
-export const tickersAtom = atom<TickerData[]>();
+export const tickersAtom = atom<Map<string, TickerData>>();
+
 export const selectedTickerAtom = atom((get) => {
   const tickers = get(tickersAtom);
 
-  return (code: string) => tickers?.find((ticker) => ticker.code === code);
+  return (code: string) => tickers?.get(code);
 });
 
 export const orderbookAtom = atom<Orderbook>();
@@ -54,16 +62,20 @@ export const tickersHandlerAtom = atom(
     const initTickers = await get(fetchTickersAtom);
     const prevTickers = get(tickersAtom);
 
-    if (!prevTickers || prevTickers.length === 0) {
+    if (!prevTickers || prevTickers.size === 0) {
       set(tickersAtom, initTickers);
     } else {
-      const newTickers = prevTickers.map((item) => {
-        if (item.code === update.code) {
-          return update;
-        }
-        return item;
-      });
+      // const newTickers = prevTickers.map((item) => {
+      //   if (item.code === update.code) {
+      //     return update;
+      //   }
+      //   return item;
+      // });
 
+      // set(tickersAtom, newTickers);
+
+      const newTickers = new Map(prevTickers);
+      newTickers.set(update.code, update);
       set(tickersAtom, newTickers);
     }
   },

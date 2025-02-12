@@ -9,6 +9,7 @@ import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
 import { motion } from 'framer-motion';
 import { tickersAtom } from '@/store/websocket';
+import { TickerData } from '@/types/upbit';
 
 const TABS = ['마켓', '즐겨찾기'];
 
@@ -71,8 +72,18 @@ export default function SearchDialog() {
   }, [debouncedKeyword, markets]);
 
   const filteredData = useMemo(() => {
+    if (!data) return new Map();
+
     const marketSet = new Set(filteredMarkets);
-    return data?.filter((item) => marketSet.has(item.code));
+    const filteredMap = new Map<string, TickerData>();
+
+    for (const [key, value] of data.entries()) {
+      if (marketSet.has(key)) {
+        filteredMap.set(key, value);
+      }
+    }
+
+    return filteredMap;
   }, [filteredMarkets, data]);
 
   return (
@@ -130,12 +141,12 @@ export default function SearchDialog() {
           </div>
         </div>
         {/* 코인 리스트 */}
-        {!data || data.length === 0 ? (
+        {!data || data.size === 0 ? (
           <div className={styles.loadingContainer}></div>
         ) : (
           <div className={styles.contentsContainer}>
-            {filteredData && filteredData.length > 0 ? (
-              filteredData.map((item) => (
+            {filteredData && filteredData.size > 0 ? (
+              Array.from(filteredData.values()).map((item) => (
                 <SearchDialogItem
                   key={item.code}
                   market={item.code}
