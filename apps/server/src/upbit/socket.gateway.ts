@@ -1,12 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
-  WsException,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 
@@ -25,12 +23,19 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly subscriptionService: SubscriptionService,
   ) {}
 
+  private clientCount = 0;
+
   handleConnection(client: Socket) {
-    console.log(client.id);
-    this.logger.log(`클라이언트 연결: ${client.id}`);
+    this.clientCount++;
+    this.logger.log(
+      `클라이언트 연결: ${client.id} (현재: ${this.clientCount}명)`,
+    );
   }
   handleDisconnect(client: Socket) {
-    this.logger.log(`클라이언트 해제: ${client.id}`);
+    this.clientCount = Math.max(0, this.clientCount - 1);
+    this.logger.log(
+      `클라이언트 해제: ${client.id} (현재: ${this.clientCount}명)`,
+    );
     this.subscriptionService.leaveJoinedRoom(client);
   }
 

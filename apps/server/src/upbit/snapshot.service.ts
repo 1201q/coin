@@ -1,5 +1,5 @@
 import { HttpService } from "@nestjs/axios";
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { MarketType, Orderbook, TickerSnapshot } from "./types/upbit.entity";
 import { firstValueFrom, map } from "rxjs";
 

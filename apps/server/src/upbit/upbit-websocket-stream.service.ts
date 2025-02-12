@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-  OnModuleInit,
-} from "@nestjs/common";
+import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { BehaviorSubject, Subject } from "rxjs";
 import * as WebSocket from "ws";
 import { Orderbook, Ticker, Trade } from "./types/upbit.entity";
@@ -75,6 +70,12 @@ export class UpbitWebsocketStreamService
 
     socket.on("close", () => {
       this.logger.warn(`⚠️ 소켓 닫힘: ${type}`);
+      this.sockets.delete(type);
+
+      setTimeout(() => {
+        this.logger.log(`⏳ 소켓 연결 재시도: ${type}`);
+        this.createUpbitSocket(type, onMessage);
+      }, 5000);
     });
 
     socket.on("error", (error) => {
