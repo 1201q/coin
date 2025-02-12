@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Subscription } from "rxjs";
 import { Socket } from "socket.io";
 import { UpbitWebsocketStreamService } from "./upbit-websocket-stream.service";

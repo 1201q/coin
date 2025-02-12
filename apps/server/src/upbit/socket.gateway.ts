@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -7,7 +7,7 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-
+import { AppLogger } from "src/logger.service";
 import { UpbitMarketUpdaterService } from "./upbit-market-updater.service";
 import { SubscriptionService } from "./subscription.service";
 
@@ -16,11 +16,11 @@ import { SubscriptionService } from "./subscription.service";
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
-  private readonly logger = new Logger(SocketGateway.name);
 
   constructor(
     private readonly marketService: UpbitMarketUpdaterService,
     private readonly subscriptionService: SubscriptionService,
+    private readonly logger: AppLogger,
   ) {}
 
   private clientCount = 0;
