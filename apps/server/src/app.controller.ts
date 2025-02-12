@@ -4,6 +4,6 @@ import { Controller, Get } from "@nestjs/common";
 export class AppController {
   @Get()
   getHello(): string {
-    return "개발중";
+    return "멀티 스테이지 빌드";
   }
 }
