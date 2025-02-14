@@ -1,6 +1,7 @@
 .container {
   flex: 1;
   position: relative;
+  overflow: scroll;
 }
 
 /* 리스트 헤더 */

@@ -14,12 +14,11 @@ async function getTrade(code: string) {
 
 export default async function TradeServer({ code }: { code: string }) {
   const data = await getTrade(code);
-
   const convertData = data.map((item) => convertTradeData(item));
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <TradeClient data={convertData} />
+      <TradeClient data={convertData} code={code} />
     </Suspense>
   );
 }

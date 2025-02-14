@@ -48,24 +48,8 @@ const fetchTickersAtom = atomWithDefault(async (get) => {
   return tickerMap;
 });
 
-// const fetchTradeAtom = atom(async (get) => {
-//   const code = get(joinedRoomAtom);
-
-//   if (!code) {
-//     return Promise.resolve([]);
-//   }
-
-//   const res = await fetch(
-//     `https://api.coingosu.live/upbit/trade?market=${code}`,
-//   );
-//   const data: TradeSnapshot[] = await res.json();
-
-//   console.log(data);
-
-//   return data.map((item) => convertTradeData(item));
-// });
-
-export const tradeDataAtom = atom<TradeData[]>([]);
+export const tradeAtom = atom<TradeData[]>([]);
+export const hydratedTradeAtom = atom<TradeData[]>([]);
 
 export const tickersAtom = atom<Map<string, TickerData>>();
 
@@ -76,7 +60,6 @@ export const selectedTickerAtom = atom((get) => {
 });
 
 export const orderbookAtom = atom<Orderbook>();
-export const tradeAtom = atom<TradeData[]>();
 
 export const tickersHandlerAtom = atom(
   (get) => get(tickersAtom),
@@ -112,8 +95,21 @@ export const orderbookHandlerAtom = atom(
 
 export const tradeHandlerAtom = atom(
   (get) => get(tradeAtom),
-  async (get, set, update: Trade) => {
-    set(tradeAtom, []);
+  (get, set, update: Trade) => {
+    const prev = get(tradeAtom);
+
+    if (
+      prev.findIndex((item) => item.sequential_id === update.sequential_id) !==
+      -1
+    )
+      return;
+
+    const newArray = [convertTradeData(update), ...prev];
+
+    const slicedArray =
+      newArray.length > 200 ? newArray.slice(0, 200) : newArray;
+
+    set(tradeAtom, slicedArray);
   },
 );
 

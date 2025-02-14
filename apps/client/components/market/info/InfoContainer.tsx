@@ -4,6 +4,7 @@ import Tab from '@/components/common/tab/Tab';
 import { useState } from 'react';
 
 import styles from './info.module.css';
+import { Provider } from 'jotai';
 
 interface Props {
   orderbook?: React.ReactNode;
