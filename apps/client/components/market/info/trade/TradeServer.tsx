@@ -1,8 +1,11 @@
-import { TradeSnapshot } from '@/types/upbit';
+import { convertTradeData, TradeSnapshot } from '@/types/upbit';
+import TradeClient from './TradeClient';
+import { Suspense } from 'react';
 
 async function getTrade(code: string) {
   const res = await fetch(
     `https://api.coingosu.live/upbit/trade?market=${code}`,
+    { cache: 'no-cache' },
   );
   const data: TradeSnapshot[] = await res.json();
 
@@ -12,18 +15,11 @@ async function getTrade(code: string) {
 export default async function TradeServer({ code }: { code: string }) {
   const data = await getTrade(code);
 
-  console.log(data);
+  const convertData = data.map((item) => convertTradeData(item));
 
   return (
-    <div>
-      {data.map((item) => (
-        <div key={`${item.timestamp}-${item.sequential_id}`}>
-          <div>1</div>
-          <div>{item.timestamp}</div>
-          <div>1</div>
-          <div>1</div>
-        </div>
-      ))}
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <TradeClient data={convertData} />
+    </Suspense>
   );
 }

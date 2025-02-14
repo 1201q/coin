@@ -183,6 +183,42 @@ export interface Trade {
   stream_type: 'SNAPSHOT' | 'REALTIME'; // 스트림 타입 (SNAPSHOT: 스냅샷, REALTIME: 실시간)
 }
 
+export type TradeData = {
+  code: string;
+  timestamp: number;
+  sequential_id: number;
+  trade_price: number;
+  trade_volume: number;
+  prev_closing_price: number;
+  ask_bid: 'ASK' | 'BID';
+};
+
+export const convertTradeData = (data: Trade | TradeSnapshot): TradeData => {
+  if ('code' in data) {
+    // Trade
+    return {
+      code: data.code,
+      timestamp: data.timestamp,
+      sequential_id: data.sequential_id,
+      trade_price: data.trade_price,
+      trade_volume: data.trade_volume,
+      prev_closing_price: data.prev_closing_price,
+      ask_bid: data.ask_bid,
+    };
+  } else {
+    // TradeSnapshot
+    return {
+      code: data.market,
+      timestamp: data.timestamp,
+      sequential_id: data.sequential_id,
+      trade_price: data.trade_price,
+      trade_volume: data.trade_volume,
+      prev_closing_price: data.prev_closing_price,
+      ask_bid: data.ask_bid,
+    };
+  }
+};
+
 export interface Orderbook {
   market?: string;
   type: string; // 호가 타입 (orderbook : 호가)

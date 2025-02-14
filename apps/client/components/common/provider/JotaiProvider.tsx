@@ -1,8 +1,7 @@
 'use client';
 
-import Websocket from '@/components/Websocket';
+import Websocket from '@/components/common/provider/Websocket';
 import { allMarketAtom } from '@/store/atom';
-
 import { Provider, useAtomValue } from 'jotai';
 
 export default function JotaiProvider({

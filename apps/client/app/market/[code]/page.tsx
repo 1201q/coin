@@ -29,8 +29,8 @@ export default async function MarketCodePage(props: Props) {
                 <div className={styles.chartContainer}>2</div>
                 <div className={styles.orderbookContainer}>
                   <InfoContainer
-                    orderbook={<OrderbookServer code={code} />}
                     trade={<TradeServer code={code} />}
+                    code={code}
                   />
                 </div>
               </div>

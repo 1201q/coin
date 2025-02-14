@@ -29,6 +29,10 @@
   padding-right: 2px;
 }
 
+.loadingContainer {
+  width: 80px;
+}
+
 .textContainer p {
   font-size: 15px;
   font-weight: 700;

@@ -8,7 +8,7 @@ import { isSearchDialogOpenAtom } from '@/store/ui';
 import SearchDialog from './dialog/SearchDialog';
 
 export default function MarketHeader({ market }: { market: string }) {
-  const isDialogOpen = useAtomValue(isSearchDialogOpenAtom);
+  const isDialogOpen = useAtomValue(isSearchDialogOpenAtom, { delay: 0 });
   return (
     <div className={styles.container}>
       <MarketSearch market={market} />

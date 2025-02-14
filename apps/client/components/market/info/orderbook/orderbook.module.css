@@ -1,0 +1,99 @@
+.container {
+  flex: 1;
+  position: relative;
+}
+
+/* 리스트 헤더 */
+.listHeaderContainer {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: flex-end;
+  height: 28px;
+  width: 100%;
+  padding: 0px 9px;
+  gap: 5px;
+  background-color: white;
+}
+
+.listHeaderBox {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.listHeaderText {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--font-gray-color);
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 0px 5px 0px;
+}
+
+/* item */
+.itemContainer {
+  display: flex;
+  padding: 0px 9px;
+  gap: 5px;
+  height: 21px;
+}
+
+.itemBox {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+
+.timeText {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--font-gray-color);
+  letter-spacing: -0.3px;
+}
+
+.numberText {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+}
+
+.left {
+  flex: 1;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.center {
+  flex: 1.5;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.red {
+  color: var(--main-red-color);
+}
+
+.blue {
+  color: var(--main-blue-color);
+}
+
+.equal {
+  color: var(--font-gray-color);
+}

@@ -8,11 +8,14 @@ import {
 } from '@/types/res';
 import {
   convertTickerData,
+  convertTradeData,
   Orderbook,
   Ticker,
   TickerData,
   TickerSnapshot,
   Trade,
+  TradeData,
+  TradeSnapshot,
 } from '@/types/upbit';
 import { atomWithDefault } from 'jotai/utils';
 
@@ -45,6 +48,25 @@ const fetchTickersAtom = atomWithDefault(async (get) => {
   return tickerMap;
 });
 
+// const fetchTradeAtom = atom(async (get) => {
+//   const code = get(joinedRoomAtom);
+
+//   if (!code) {
+//     return Promise.resolve([]);
+//   }
+
+//   const res = await fetch(
+//     `https://api.coingosu.live/upbit/trade?market=${code}`,
+//   );
+//   const data: TradeSnapshot[] = await res.json();
+
+//   console.log(data);
+
+//   return data.map((item) => convertTradeData(item));
+// });
+
+export const tradeDataAtom = atom<TradeData[]>([]);
+
 export const tickersAtom = atom<Map<string, TickerData>>();
 
 export const selectedTickerAtom = atom((get) => {
@@ -54,7 +76,7 @@ export const selectedTickerAtom = atom((get) => {
 });
 
 export const orderbookAtom = atom<Orderbook>();
-export const tradeAtom = atom<Trade>();
+export const tradeAtom = atom<TradeData[]>();
 
 export const tickersHandlerAtom = atom(
   (get) => get(tickersAtom),
@@ -88,10 +110,10 @@ export const orderbookHandlerAtom = atom(
   },
 );
 
-const tradeHandlerAtom = atom(
+export const tradeHandlerAtom = atom(
   (get) => get(tradeAtom),
-  (_get, set, update: Trade) => {
-    set(tradeAtom, update);
+  async (get, set, update: Trade) => {
+    set(tradeAtom, []);
   },
 );
 

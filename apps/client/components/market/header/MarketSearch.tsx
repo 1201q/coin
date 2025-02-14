@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import styles from './marketsearch.module.css';
 import { useAtom, useAtomValue } from 'jotai';
-import { marketAtom } from '@/store/atom';
+import { loadableMarketAtom } from '@/store/atom';
 import { isSearchDialogOpenAtom } from '@/store/ui';
 
 interface Props {
@@ -12,7 +12,8 @@ interface Props {
 
 export default function MarketSearch({ market }: Props) {
   const code = market.split('-')[1];
-  const getMarket = useAtomValue(marketAtom);
+
+  const getMarket = useAtomValue(loadableMarketAtom);
   const [isDialogOpen, setIsDialogOpen] = useAtom(isSearchDialogOpenAtom);
 
   return (
@@ -34,11 +35,18 @@ export default function MarketSearch({ market }: Props) {
             quality={100}
           />
         </div>
-        <div className={styles.textContainer}>
-          <span className={styles.korea}>{getMarket(market)?.korean_name}</span>
-          <span className={styles.slash}>/</span>
-          <span className={styles.code}>{code}</span>
-        </div>
+        {getMarket.state === 'loading' ? (
+          <div className={styles.loadingContainer}></div>
+        ) : (
+          <div className={styles.textContainer}>
+            <span className={styles.korea}>
+              {getMarket.state === 'hasData' &&
+                getMarket.data(market)?.korean_name}
+            </span>
+            <span className={styles.slash}>/</span>
+            <span className={styles.code}>{code}</span>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ const Websocket: React.FC = () => {
   const pathname = usePathname();
 
   const [socket, setSocket] = useAtom(initSocketAtom);
+
   const tickerStatus = useAtomValue(tickerStatusAtom);
   const room = useAtomValue(joinedRoomAtom);
 

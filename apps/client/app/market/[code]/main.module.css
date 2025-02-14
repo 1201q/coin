@@ -21,6 +21,7 @@
   flex-direction: column;
   flex: 1;
   height: 100%;
+  overflow-y: scroll;
 }
 
 .headerContainer {
@@ -38,17 +39,14 @@
 
 .flexContainer {
   display: flex;
-
+  flex: 1;
   height: 100%;
-  background-color: bisque;
 }
 
 .leftContainer {
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100%;
-  background-color: white;
 }
 
 .rightContainer {
@@ -62,6 +60,7 @@
   display: flex;
   flex: 1;
   height: 100%;
+  max-height: 70dvh;
 }
 
 .chartContainer {
