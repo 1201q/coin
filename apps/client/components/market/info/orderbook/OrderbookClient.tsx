@@ -1,18 +1,22 @@
 'use client';
 
-import { joinedRoomAtom, orderbookAtom } from '@/store/websocket';
-import { Orderbook, OrderbookUnit } from '@/types/upbit';
+import { orderbookAtom, selectedTickerAtom } from '@/store/websocket';
+import { OrderbookUnit } from '@/types/upbit';
 import { useAtomValue } from 'jotai';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import styles from './orderbook.module.css';
+import OrderbookItem from './OrderbookItem';
 
-export default function OrderbookClient({ data }: { data: Orderbook }) {
+export default function OrderbookClient({ code }: { code: string }) {
   const newOrderbook = useAtomValue(orderbookAtom);
-  const room = useAtomValue(joinedRoomAtom);
+  const selectedTicker = useAtomValue(selectedTickerAtom)(code);
 
-  // useEffect(() => {
-  //   console.log(room);
-  // }, [room]);
+  const prevPrice = useMemo(
+    () => selectedTicker?.prev_closing_price,
+    [selectedTicker?.prev_closing_price],
+  );
+
+  const loading = newOrderbook?.code !== code;
 
   const formatOrderbookArray = (units: OrderbookUnit[]) => {
     const asks = units
@@ -52,7 +56,18 @@ export default function OrderbookClient({ data }: { data: Orderbook }) {
           <span className={styles.listHeaderText}></span>
         </div>
       </div>
-      <div className={styles.listContainer}></div>
+      <div className={styles.listContainer}>
+        {prevPrice &&
+          orderbookList.map((item, index) => (
+            <OrderbookItem
+              index={index}
+              key={item.price}
+              price={item.price}
+              size={item.size}
+              prevPrice={prevPrice}
+            />
+          ))}
+      </div>
     </div>
   );
 }

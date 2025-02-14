@@ -1,6 +1,7 @@
 .container {
   flex: 1;
   position: relative;
+  overflow: scroll;
 }
 
 /* 리스트 헤더 */
@@ -9,9 +10,9 @@
   top: 0;
   display: flex;
   align-items: flex-end;
-  height: 28px;
+  height: 32px;
   width: 100%;
-  padding: 0px 9px;
+  padding: 0px 12px;
   gap: 5px;
   background-color: white;
 }
@@ -28,41 +29,14 @@
   font-size: 12px;
   font-weight: 400;
   color: var(--font-gray-color);
+  margin-top: 3px;
 }
 
 .listContainer {
   display: flex;
   flex-direction: column;
-  padding: 0px 0px 5px 0px;
-}
 
-/* item */
-.itemContainer {
-  display: flex;
-  padding: 0px 9px;
-  gap: 5px;
-  height: 21px;
-}
-
-.itemBox {
-  flex: 1;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.timeText {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--font-gray-color);
-  letter-spacing: -0.3px;
-}
-
-.numberText {
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: -0.5px;
+  padding: 0px 12px;
 }
 
 .left {
@@ -80,20 +54,4 @@
 .right {
   justify-content: flex-end;
   text-align: right;
-}
-
-.bold {
-  font-weight: 600;
-}
-
-.red {
-  color: var(--main-red-color);
-}
-
-.blue {
-  color: var(--main-blue-color);
-}
-
-.equal {
-  color: var(--font-gray-color);
 }

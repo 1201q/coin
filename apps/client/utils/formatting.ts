@@ -40,6 +40,14 @@ export const signedComma = (tradePrice: number, target: number) => {
     : comma(tradePrice, absValue);
 };
 
+export const orderbook = (value: number, target: number) => {
+  if (value < 10) {
+    return Number(target.toFixed()).toLocaleString();
+  } else {
+    return target.toFixed(3);
+  }
+};
+
 export const plusMark = (changeRate: number) => {
-  return changeRate > 0 ? '+' : '';
+  return changeRate > 0 ? '+' : ' ';
 };

@@ -13,5 +13,5 @@ async function getOrderbook(code: string) {
 export default async function OrderbookServer({ code }: { code: string }) {
   const data = await getOrderbook(code);
 
-  return <OrderbookClient data={data} />;
+  return <OrderbookClient code={code} />;
 }

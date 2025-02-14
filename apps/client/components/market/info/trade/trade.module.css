@@ -10,9 +10,9 @@
   top: 0;
   display: flex;
   align-items: flex-end;
-  height: 28px;
+  height: 32px;
   width: 100%;
-  padding: 0px 9px;
+  padding: 0px 12px;
   gap: 5px;
   background-color: white;
   /* border-bottom: 1px solid var(--border-main-color); */
@@ -30,6 +30,7 @@
   font-size: 12px;
   font-weight: 400;
   color: var(--font-gray-color);
+  margin-top: 3px;
 }
 
 .listContainer {
@@ -41,9 +42,9 @@
 /* item */
 .itemContainer {
   display: flex;
-  padding: 0px 9px;
+  padding: 0px 12px;
   gap: 5px;
-  height: 21px;
+  height: 28px;
 }
 
 .itemBox {
