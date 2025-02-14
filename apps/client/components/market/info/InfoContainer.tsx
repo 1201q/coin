@@ -4,7 +4,6 @@ import Tab from '@/components/common/tab/Tab';
 import { useState } from 'react';
 
 import styles from './info.module.css';
-import { Provider } from 'jotai';
 
 interface Props {
   orderbook?: React.ReactNode;
@@ -14,7 +13,7 @@ interface Props {
 
 export default function InfoContainer({ trade, code }: Props) {
   const tabs = ['호가', '거래내역'];
-  const [selectedTab, setSelectedTab] = useState(tabs[1]);
+  const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
   return (
     <div className={styles.container}>

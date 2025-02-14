@@ -26,7 +26,10 @@ export default function TradeClient({
   const [tradeData, setTradeData] = useAtom(tradeAtom);
 
   useEffect(() => {
-    if (tradeData.length === 0 || tradeData[0].code !== hydratedData[0].code) {
+    if (
+      tradeData.length <= 10 ||
+      tradeData[tradeData.length - 1].code !== code
+    ) {
       setTradeData(hydratedData);
     }
   }, [hydratedData, tradeData, setTradeData]);
