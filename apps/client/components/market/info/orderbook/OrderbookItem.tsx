@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './orderbook.item.module.css';
 import { comma, orderbook, plusMark, rate } from '@/utils/formatting';
 
@@ -52,4 +53,4 @@ const OrderbookItem = ({ price, size, prevPrice, index }: Props) => {
   );
 };
 
-export default OrderbookItem;
+export default React.memo(OrderbookItem);

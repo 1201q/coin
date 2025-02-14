@@ -99,15 +99,18 @@ export const tradeHandlerAtom = atom(
     const prev = get(tradeAtom);
 
     if (
-      prev.findIndex((item) => item.sequential_id === update.sequential_id) !==
-      -1
+      prev.findIndex(
+        (item) =>
+          item.ask_bid === update.ask_bid &&
+          item.sequential_id === update.sequential_id &&
+          item.trade_volume === item.trade_volume,
+      ) !== -1
     )
       return;
 
     const newArray = [convertTradeData(update), ...prev];
 
-    const slicedArray =
-      newArray.length > 200 ? newArray.slice(0, 200) : newArray;
+    const slicedArray = newArray.length > 70 ? newArray.slice(0, 70) : newArray;
 
     set(tradeAtom, slicedArray);
   },

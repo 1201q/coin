@@ -6,8 +6,9 @@ import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import styles from './orderbook.module.css';
 import OrderbookItem from './OrderbookItem';
+import React from 'react';
 
-export default function OrderbookClient({ code }: { code: string }) {
+export const OrderbookClient = ({ code }: { code: string }) => {
   const newOrderbook = useAtomValue(orderbookAtom);
   const selectedTicker = useAtomValue(selectedTickerAtom)(code);
 
@@ -70,4 +71,5 @@ export default function OrderbookClient({ code }: { code: string }) {
       </div>
     </div>
   );
-}
+};
+export default React.memo(OrderbookClient);

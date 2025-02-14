@@ -1,23 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { TradeData } from '@/types/upbit';
 import styles from './trade.module.css';
 
 import { useAtom, useAtomValue } from 'jotai';
 import { hydratedTradeAtom, tradeAtom } from '@/store/websocket';
 
-import { comma } from '@/utils/formatting';
-import dayjs from 'dayjs';
 import { useHydrateAtoms } from 'jotai/utils';
+import TradeItem from './TradeItem';
 
-export default function TradeClient({
-  data,
-  code,
-}: {
-  data: TradeData[];
-  code: string;
-}) {
+const TradeClient = ({ data, code }: { data: TradeData[]; code: string }) => {
   useHydrateAtoms([[hydratedTradeAtom, data]], {
     dangerouslyForceHydrate: true,
   });
@@ -34,24 +27,6 @@ export default function TradeClient({
     }
   }, [hydratedData, tradeData, setTradeData]);
 
-  const getColor = (signedChangePrice: number) => {
-    if (signedChangePrice > 0) {
-      return styles.red;
-    } else if (signedChangePrice < 0) {
-      return styles.blue;
-    } else {
-      return styles.equal;
-    }
-  };
-
-  const getAskBidColor = (askBid: 'ASK' | 'BID') => {
-    if (askBid === 'ASK') {
-      return styles.blue;
-    } else {
-      return styles.red;
-    }
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.listHeaderContainer}>
@@ -66,36 +41,19 @@ export default function TradeClient({
         </div>
       </div>
       <div className={styles.listContainer}>
-        {tradeData?.map((item, index) => (
-          <div
-            className={styles.itemContainer}
-            key={`${item.timestamp}-${index}`}
-          >
-            <div className={`${styles.itemBox} ${styles.left} `}>
-              <span
-                className={`${styles.numberText} ${getColor(item.trade_price - item.prev_closing_price)}`}
-              >
-                {comma(item.trade_price, item.trade_price)}
-              </span>
-            </div>
-            <div className={`${styles.itemBox} ${styles.center} `}>
-              <span
-                className={`${styles.numberText} ${getAskBidColor(item.ask_bid)} `}
-              >
-                {/* {Number(
-                  (item.trade_volume * item.trade_price).toFixed(),
-                ).toLocaleString()} */}
-                {item.trade_volume.toFixed(6)}
-              </span>
-            </div>
-            <div className={`${styles.itemBox}  ${styles.right} `}>
-              <span className={`${styles.timeText}`}>
-                {dayjs(item.timestamp).format('HH:mm:ss')}
-              </span>
-            </div>
-          </div>
-        ))}
+        {tradeData[tradeData.length - 1].code === code &&
+          tradeData?.map((item) => (
+            <TradeItem
+              key={`${code}/${item.sequential_id}/${item.trade_volume}`}
+              price={item.trade_price}
+              volume={item.trade_volume}
+              timestamp={item.timestamp}
+              prevPrice={item.prev_closing_price}
+              askbid={item.ask_bid}
+            />
+          ))}
       </div>
     </div>
   );
-}
+};
+export default TradeClient;

@@ -14,7 +14,17 @@ async function getTrade(code: string) {
 
 export default async function TradeServer({ code }: { code: string }) {
   const data = await getTrade(code);
-  const convertData = data.map((item) => convertTradeData(item));
+  const uniqueData = data.filter(
+    (item, index, self) =>
+      index ===
+      self.findIndex(
+        (d) =>
+          d.ask_bid === item.ask_bid &&
+          d.sequential_id === item.sequential_id &&
+          d.trade_volume === item.trade_volume,
+      ),
+  );
+  const convertData = uniqueData.map((item) => convertTradeData(item));
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
