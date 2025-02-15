@@ -2,7 +2,7 @@
 .itemContainer {
   display: flex;
   gap: 5px;
-  height: 28px;
+  height: 22px;
 }
 
 .itemBox {
