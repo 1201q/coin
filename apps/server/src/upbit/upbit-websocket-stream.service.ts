@@ -20,6 +20,8 @@ export class UpbitWebsocketStreamService
     trade: new Map<string, BehaviorSubject<Trade>>(),
   };
 
+  private currentMarketCodes: string[] = [];
+
   onModuleInit() {
     this.initSockets();
   }
@@ -65,6 +67,10 @@ export class UpbitWebsocketStreamService
 
     socket.on("open", () => {
       this.logger.log(`⏳ 소켓 생성: ${type}`);
+
+      if (this.currentMarketCodes.length > 0) {
+        this.subscribeToUpbit(type, this.currentMarketCodes);
+      }
     });
 
     socket.on("message", (data) =>
@@ -154,6 +160,7 @@ export class UpbitWebsocketStreamService
   // 마켓 리스트에 변경 일어나면 해당 변경사항을 업비트 웹소켓 서버에 전달
   // market 서비스가 호출
   updateMarketCodes(newMarketCodes: string[]) {
+    this.currentMarketCodes = newMarketCodes;
     this.logger.log(`🔄🔄 소켓 서비스에서 마켓 업데이트를 호출`);
     this.checkAllSocketsOpen().then(() => {
       this.sockets.forEach((_, type) => {
