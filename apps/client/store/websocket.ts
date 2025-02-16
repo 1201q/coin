@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai';
+import { atom } from 'jotai';
 import { io, Socket } from 'socket.io-client';
 import {
   WsJoinResponse,
@@ -15,7 +15,6 @@ import {
   TickerSnapshot,
   Trade,
   TradeData,
-  TradeSnapshot,
 } from '@/types/upbit';
 import { atomWithDefault } from 'jotai/utils';
 

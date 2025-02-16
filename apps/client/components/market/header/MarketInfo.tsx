@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './marketinfo.module.css';
-import { useAtomValue } from 'jotai';
 
 import { acc, comma, plusMark, rate } from '@/utils/formatting';
-import { selectedTickerAtom } from '@/store/websocket';
+import { useCoin } from '@/store/utils';
 
 interface Props {
   market: string;
@@ -16,7 +15,7 @@ const Skeleton = () => {
 };
 
 const MarketInfo = ({ market }: Props) => {
-  const selectedTicker = useAtomValue(selectedTickerAtom)(market);
+  const selectedTicker = useCoin(market);
 
   const getColor = (changeRate: number) => {
     if (changeRate > 0) {
