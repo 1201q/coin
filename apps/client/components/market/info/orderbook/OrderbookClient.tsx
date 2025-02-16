@@ -1,12 +1,14 @@
 'use client';
 
 import { orderbookAtom, selectedTickerAtom } from '@/store/websocket';
-import { Orderbook, OrderbookUnit } from '@/types/upbit';
+import { Orderbook } from '@/types/upbit';
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import styles from './orderbook.module.css';
-import OrderbookItem from './OrderbookItem';
+
 import React from 'react';
+
+import OrderbookRow from './OrderbookRow';
 
 export const OrderbookClient = ({ code }: { code: string }) => {
   const newOrderbook = useAtomValue(orderbookAtom);
@@ -56,7 +58,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.listHeaderContainer}>
+      {/* <div className={styles.listHeaderContainer}>
         <div className={`${styles.listHeaderBox} ${styles.left}`}>
           <span className={`${styles.listHeaderText}`}>호가</span>
         </div>
@@ -64,19 +66,40 @@ export const OrderbookClient = ({ code }: { code: string }) => {
         <div className={`${styles.listHeaderBox} ${styles.right}`}>
           <span className={styles.listHeaderText}>수량</span>
         </div>
-      </div>
+      </div> */}
       <div className={styles.listContainer}>
-        {prevPrice &&
-          orderbookList.map((item, index) => (
-            <OrderbookItem
-              index={index}
-              key={item.price}
-              price={item.price}
-              size={item.size}
-              prevPrice={prevPrice}
-              width={item.width}
-            />
-          ))}
+        <div className={styles.sellContainer}>
+          {prevPrice &&
+            orderbookList
+              .slice(0, 14)
+              .map((item) => (
+                <OrderbookRow
+                  type={'sell'}
+                  key={item.price}
+                  price={item.price}
+                  size={item.size}
+                  prevPrice={prevPrice}
+                  width={item.width}
+                />
+              ))}
+        </div>
+        <div className={styles.infoContainer}></div>
+        <div className={styles.centerContainer}></div>
+        <div className={styles.buyContainer}>
+          {prevPrice &&
+            orderbookList
+              .slice(14, 30)
+              .map((item) => (
+                <OrderbookRow
+                  type={'buy'}
+                  key={item.price}
+                  price={item.price}
+                  size={item.size}
+                  prevPrice={prevPrice}
+                  width={item.width}
+                />
+              ))}
+        </div>
       </div>
     </div>
   );

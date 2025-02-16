@@ -34,10 +34,40 @@
 }
 
 .listContainer {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 3fr 3.5fr 3fr;
+  grid-template-areas:
+    'sell sell info'
+    'center center center'
+    'info2 buy buy';
+  grid-auto-rows: auto;
+  overflow-anchor: none;
+}
 
-  padding: 0px 0px 5px 0px;
+.sellContainer {
+  display: grid;
+  grid-template-columns: 3fr 3.5fr;
+  grid-area: sell;
+  align-items: flex-end;
+}
+
+.infoContainer {
+  grid-area: info;
+}
+
+.centerContainer {
+  grid-area: center;
+  align-items: center;
+  height: 2px;
+  background-color: var(--border-main2-color);
+  margin: 0px 12px;
+}
+
+.buyContainer {
+  display: grid;
+  grid-template-columns: 3.5fr 3fr;
+  grid-area: buy;
+  align-items: flex-start;
 }
 
 .left {

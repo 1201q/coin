@@ -1,0 +1,97 @@
+.centerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 36px;
+  border-right: 1px solid var(--border-main2-color);
+  border-left: 1px solid var(--border-main2-color);
+}
+
+.sellContainer {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: flex-end;
+  height: 36px;
+
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buyContainer {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  height: 36px;
+
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.priceText {
+  height: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.percentText {
+  height: 100%;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+
+.sizeText {
+  font-size: 11px;
+}
+
+.left {
+  text-align: left;
+  padding-left: 7px;
+}
+
+.right {
+  text-align: right;
+  padding-right: 7px;
+}
+
+.red {
+  color: var(--main-red-color);
+}
+
+.blue {
+  color: var(--main-blue-color);
+}
+
+.equal {
+  color: var(--font-gray-color);
+}
+
+.bar {
+  position: absolute;
+  width: 95%;
+  height: 22px;
+
+  will-change: transform;
+  transition: transform 0.2s linear;
+}
+
+.bluebar {
+  right: 0;
+  background-color: var(--bg-blue-color);
+  transform-origin: right center;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.redbar {
+  left: 0;
+  background-color: var(--bg-red-color);
+  transform-origin: left center;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}

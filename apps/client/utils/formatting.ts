@@ -44,7 +44,9 @@ export const orderbook = (value: number, target: number) => {
   if (value < 10) {
     return Number(target.toFixed()).toLocaleString();
   } else {
-    return target.toFixed(3);
+    const fixed = target.toFixed(3);
+    const [front, back] = fixed.split('.');
+    return `${Number(front).toLocaleString()}.${back}`;
   }
 };
 
