@@ -1,7 +1,7 @@
 'use client';
 
 import { orderbookAtom, selectedTickerAtom } from '@/store/websocket';
-import { OrderbookUnit } from '@/types/upbit';
+import { Orderbook, OrderbookUnit } from '@/types/upbit';
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import styles from './orderbook.module.css';
@@ -19,30 +19,40 @@ export const OrderbookClient = ({ code }: { code: string }) => {
 
   const loading = newOrderbook?.code !== code;
 
-  const formatOrderbookArray = (units: OrderbookUnit[]) => {
-    const asks = units
+  const formatOrderbookArray = (data: Orderbook) => {
+    const total = data.total_ask_size + data.total_bid_size;
+
+    const asks = data.orderbook_units
       .map(({ ask_price, ask_size }) => ({ price: ask_price, size: ask_size }))
       .sort((a, b) => b.price - a.price);
 
-    const bids = units
+    const bids = data.orderbook_units
       .map(({ bid_price, bid_size }) => ({ price: bid_price, size: bid_size }))
       .sort((a, b) => a.price - b.price);
 
-    return Array.from({ length: 30 }, (_, i) => {
+    const orderbook = Array.from({ length: 30 }, (_, i) => {
       if (i < 15) {
-        return { price: asks[i]?.price, size: asks[i]?.size };
+        return asks[i] || { price: 0, size: 0 };
       } else {
-        const index = 29 - i;
-        return { price: bids[index]?.price, size: bids[index]?.size };
+        const bidIndex = 29 - i;
+        return bids[bidIndex] || { price: 0, size: 0 };
       }
     });
+
+    const widths = orderbook.map((item) => (item.size / total) * 700);
+    const maxOver100 = Math.max(...widths.filter((w) => w > 100), 0);
+    const scalingValue = maxOver100 > 0 ? 100 / maxOver100 : 1;
+
+    return orderbook.map((item, index) => ({
+      price: item.price,
+      size: item.size,
+      width: Number(((widths[index] * scalingValue) / 100).toFixed(3)) || 0,
+    }));
   };
 
   const orderbookList = useMemo(() => {
-    return newOrderbook?.orderbook_units
-      ? formatOrderbookArray(newOrderbook?.orderbook_units)
-      : [];
-  }, [newOrderbook?.orderbook_units]);
+    return newOrderbook ? formatOrderbookArray(newOrderbook) : [];
+  }, [newOrderbook]);
 
   return (
     <div className={styles.container}>
@@ -50,11 +60,9 @@ export const OrderbookClient = ({ code }: { code: string }) => {
         <div className={`${styles.listHeaderBox} ${styles.left}`}>
           <span className={`${styles.listHeaderText}`}>호가</span>
         </div>
-        <div className={`${styles.listHeaderBox} ${styles.center}`}>
-          <span className={styles.listHeaderText}>수량</span>
-        </div>
+
         <div className={`${styles.listHeaderBox} ${styles.right}`}>
-          <span className={styles.listHeaderText}></span>
+          <span className={styles.listHeaderText}>수량</span>
         </div>
       </div>
       <div className={styles.listContainer}>
@@ -66,6 +74,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
               price={item.price}
               size={item.size}
               prevPrice={prevPrice}
+              width={item.width}
             />
           ))}
       </div>
