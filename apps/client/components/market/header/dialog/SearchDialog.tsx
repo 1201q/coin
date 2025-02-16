@@ -86,6 +86,8 @@ export default function SearchDialog() {
     return filteredMap;
   }, [filteredMarkets, data]);
 
+  const dataArary = Array.from(filteredData.values());
+
   return (
     <div className={styles.container} ref={bgRef}>
       <div className={styles.dialogContainer}>
@@ -146,7 +148,7 @@ export default function SearchDialog() {
         ) : (
           <div className={styles.contentsContainer}>
             {filteredData && filteredData.size > 0 ? (
-              Array.from(filteredData.values()).map((item) => (
+              dataArary.map((item) => (
                 <SearchDialogItem
                   key={item.code}
                   market={item.code}

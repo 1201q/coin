@@ -1,6 +1,6 @@
 'use client';
 
-import { rate, acc, comma, signedComma, plusMark } from '@/utils/formatting';
+import { rate, acc, comma, plusMark } from '@/utils/formatting';
 import styles from './search.dialog.item.module.css';
 import Image from 'next/image';
 import React from 'react';
