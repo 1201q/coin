@@ -19,7 +19,6 @@ const nextConfig: NextConfig = {
   },
   images: {
     minimumCacheTTL: 86400,
-
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; img-src 'self' data: https:;",
     remotePatterns: [
