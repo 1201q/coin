@@ -51,7 +51,10 @@ const SearchDialogItem = ({
             src={`https://static.upbit.com/logos/${code}.png`}
             width={19}
             height={19}
-            alt="logo"
+            alt={`${code}-logo`}
+            style={{ width: 19, height: 19 }}
+            placeholder="blur"
+            blurDataURL="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBAB  bWyZJf74GZgAAAABJRU5ErkJggg=="
           />
         </div>
         <div className={styles.flex}>

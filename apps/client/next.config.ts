@@ -18,7 +18,17 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ['static.upbit.com'],
+    minimumCacheTTL: 86400,
+
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; img-src 'self' data: https:;",
+    remotePatterns: [
+      { protocol: 'http', hostname: 'localhost' },
+      {
+        protocol: 'https',
+        hostname: 'static.upbit.com',
+      },
+    ],
   },
   logging: {
     fetches: {
