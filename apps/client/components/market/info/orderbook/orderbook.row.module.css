@@ -5,6 +5,7 @@
   height: 36px;
   border-right: 1px solid var(--border-main2-color);
   border-left: 1px solid var(--border-main2-color);
+  padding: 5px 0px;
 }
 
 .sellContainer {
@@ -13,7 +14,7 @@
   align-items: center;
   justify-content: flex-end;
   height: 36px;
-
+  padding: 5px 0px;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -25,7 +26,7 @@
   align-items: center;
   justify-content: flex-start;
   height: 36px;
-
+  padding: 5px 0px;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
