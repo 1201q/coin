@@ -86,7 +86,7 @@ const CenterComponent = ({ price, prevPrice, code }: SellBuyProps) => {
         <span className={`${styles.priceText} ${getColor(calc)}`}>
           {comma(price, price)}
         </span>
-        <span className={`${styles.percentText} `}>
+        <span className={`${styles.percentText}`}>
           {plusMark(calc)}
           {rate(calc)}%
         </span>

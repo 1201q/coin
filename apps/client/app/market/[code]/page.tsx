@@ -1,10 +1,7 @@
 import Sidebar from '@/components/common/sidebar/Sidebar';
 import styles from './main.module.css';
 import Header from '@/components/common/header/Header';
-import InfoContainer from '@/components/market/info/InfoContainer';
-
-import OrderbookServer from '@/components/market/info/orderbook/OrderbookServer';
-import TradeServer from '@/components/market/info/trade/TradeServer';
+import InfoServer from '@/components/market/info/InfoServer';
 
 interface Props {
   params: Promise<{ code: string }>;
@@ -28,10 +25,7 @@ export default async function MarketCodePage(props: Props) {
               <div className={styles.centerContainer}>
                 <div className={styles.chartContainer}>2</div>
                 <div className={styles.orderbookContainer}>
-                  <InfoContainer
-                    trade={<TradeServer code={code} />}
-                    code={code}
-                  />
+                  <InfoServer code={code} />
                 </div>
               </div>
               <div className={styles.bottomContainer}>3123</div>

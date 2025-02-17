@@ -1,31 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { TradeData } from '@/types/upbit';
+import React from 'react';
 import styles from './trade.module.css';
-
-import { useAtom, useAtomValue } from 'jotai';
-import { hydratedTradeAtom, tradeAtom } from '@/store/websocket';
-
-import { useHydrateAtoms } from 'jotai/utils';
+import { useAtomValue } from 'jotai';
+import { tradeAtom } from '@/store/websocket';
 import TradeItem from './TradeItem';
 
-const TradeClient = ({ data, code }: { data: TradeData[]; code: string }) => {
-  useHydrateAtoms([[hydratedTradeAtom, data]], {
-    dangerouslyForceHydrate: true,
-  });
-
-  const hydratedData = useAtomValue(hydratedTradeAtom, { delay: 0 });
-  const [tradeData, setTradeData] = useAtom(tradeAtom);
-
-  useEffect(() => {
-    if (
-      tradeData.length <= 10 ||
-      tradeData[tradeData.length - 1].code !== code
-    ) {
-      setTradeData(hydratedData);
-    }
-  }, [hydratedData, tradeData, setTradeData]);
+const TradeClient = ({ code }: { code: string }) => {
+  const tradeData = useAtomValue(tradeAtom);
 
   return (
     <div className={styles.container}>

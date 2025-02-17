@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
 import styles from './orderbook.info.module.css';
 
 import React from 'react';
 
 import { useCoin } from '@/store/utils';
-import { acc, comma, orderbook } from '@/utils/formatting';
+import { acc, comma } from '@/utils/formatting';
 
 const OrderbookInfo = ({ code }: { code: string }) => {
   const data = useCoin(code);

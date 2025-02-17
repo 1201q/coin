@@ -1,6 +1,6 @@
 import { convertTradeData, TradeSnapshot } from '@/types/upbit';
-import TradeClient from './TradeClient';
 import { Suspense } from 'react';
+import InfoClient from './InfoClient';
 
 async function getTrade(code: string) {
   const res = await fetch(
@@ -12,7 +12,7 @@ async function getTrade(code: string) {
   return data;
 }
 
-export default async function TradeServer({ code }: { code: string }) {
+export default async function InfoServer({ code }: { code: string }) {
   const data = await getTrade(code);
   const uniqueData = data.filter(
     (item, index, self) =>
@@ -28,7 +28,7 @@ export default async function TradeServer({ code }: { code: string }) {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <TradeClient data={convertData} code={code} />
+      <InfoClient data={convertData} code={code} />
     </Suspense>
   );
 }

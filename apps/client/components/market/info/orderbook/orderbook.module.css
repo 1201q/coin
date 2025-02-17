@@ -39,7 +39,7 @@
   grid-template-areas:
     'sell sell info'
     'center center center'
-    'info2 buy buy';
+    'trade buy buy';
   grid-auto-rows: auto;
   overflow-anchor: none;
 }
@@ -53,6 +53,10 @@
 
 .infoContainer {
   grid-area: info;
+}
+
+.tradeContainer {
+  grid-area: trade;
 }
 
 .centerContainer {

@@ -87,6 +87,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
           {prevPrice && orderbookList && <OrderbookInfo code={code} />}
         </div>
         <div className={styles.centerContainer}></div>
+        <div className={styles.tradeContainer}></div>
         <div className={styles.buyContainer}>
           {prevPrice &&
             orderbookList
