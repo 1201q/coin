@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './orderbook.row.module.css';
 import { comma, orderbook, plusMark, rate } from '@/utils/formatting';
+import { useCoin } from '@/store/utils';
 
 type Type = 'buy' | 'sell';
 
@@ -10,6 +11,7 @@ interface Props {
   prevPrice: number;
   type: Type;
   width: number;
+  code: string;
 }
 
 interface CenterProps {
@@ -22,7 +24,7 @@ interface CenterProps {
 
 interface SellBuyProps {
   price: number;
-
+  code: string;
   prevPrice: number;
 }
 
@@ -62,8 +64,10 @@ const SellBuyComponent = ({ type, width, price, size }: CenterProps) => {
   );
 };
 
-const CenterComponent = ({ price, prevPrice }: SellBuyProps) => {
+const CenterComponent = ({ price, prevPrice, code }: SellBuyProps) => {
   const calc = (price - prevPrice) / prevPrice;
+  const data = useCoin(code);
+
   const getColor = (calc: number) => {
     if (calc > 0) {
       return styles.red;
@@ -75,19 +79,23 @@ const CenterComponent = ({ price, prevPrice }: SellBuyProps) => {
   };
 
   return (
-    <div className={styles.centerContainer}>
-      <span className={`${styles.priceText} ${getColor(calc)}`}>
-        {comma(price, price)}
-      </span>
-      <span className={`${styles.percentText} `}>
-        {plusMark(calc)}
-        {rate(calc)}%
-      </span>
+    <div className={`${styles.centerContainer}`}>
+      <div
+        className={`${styles.currentPriceContainer} ${price === data?.trade_price && styles.currentPrice}`}
+      >
+        <span className={`${styles.priceText} ${getColor(calc)}`}>
+          {comma(price, price)}
+        </span>
+        <span className={`${styles.percentText} `}>
+          {plusMark(calc)}
+          {rate(calc)}%
+        </span>
+      </div>
     </div>
   );
 };
 
-const OrderbookRow = ({ price, prevPrice, type, width, size }: Props) => {
+const OrderbookRow = ({ price, prevPrice, type, width, size, code }: Props) => {
   return (
     <>
       {type === 'sell' ? (
@@ -98,11 +106,11 @@ const OrderbookRow = ({ price, prevPrice, type, width, size }: Props) => {
             type={type}
             width={width}
           />
-          <CenterComponent price={price} prevPrice={prevPrice} />
+          <CenterComponent price={price} prevPrice={prevPrice} code={code} />
         </>
       ) : (
         <>
-          <CenterComponent price={price} prevPrice={prevPrice} />
+          <CenterComponent price={price} prevPrice={prevPrice} code={code} />
           <SellBuyComponent
             price={price}
             size={size}

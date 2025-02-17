@@ -20,8 +20,6 @@ export const OrderbookClient = ({ code }: { code: string }) => {
     [selectedTicker?.prev_closing_price],
   );
 
-  const loading = newOrderbook?.code !== code;
-
   const formatOrderbookArray = (data: Orderbook) => {
     const total = data.total_ask_size + data.total_bid_size;
 
@@ -81,6 +79,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
                   size={item.size}
                   prevPrice={prevPrice}
                   width={item.width}
+                  code={code}
                 />
               ))}
         </div>
@@ -100,6 +99,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
                   size={item.size}
                   prevPrice={prevPrice}
                   width={item.width}
+                  code={code}
                 />
               ))}
         </div>
