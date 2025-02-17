@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 7px;
+  row-gap: 7px;
+}
+
+.itemContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.priceText {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+}
+
+.sizeText {
+  text-align: right;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+
+.red {
+  color: var(--main-red-color);
+}
+
+.blue {
+  color: var(--main-blue-color);
+}
+
+.equal {
+  color: var(--font-darkgray-color);
+}

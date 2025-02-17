@@ -10,6 +10,7 @@ import React from 'react';
 
 import OrderbookRow from './OrderbookRow';
 import OrderbookInfo from './OrderbookInfo';
+import OrderbookTrade from './OrderbookTrade';
 
 export const OrderbookClient = ({ code }: { code: string }) => {
   const newOrderbook = useAtomValue(orderbookAtom);
@@ -87,7 +88,9 @@ export const OrderbookClient = ({ code }: { code: string }) => {
           {prevPrice && orderbookList && <OrderbookInfo code={code} />}
         </div>
         <div className={styles.centerContainer}></div>
-        <div className={styles.tradeContainer}></div>
+        <div className={styles.tradeContainer}>
+          {prevPrice && orderbookList && <OrderbookTrade code={code} />}
+        </div>
         <div className={styles.buyContainer}>
           {prevPrice &&
             orderbookList
