@@ -47,6 +47,8 @@ export type TickerData = {
   acc_trade_price_24h: number; // 24시간 누적 거래대금
   timestamp: number; // 데이터 생성 타임스탬프 (milliseconds)
   prev_closing_price: number;
+  highest_52_week_price: number;
+  lowest_52_week_price: number;
 };
 
 export const convertTickerData = (
@@ -67,6 +69,8 @@ export const convertTickerData = (
       acc_trade_price_24h: data.acc_trade_price_24h,
       timestamp: data.timestamp,
       prev_closing_price: data.prev_closing_price,
+      highest_52_week_price: data.highest_52_week_price,
+      lowest_52_week_price: data.lowest_52_week_price,
     };
   } else {
     // tickersnapshot market => code
@@ -83,6 +87,8 @@ export const convertTickerData = (
       acc_trade_price_24h: data.acc_trade_price_24h,
       timestamp: data.timestamp,
       prev_closing_price: data.prev_closing_price,
+      highest_52_week_price: data.highest_52_week_price,
+      lowest_52_week_price: data.lowest_52_week_price,
     };
   }
 };
