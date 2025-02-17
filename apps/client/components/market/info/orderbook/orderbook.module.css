@@ -58,9 +58,8 @@
 .centerContainer {
   grid-area: center;
   align-items: center;
-  height: 2px;
+  height: 1px;
   background-color: var(--border-main2-color);
-  margin: 0px 12px;
 }
 
 .buyContainer {

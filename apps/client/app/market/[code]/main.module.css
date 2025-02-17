@@ -50,7 +50,7 @@
 }
 
 .rightContainer {
-  width: var(--form-width);
+  width: var(--order-form-width);
   height: 100%;
   border-left: 1px solid var(--border-main-color);
   background-color: white;
@@ -70,7 +70,7 @@
 
 .orderbookContainer {
   height: 100%;
-  width: var(--form-width);
+  width: var(--info-form-width);
   background-color: white;
   border-left: 1px solid var(--border-main-color);
 }

@@ -42,6 +42,7 @@ const SellBuyComponent = ({ type, width, price, size }: CenterProps) => {
       return styles.red;
     }
   };
+
   return (
     <div
       className={type === 'sell' ? styles.sellContainer : styles.buyContainer}
@@ -49,7 +50,7 @@ const SellBuyComponent = ({ type, width, price, size }: CenterProps) => {
       <div
         className={`${styles.bar} ${getBarColorByIndex(type)}`}
         style={{
-          transform: `scaleX(${width}) translateZ(0px)`,
+          transform: `translateX(${type === 'buy' ? -1 * (100 - width) : 100 - width}%) translateZ(0px)`,
         }}
       ></div>
       <span
@@ -78,7 +79,7 @@ const CenterComponent = ({ price, prevPrice }: SellBuyProps) => {
       <span className={`${styles.priceText} ${getColor(calc)}`}>
         {comma(price, price)}
       </span>
-      <span className={`${styles.percentText} ${getColor(calc)}`}>
+      <span className={`${styles.percentText} `}>
         {plusMark(calc)}
         {rate(calc)}%
       </span>

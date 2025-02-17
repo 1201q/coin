@@ -48,7 +48,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
     return orderbook.map((item, index) => ({
       price: item.price,
       size: item.size,
-      width: Number(((widths[index] * scalingValue) / 100).toFixed(3)) || 0,
+      width: Number((widths[index] * scalingValue).toFixed(2)) || 0,
     }));
   };
 
@@ -71,7 +71,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
         <div className={styles.sellContainer}>
           {prevPrice &&
             orderbookList
-              .slice(0, 14)
+              .slice(0, 15)
               .map((item) => (
                 <OrderbookRow
                   type={'sell'}
@@ -88,7 +88,7 @@ export const OrderbookClient = ({ code }: { code: string }) => {
         <div className={styles.buyContainer}>
           {prevPrice &&
             orderbookList
-              .slice(14, 30)
+              .slice(15, 30)
               .map((item) => (
                 <OrderbookRow
                   type={'buy'}
