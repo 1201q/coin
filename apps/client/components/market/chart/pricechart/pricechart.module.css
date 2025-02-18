@@ -1,0 +1,81 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.priceChart {
+  flex: 1;
+}
+
+.chartHeaderContainer {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-main-color);
+  height: 38px;
+  padding: 0px 8px;
+  gap: 0px;
+}
+
+.charOptionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 27px;
+  padding: 0px 3px;
+  border-radius: 7px;
+  background: none;
+  transition: background-color 0.2s;
+}
+
+.minutesChartOption {
+  position: relative;
+}
+
+.chartHeaderContainer button span {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+}
+
+.chartHeaderContainer button svg {
+  width: 12px;
+  height: 12px;
+  fill: var(--font-black-color);
+  margin-left: 3px;
+  margin-top: 1px;
+}
+
+.chartHeaderContainer button:hover {
+  background-color: var(--main-gray-hover-color);
+}
+
+.selected {
+  background-color: var(--main-gray-hover-color);
+}
+
+.minutesChartOptions {
+  position: absolute;
+  top: 30px;
+  width: 85px;
+  padding: 5px;
+  z-index: 10;
+  border-radius: 9px;
+  background-color: white;
+  box-shadow:
+    rgba(23, 23, 28, 0.05) 0px 2px 10px,
+    rgba(23, 23, 28, 0.05) 0px 2px 60px;
+}
+
+.minutesChartOptionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 27px;
+  border-radius: 7px;
+  background: none;
+  transition: background-color 0.2s;
+}
