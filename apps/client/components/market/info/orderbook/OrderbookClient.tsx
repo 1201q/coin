@@ -58,16 +58,8 @@ export const OrderbookClient = ({ code }: { code: string }) => {
 
   return (
     <div className={styles.container}>
-      {/* <div className={styles.listHeaderContainer}>
-        <div className={`${styles.listHeaderBox} ${styles.left}`}>
-          <span className={`${styles.listHeaderText}`}>호가</span>
-        </div>
-
-        <div className={`${styles.listHeaderBox} ${styles.right}`}>
-          <span className={styles.listHeaderText}>수량</span>
-        </div>
-      </div> */}
       <div className={styles.listContainer}>
+        {/* sell */}
         <div className={styles.sellContainer}>
           {prevPrice &&
             orderbookList
@@ -84,13 +76,17 @@ export const OrderbookClient = ({ code }: { code: string }) => {
                 />
               ))}
         </div>
+        {/* info */}
         <div className={styles.infoContainer}>
           {prevPrice && orderbookList && <OrderbookInfo code={code} />}
         </div>
+        {/* center */}
         <div className={styles.centerContainer}></div>
+        {/* trade */}
         <div className={styles.tradeContainer}>
           {prevPrice && orderbookList && <OrderbookTrade code={code} />}
         </div>
+        {/* buy */}
         <div className={styles.buyContainer}>
           {prevPrice &&
             orderbookList

@@ -28,11 +28,12 @@ export default function MarketSearch({ market }: Props) {
       >
         <div className={styles.logoContainer}>
           <Image
+            width={19}
+            height={19}
             src={`https://static.upbit.com/logos/${code}.png`}
-            width={20}
-            height={20}
             alt="logo"
             quality={100}
+            priority
           />
         </div>
         {getMarket.state === 'loading' ? (

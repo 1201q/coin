@@ -18,15 +18,16 @@
 
 .logoContainer {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-right: 7px;
   border-radius: 50%;
   overflow: hidden;
+  border: none;
 }
 
 .textContainer {
   margin-bottom: 0px;
+  padding-left: 7px;
   padding-right: 2px;
 }
 
