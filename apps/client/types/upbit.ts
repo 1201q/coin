@@ -35,6 +35,7 @@ export interface CandleData {
 export interface VolumeCandle {
   time: Time;
   value: number;
+  color?: string;
 }
 
 export interface PriceCandle {
