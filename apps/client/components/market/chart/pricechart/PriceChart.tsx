@@ -17,7 +17,7 @@ import {
   PriceCandle,
   VolumeCandle,
 } from '@/types/upbit';
-import { chartComma, chartMinMove } from '@/utils/formatting';
+import { chartComma, chartMinMove, chartVolume } from '@/utils/formatting';
 import dayjs from 'dayjs';
 
 const data = [
@@ -64,9 +64,17 @@ const PriceChart = ({ code }: { code: string }) => {
           return parseTime(a.time) - parseTime(b.time);
         });
 
-        const volume = convertVolumeData(data).sort((a, b) => {
-          return parseTime(a.time) - parseTime(b.time);
-        });
+        const volume = convertVolumeData(data)
+          .sort((a, b) => {
+            return parseTime(a.time) - parseTime(b.time);
+          })
+          .map((item) => {
+            return {
+              time: item.time,
+              value: item.value / 1000000,
+              // value: item.value,
+            };
+          });
 
         console.log(volume);
 
@@ -138,7 +146,8 @@ const PriceChart = ({ code }: { code: string }) => {
 
       const histogramSeries = chart.addSeries(HistogramSeries, {
         priceFormat: {
-          type: 'volume',
+          type: 'custom',
+          formatter: chartVolume,
         },
         priceScaleId: 'volume',
       });

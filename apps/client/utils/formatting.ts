@@ -1,3 +1,5 @@
+const million = 1000000;
+
 export const rate = (value: number) => {
   return (value * 100).toFixed(2);
 };
@@ -53,6 +55,22 @@ export const chartMinMove = (value: number) => {
   } else {
     return 0.0000001;
   }
+};
+
+export const chartVolume = (value: number) => {
+  const raw = value * million;
+
+  if (raw >= 1e12) {
+    return (raw / 1e12).toFixed(2) + 'T';
+  } else if (raw >= 1e9) {
+    return (raw / 1e9).toFixed(2) + 'B';
+  } else if (raw >= 1e6) {
+    return (raw / 1e6).toFixed(2) + 'M';
+  } else if (raw >= 1e3) {
+    return (raw / 1e3).toFixed(2) + 'K';
+  }
+
+  return raw.toFixed(3);
 };
 
 export const signedComma = (tradePrice: number, target: number) => {
