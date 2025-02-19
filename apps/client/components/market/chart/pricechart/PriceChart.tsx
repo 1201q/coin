@@ -17,6 +17,8 @@ import {
   PriceCandle,
   VolumeCandle,
 } from '@/types/upbit';
+import { chartComma, chartMinMove } from '@/utils/formatting';
+import dayjs from 'dayjs';
 
 const data = [
   { time: '2020-01-01', value: 50 },
@@ -66,6 +68,8 @@ const PriceChart = ({ code }: { code: string }) => {
           return parseTime(a.time) - parseTime(b.time);
         });
 
+        console.log(volume);
+
         setCandleData(price);
         setVolumeData(volume);
       });
@@ -86,6 +90,12 @@ const PriceChart = ({ code }: { code: string }) => {
       const chart = createChart(chartRef.current, {
         width: chartRef.current.clientWidth,
         height: chartRef.current.clientHeight,
+        localization: {
+          locale: 'ko-KR',
+          timeFormatter: (time: number) => {
+            return dayjs.unix(time).add(9, 'hour').format('YYYY-MM-DD HH:mm');
+          },
+        },
 
         layout: {
           panes: {
@@ -116,10 +126,12 @@ const PriceChart = ({ code }: { code: string }) => {
         {
           upColor: mainred,
           downColor: mainblue,
-          borderDownColor: mainblue,
-          borderUpColor: mainred,
           wickDownColor: mainblue,
           wickUpColor: mainred,
+          borderVisible: false,
+          priceFormat: {
+            minMove: chartMinMove(candleData[0].close),
+          },
         },
         1,
       );

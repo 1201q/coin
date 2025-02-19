@@ -31,6 +31,30 @@ export const comma = (value: number, target: number) => {
   }
 };
 
+export const chartComma = (value: number) => {
+  return comma(value, value);
+};
+
+export const chartMinMove = (value: number) => {
+  if (value >= 10000) {
+    return 1;
+  } else if (value >= 1000) {
+    return 0.1;
+  } else if (value >= 100) {
+    return 0.01;
+  } else if (value >= 10) {
+    return 0.001;
+  } else if (value >= 1) {
+    return 0.0001;
+  } else if (value >= 0.1) {
+    return 0.00001;
+  } else if (value >= 0.01) {
+    return 0.000001;
+  } else {
+    return 0.0000001;
+  }
+};
+
 export const signedComma = (tradePrice: number, target: number) => {
   const isMinus = target < 0;
   const absValue = Math.abs(target);
