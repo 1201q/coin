@@ -4,8 +4,6 @@ import { useEffect, useRef } from 'react';
 import styles from './pricechart.module.css';
 import AngleDown from '@/public/angle-down.svg';
 import {
-  ChartMinutesOptions,
-  ChartOptions,
   isChartOptionDropDownOpenAtom,
   isSelectedMinuteOptionAtom,
   minutesOptionAtom,
@@ -13,9 +11,10 @@ import {
   setPriceChartOptionAtom,
 } from '@/store/chart';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { CandleType, CandleUnit } from '@/types/upbit';
 
 interface Option {
-  type: ChartOptions;
+  type: CandleType;
   name: string;
 }
 const options: Option[] = [
@@ -25,7 +24,7 @@ const options: Option[] = [
   { type: 'years', name: '년' },
 ];
 
-const MINUTES_OPTIONS: ChartMinutesOptions[] = [1, 3, 5, 10, 15, 30, 60];
+const MINUTES_OPTIONS: CandleUnit[] = [1, 3, 5, 10, 15, 30, 60];
 
 const PriceChartController = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -78,7 +77,10 @@ const PriceChartController = () => {
               <button
                 onClick={() => {
                   setIsChartOptionDropDownOpen(false);
-                  setOption({ type: 'minutes', minutes: option });
+                  setOption({
+                    type: 'minutes',
+                    minutes: option,
+                  });
                 }}
                 key={option}
                 className={styles.minutesChartOptionButton}

@@ -1,6 +1,8 @@
+import dayjs from 'dayjs';
+import { Time } from 'lightweight-charts';
+
 export const UPBIT_CANDLE_UNIT = [1, 3, 5, 15, 10, 30, 60, 240] as const;
 export const UPBIT_CANDLE_TYPE = [
-  'seconds',
   'minutes',
   'days',
   'weeks',
@@ -29,6 +31,62 @@ export interface CandleData {
   first_day_of_period?: string;
   unit?: CandleUnit;
 }
+
+export interface VolumeCandle {
+  time: Time;
+  value: number;
+}
+
+export interface PriceCandle {
+  time: Time;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+
+export interface PriceChart {
+  time: Time;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export const convertCandleData = (data: CandleData[]) => {
+  const convertData: PriceChart[] = data.map((d) => ({
+    time: dayjs(d.candle_date_time_utc).unix() as Time,
+    open: d.opening_price,
+    high: d.high_price,
+    low: d.low_price,
+    close: d.trade_price,
+    volume: d.candle_acc_trade_volume,
+  }));
+
+  return convertData;
+};
+
+export const convertVolumeData = (data: PriceChart[]) => {
+  const convertData: VolumeCandle[] = data.map((d) => ({
+    time: d.time,
+    value: d.volume,
+  }));
+
+  return convertData;
+};
+
+export const convertPriceData = (data: PriceChart[]) => {
+  const convertData: PriceCandle[] = data.map((d) => ({
+    time: d.time,
+    open: d.open,
+    high: d.high,
+    low: d.low,
+    close: d.close,
+  }));
+
+  return convertData;
+};
 
 export type MarketType = (typeof UPBIT_MARKET_TYPE)[number];
 export type CandleType = (typeof UPBIT_CANDLE_TYPE)[number];

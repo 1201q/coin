@@ -1,24 +1,17 @@
+import { CandleType, CandleUnit } from '@/types/upbit';
 import { atom } from 'jotai';
 
-const priceChartOptions = [
-  'minutes',
-  'days',
-  'weeks',
-  'months',
-  'years',
-] as const;
-const priceChartMinuteOptions = [1, 3, 5, 10, 15, 30, 60] as const;
-
-export type ChartOptions = (typeof priceChartOptions)[number];
-export type ChartMinutesOptions = (typeof priceChartMinuteOptions)[number];
-
-interface PriceChartOption {
-  type: ChartOptions;
-  minutes?: ChartMinutesOptions;
+export interface PriceChartOption {
+  type: CandleType;
+  minutes?: CandleUnit;
+  code?: string | undefined;
 }
 
-export const priceChartOptionAtom = atom<ChartOptions>('days');
-export const minutesOptionAtom = atom<ChartMinutesOptions>(5);
+export const hydratedCoinAtom = atom<string>();
+export const coinAtom = atom<string>();
+
+export const priceChartOptionAtom = atom<CandleType>('days');
+export const minutesOptionAtom = atom<CandleUnit>(5);
 
 export const setPriceChartOptionAtom = atom(
   null,
@@ -38,39 +31,21 @@ export const setPriceChartOptionAtom = atom(
 
 export const selectedPriceChartOptionAtom = atom<PriceChartOption>((get) => {
   const isMinutes = get(isSelectedMinuteOptionAtom);
+  const code = get(coinAtom);
 
   if (isMinutes) {
     return {
       type: 'minutes',
       minutes: get(minutesOptionAtom),
+      code: code,
     };
   } else {
     return {
       type: get(priceChartOptionAtom),
+      code: code,
     };
   }
 });
 
 export const isSelectedMinuteOptionAtom = atom(false);
 export const isChartOptionDropDownOpenAtom = atom(false);
-
-const chartOption = atom<ChartOptions>('days');
-const minutesOption = atom<ChartMinutesOptions>(5);
-
-const isSelectedMinute = atom(false);
-const isOpenDropdownMenu = atom(false);
-
-const selectedChartOptionAtom = atom<ChartOptions>((get) => get(chartOption));
-const selectedMinuteOptionAtom = atom<ChartMinutesOptions>((get) =>
-  get(minutesOption),
-);
-
-const isSelectedMinuteAtom = atom(
-  (get) => get(isSelectedMinute),
-  (get, set, update) => {
-    if (update) {
-      set(chartOption, 'minutes');
-    }
-  },
-);
-const isOpenDropdownMenuAtom = atom((get) => get(isOpenDropdownMenu));

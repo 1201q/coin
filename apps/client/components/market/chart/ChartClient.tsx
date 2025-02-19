@@ -3,7 +3,7 @@
 import Tab from '@/components/common/tab/Tab';
 import { useState } from 'react';
 import styles from './chart.module.css';
-import PriceChart from './pricechart/PriceChart';
+import PriceChartClient from './pricechart/PriceChartClient';
 
 const ChartClient = ({ code }: { code: string }) => {
   const tabs = ['차트', '뎁스'];
@@ -17,8 +17,7 @@ const ChartClient = ({ code }: { code: string }) => {
         onClick={(tab: string) => setSelectedTab(tab)}
         tabId="chartTab"
       />
-      {selectedTab === tabs[0] && <PriceChart code={code} />}
-      {/* {selectedTab === tabs[1] && <TradeClient code={code} />} */}
+      {selectedTab === tabs[0] && <PriceChartClient code={code} />}
     </div>
   );
 };
