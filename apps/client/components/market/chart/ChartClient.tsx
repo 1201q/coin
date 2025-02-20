@@ -4,6 +4,7 @@ import Tab from '@/components/common/tab/Tab';
 import { useState } from 'react';
 import styles from './chart.module.css';
 import PriceChartClient from './pricechart/PriceChartClient';
+import TestChart from './pricechart/TestChart';
 
 const ChartClient = ({ code }: { code: string }) => {
   const tabs = ['차트', '뎁스'];
@@ -18,6 +19,7 @@ const ChartClient = ({ code }: { code: string }) => {
         tabId="chartTab"
       />
       {selectedTab === tabs[0] && <PriceChartClient code={code} />}
+      {selectedTab === tabs[1] && <TestChart code={code} />}
     </div>
   );
 };

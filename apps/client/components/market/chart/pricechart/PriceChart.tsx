@@ -1,5 +1,5 @@
-import { selectedPriceChartOptionAtom } from '@/store/chart';
-import { useAtomValue } from 'jotai';
+import { candleToAtom, selectedPriceChartOptionAtom } from '@/store/chart';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect, useRef, useState } from 'react';
 import styles from './pricechart.module.css';
 import {
@@ -22,6 +22,7 @@ import {
 } from '@/types/upbit';
 import { chartComma, chartMinMove, chartVolume } from '@/utils/formatting';
 import dayjs from 'dayjs';
+import { parseTime } from '@/utils/parse';
 
 const mainblue = 'rgba(74, 133, 253, 1)';
 const mainred = 'rgb(240, 97, 109)';
@@ -29,16 +30,6 @@ const mainred = 'rgb(240, 97, 109)';
 const mainborder = 'rgb(209, 217, 224)';
 const lighterborder = 'rgba(237, 237, 237,0.5)';
 const fontgray = '#64748b';
-
-const parseTime = (time: Time): number => {
-  if (typeof time === 'string') {
-    return new Date(time).getTime();
-  } else if (typeof time === 'object') {
-    return new Date(time.year, time.month - 1, time.day).getTime();
-  } else {
-    return time;
-  }
-};
 
 const PriceChart = ({ code }: { code: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -50,6 +41,7 @@ const PriceChart = ({ code }: { code: string }) => {
 
   const [candleData, setCandleData] = useState<PriceCandle[]>([]);
   const [volumeData, setVolumeData] = useState<VolumeCandle[]>([]);
+  const [candleTo, setCandleTo] = useAtom(candleToAtom);
 
   const fetchCandle = async (to?: string) => {
     if (!selected.code || selected.code !== code) return;
@@ -80,12 +72,18 @@ const PriceChart = ({ code }: { code: string }) => {
           };
         });
 
+      const startTo = dayjs
+        .unix(parseTime(price[0].time) - 1)
+        .format('YYYY-MM-DDTHH:mm:ss');
+
       if (to) {
         setCandleData((prev) => [...price, ...prev]);
         setVolumeData((prev) => [...volume, ...prev]);
+        setCandleTo(startTo);
       } else {
         setCandleData(price);
         setVolumeData(volume);
+        setCandleTo(startTo);
       }
     } catch (e) {
       console.error(e);

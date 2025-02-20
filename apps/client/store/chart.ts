@@ -1,5 +1,9 @@
 import { CandleType, CandleUnit } from '@/types/upbit';
+import { fetchCandleData } from '@/utils/chart';
+import { parseTime } from '@/utils/parse';
+import dayjs from 'dayjs';
 import { atom } from 'jotai';
+import { atomWithSuspenseInfiniteQuery } from 'jotai-tanstack-query';
 
 export interface PriceChartOption {
   type: CandleType;
@@ -47,5 +51,43 @@ export const selectedPriceChartOptionAtom = atom<PriceChartOption>((get) => {
   }
 });
 
+export const candleToAtom = atom<string | null>(null);
+
 export const isSelectedMinuteOptionAtom = atom(false);
 export const isChartOptionDropDownOpenAtom = atom(false);
+
+export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
+  const options = get(selectedPriceChartOptionAtom);
+
+  return {
+    queryKey: ['candle', options.code],
+    queryFn: async ({ pageParam }) => {
+      if (options.code === undefined) return;
+
+      const res = await fetchCandleData({
+        market: options.code,
+        type: options.type,
+        unit: options.minutes,
+        to: typeof pageParam === 'string' ? pageParam : undefined,
+      });
+
+      const sortedData = res.convertedData.sort(
+        (a, b) => parseTime(a.time) - parseTime(b.time),
+      );
+      return sortedData;
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage && lastPage.length === 200) {
+        const firstData = lastPage[0];
+        const to = dayjs
+          .unix(parseTime(firstData.time) - 1)
+          .format('YYYY-MM-DDTHH:mm:ss');
+
+        return to;
+      }
+
+      return undefined;
+    },
+    initialPageParam: undefined,
+  };
+});
