@@ -60,7 +60,7 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
   const options = get(selectedPriceChartOptionAtom);
 
   return {
-    queryKey: ['candle', options.code],
+    queryKey: ['candle', options.code, options.type, options.minutes],
     queryFn: async ({ pageParam }) => {
       if (options.code === undefined) return;
 
@@ -74,6 +74,8 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
       const sortedData = res.convertedData.sort(
         (a, b) => parseTime(a.time) - parseTime(b.time),
       );
+
+      console.log(sortedData);
       return sortedData;
     },
     getNextPageParam: (lastPage) => {
@@ -88,6 +90,8 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
 
       return undefined;
     },
+    staleTime: 1000 * 60,
+    gcTime: 1000 * 60 * 5,
     initialPageParam: undefined,
   };
 });

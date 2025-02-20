@@ -1,28 +1,22 @@
-import { candleToAtom, selectedPriceChartOptionAtom } from '@/store/chart';
-import { useAtom, useAtomValue } from 'jotai';
-import { useEffect, useRef, useState } from 'react';
+import { candleQueryAtom, selectedPriceChartOptionAtom } from '@/store/chart';
+import { useAtomValue } from 'jotai';
+import { useEffect, useMemo, useRef } from 'react';
 import styles from './pricechart.module.css';
 import {
-  AreaSeries,
   CandlestickSeries,
-  CandlestickSeriesOptions,
   CrosshairMode,
   HistogramSeries,
   IChartApi,
   ISeriesApi,
-  Time,
+  LogicalRange,
   createChart,
 } from 'lightweight-charts';
-import { fetchCandleData } from '@/utils/chart';
-import {
-  convertPriceData,
-  convertVolumeData,
-  PriceCandle,
-  VolumeCandle,
-} from '@/types/upbit';
-import { chartComma, chartMinMove, chartVolume } from '@/utils/formatting';
+
+import { convertPriceData, convertVolumeData } from '@/types/upbit';
+import { chartMinMove, chartVolume } from '@/utils/formatting';
 import dayjs from 'dayjs';
 import { parseTime } from '@/utils/parse';
+import { throttle } from '@/utils/throttle';
 
 const mainblue = 'rgba(74, 133, 253, 1)';
 const mainred = 'rgb(240, 97, 109)';
@@ -39,56 +33,29 @@ const PriceChart = ({ code }: { code: string }) => {
 
   const selected = useAtomValue(selectedPriceChartOptionAtom);
 
-  const [candleData, setCandleData] = useState<PriceCandle[]>([]);
-  const [volumeData, setVolumeData] = useState<VolumeCandle[]>([]);
-  const [candleTo, setCandleTo] = useAtom(candleToAtom);
+  const { data, fetchNextPage, hasNextPage, isFetching, isPending } =
+    useAtomValue(candleQueryAtom);
 
-  const fetchCandle = async (to?: string) => {
-    if (!selected.code || selected.code !== code) return;
+  const candles = data.pages
+    .flat()
+    .filter((candle) => candle !== undefined && candle !== null)
+    .sort((a, b) => {
+      if (!a || !b) return 0;
+      return parseTime(a.time) - parseTime(b.time);
+    });
 
-    try {
-      const res = await fetchCandleData({
-        market: selected?.code,
-        type: selected?.type,
-        unit: selected?.minutes,
-        ...(to ? { to } : {}),
-      });
-
-      const data = res.convertedData;
-
-      const price = convertPriceData(data).sort((a, b) => {
-        return parseTime(a.time) - parseTime(b.time);
-      });
-
-      const volume = convertVolumeData(data)
-        .sort((a, b) => {
-          return parseTime(a.time) - parseTime(b.time);
-        })
-        .map((item, index) => {
+  const prices = candles.length > 0 ? convertPriceData(candles) : [];
+  const volumes =
+    candles.length > 0 && prices.length > 0
+      ? convertVolumeData(candles).map((item, index) => {
           return {
             time: item.time,
             value: item.value / 1000000,
-            color: price[index].close >= price[index].open ? mainred : mainblue,
+            color:
+              prices[index].close >= prices[index].open ? mainred : mainblue,
           };
-        });
-
-      const startTo = dayjs
-        .unix(parseTime(price[0].time) - 1)
-        .format('YYYY-MM-DDTHH:mm:ss');
-
-      if (to) {
-        setCandleData((prev) => [...price, ...prev]);
-        setVolumeData((prev) => [...volume, ...prev]);
-        setCandleTo(startTo);
-      } else {
-        setCandleData(price);
-        setVolumeData(volume);
-        setCandleTo(startTo);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+        })
+      : [];
 
   const getChartOptions = (container: HTMLDivElement) => {
     return {
@@ -142,23 +109,36 @@ const PriceChart = ({ code }: { code: string }) => {
     };
   };
 
-  useEffect(() => {
-    fetchCandle();
-  }, [selected]);
+  const throttleFunc = useMemo(() => {
+    return throttle(250);
+  }, []);
+
+  const fetchNextCandleData = (range: LogicalRange) => {
+    if (range.from < 30 && selected.code === code) {
+      throttleFunc(() => {
+        if (hasNextPage && !isFetching && !isPending) {
+          fetchNextPage();
+        } else {
+          console.log('실행되지안흥ㅁ');
+        }
+      });
+    }
+  };
 
   useEffect(() => {
     if (!chartRef.current) return;
-    if (candleData.length === 0) return;
+    if (candles.length === 0) return;
 
     const chart = createChart(
       chartRef.current,
       getChartOptions(chartRef.current),
     );
+
     chartClientRef.current = chart;
 
     candleSeriesRef.current = chart.addSeries(
       CandlestickSeries,
-      getCandleStickSeriesOptions(candleData[0].close),
+      getCandleStickSeriesOptions(candles[candles.length - 1].close),
       1,
     );
 
@@ -196,67 +176,34 @@ const PriceChart = ({ code }: { code: string }) => {
     window.addEventListener('resize', handleResize);
 
     chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
-      if (range && range.from < 10 && selected.code === code) {
-        const to = dayjs
-          .unix(parseTime(candleData[0].time) - 1)
-          .format('YYYY-MM-DDTHH:mm:ss');
-
-        // fetchCandleData({
-        //   market: selected.code,
-        //   type: selected.type,
-        //   unit: selected.minutes,
-        //   to: to,
-        // })
-        //   .then((res) => {
-        //     const data = res.convertedData;
-        //     const newPrice = convertPriceData(data).sort((a, b) => {
-        //       return parseTime(a.time) - parseTime(b.time);
-        //     });
-
-        //     const newVolume = convertVolumeData(data)
-        //       .sort((a, b) => {
-        //         return parseTime(a.time) - parseTime(b.time);
-        //       })
-        //       .map((item, index) => {
-        //         return {
-        //           time: item.time,
-        //           value: item.value / 1000000,
-        //           color:
-        //             newPrice[index].close >= newPrice[index].open
-        //               ? mainred
-        //               : mainblue,
-        //         };
-        //       });
-
-        //     if (
-        //       newPrice.length > 0 &&
-        //       newPrice[newPrice.length - 1].time < candleData[0].time
-        //     ) {
-        //       setCandleData((prev) => [...newPrice, ...prev]);
-        //       setVolumeData((prev) => [...newVolume, ...prev]);
-        //     }
-        //   })
-        //   .catch((e) => {
-        //     console.error(e);
-        //   });
-      }
+      range && fetchNextCandleData(range);
     });
 
     return () => {
       window.removeEventListener('resize', handleResize);
       chart.remove();
+      chart.timeScale().unsubscribeVisibleLogicalRangeChange((range) => {
+        range && fetchNextCandleData(range);
+      });
     };
-  }, [candleData, selected]);
+  }, [selected]);
 
   useEffect(() => {
     if (!chartClientRef.current) return;
     if (!candleSeriesRef.current) return;
     if (!volumeSeriesRef.current) return;
-    if (candleData.length === 0 || volumeData.length === 0) return;
+    if (prices.length === 0 || volumes.length === 0) return;
 
-    candleSeriesRef.current.setData(candleData);
-    volumeSeriesRef.current.setData(volumeData);
-  }, [candleData, volumeData]);
+    const currentRange = chartClientRef.current
+      .timeScale()
+      .getVisibleLogicalRange();
+
+    candleSeriesRef.current.setData(prices);
+    volumeSeriesRef.current.setData(volumes);
+
+    currentRange &&
+      chartClientRef.current.timeScale().setVisibleLogicalRange(currentRange);
+  }, [prices, volumes]);
 
   return <div ref={chartRef} className={styles.priceChart}></div>;
 };
