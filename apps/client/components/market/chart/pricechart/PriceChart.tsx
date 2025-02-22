@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './pricechart.module.css';
 import {
   CandlestickSeries,
+  CandlestickSeriesOptions,
   ChartOptions,
   CrosshairMode,
   DeepPartial,
@@ -15,6 +16,7 @@ import {
   IChartApi,
   ISeriesApi,
   LogicalRange,
+  TickMarkType,
   Time,
   createChart,
 } from 'lightweight-charts';
@@ -22,6 +24,7 @@ import {
 import {
   convertPriceData,
   convertVolumeData,
+  PriceCandle,
   PriceChart as PriceChartType,
 } from '@/types/upbit';
 import { chartMinMove, chartVolume } from '@/utils/formatting';
@@ -45,7 +48,7 @@ const PriceChart = ({ code }: { code: string }) => {
 
   const coin = useCoin(code);
 
-  const selected = useAtomValue(selectedPriceChartOptionAtom);
+  const option = useAtomValue(selectedPriceChartOptionAtom);
 
   const { data, fetchNextPage, hasNextPage, isFetching, isPending } =
     useAtomValue(candleQueryAtom);
@@ -58,22 +61,9 @@ const PriceChart = ({ code }: { code: string }) => {
       return parseTime(a.time) - parseTime(b.time);
     });
 
-  const prices = candles.length > 0 ? convertPriceData(candles) : [];
-  const volumes =
-    candles.length > 0 && prices.length > 0
-      ? convertVolumeData(candles).map((item, index) => {
-          return {
-            time: item.time,
-            value: item.value / 1000000,
-            color:
-              prices[index].close >= prices[index].open ? mainred : mainblue,
-          };
-        })
-      : [];
-
   const getChartOptions = (
     container: HTMLDivElement,
-    selected: PriceChartOption,
+    option: PriceChartOption,
   ): DeepPartial<ChartOptions> => {
     return {
       width: container.clientWidth,
@@ -81,7 +71,7 @@ const PriceChart = ({ code }: { code: string }) => {
       localization: {
         locale: 'ko-kr',
         timeFormatter: (time: number) => {
-          if (selected.type === 'minutes') {
+          if (option.type === 'minutes') {
             return dayjs.unix(time).format('YYYY-MM-DD  HH:mm');
           } else {
             return dayjs.unix(time).format('YYYY-MM-DD');
@@ -94,6 +84,7 @@ const PriceChart = ({ code }: { code: string }) => {
           separatorColor: mainborder,
         },
         textColor: fontgray,
+        fontFamily: 'Pretendard',
       },
 
       grid: {
@@ -115,14 +106,24 @@ const PriceChart = ({ code }: { code: string }) => {
       timeScale: {
         borderColor: mainborder,
         allowShiftVisibleRangeOnWhitespaceReplacement: true,
-        // shiftVisibleRangeOnNewBar: true,
-        // rightBarStaysOnScroll: true,
+
+        timeVisible: true,
+        rightOffset: 10,
+        tickMarkFormatter: (time: Time) => {
+          if (option.type === 'minutes') {
+            return dayjs.unix(parseTime(time)).format('HH:mm');
+          }
+          return null;
+        },
+
         minBarSpacing: 1,
       },
     };
   };
 
-  const getCandleStickSeriesOptions = (firstItemClose: number) => {
+  const getCandleStickSeriesOptions = (
+    firstItemClose: number,
+  ): DeepPartial<CandlestickSeriesOptions> => {
     return {
       upColor: mainred,
       downColor: mainblue,
@@ -140,7 +141,7 @@ const PriceChart = ({ code }: { code: string }) => {
   }, []);
 
   const fetchNextCandleData = (range: LogicalRange) => {
-    if ((range.from < 60 || range.from < 0) && selected.code === code) {
+    if ((range.from < 60 || range.from < 0) && option.code === code) {
       throttleFunc(() => {
         if (hasNextPage && !isFetching && !isPending) {
           fetchNextPage();
@@ -151,13 +152,33 @@ const PriceChart = ({ code }: { code: string }) => {
     }
   };
 
+  const generateDummyCandles = (data: PriceCandle[], count: number) => {
+    const lastTime = data[data.length - 1].time;
+    const secondLastTime = data[data.length - 2].time;
+
+    const addTime = parseTime(lastTime) - parseTime(secondLastTime);
+    let currentTime = parseTime(lastTime);
+
+    const arr = [];
+    for (let i = 1; i <= count; i++) {
+      arr.push({
+        time: (currentTime + addTime) as Time,
+      });
+
+      currentTime = currentTime + addTime;
+    }
+
+    // console.log(arr);
+    return arr;
+  };
+
   useEffect(() => {
     if (!chartRef.current) return;
     if (candles.length === 0) return;
 
     const chart = createChart(
       chartRef.current,
-      getChartOptions(chartRef.current, selected),
+      getChartOptions(chartRef.current, option),
     );
 
     chartClientRef.current = chart;
@@ -213,21 +234,43 @@ const PriceChart = ({ code }: { code: string }) => {
         range && fetchNextCandleData(range);
       });
     };
-  }, [selected]);
+  }, [option]);
 
   useEffect(() => {
     if (!chartClientRef.current) return;
     if (!candleSeriesRef.current) return;
     if (!volumeSeriesRef.current) return;
-    if (selected.code !== code) return;
-    if (prices.length === 0 || volumes.length === 0) return;
+    if (option.code !== code) return;
 
     const currentRange = chartClientRef.current
       .timeScale()
       .getVisibleLogicalRange();
 
-    candleSeriesRef.current.setData(prices);
-    volumeSeriesRef.current.setData(volumes);
+    const sortedPrices = candles.length > 0 ? convertPriceData(candles) : [];
+    const sortedVolumes =
+      candles.length > 0 && sortedPrices.length > 0
+        ? convertVolumeData(candles).map((item, index) => {
+            return {
+              time: item.time,
+              value: item.value / 1000000,
+              color:
+                sortedPrices[index].close >= sortedPrices[index].open
+                  ? mainred
+                  : mainblue,
+            };
+          })
+        : [];
+
+    const dummy = generateDummyCandles(sortedPrices, 10);
+
+    // const test = [...sortedPrices, ...dummy].map((item) => {
+    //   return dayjs.unix(parseTime(item.time)).format('YYYY-MM-DD HH:mm');
+    // });
+
+    // console.log(test);
+
+    candleSeriesRef.current.setData([...sortedPrices, ...dummy]);
+    volumeSeriesRef.current.setData([...sortedVolumes, ...dummy]);
 
     currentRange &&
       chartClientRef.current.timeScale().setVisibleLogicalRange(currentRange);
