@@ -1,3 +1,4 @@
+import { parseTime } from '@/utils/time';
 import dayjs from 'dayjs';
 import { Time } from 'lightweight-charts';
 
@@ -70,7 +71,7 @@ export const convertCandleData = (data: CandleData[]) => {
 
 export const convertVolumeData = (data: PriceChart[]) => {
   const convertData: VolumeCandle[] = data.map((d) => ({
-    time: d.time,
+    time: dayjs.unix(parseTime(d.time)).add(9, 'hour').unix() as Time,
     value: d.volume,
   }));
 
@@ -79,7 +80,7 @@ export const convertVolumeData = (data: PriceChart[]) => {
 
 export const convertPriceData = (data: PriceChart[]) => {
   const convertData: PriceCandle[] = data.map((d) => ({
-    time: d.time,
+    time: dayjs.unix(parseTime(d.time)).add(9, 'hour').unix() as Time,
     open: d.open,
     high: d.high,
     low: d.low,
@@ -99,6 +100,7 @@ export type TickerData = {
   high_price: number; // 고가
   low_price: number; // 저가
   trade_price: number; // 현재가
+  trade_volume: number; // 최근 거래량
   change: 'RISE' | 'EVEN' | 'FALL'; // 전일 대비
   signed_change_price: number; // 부호 포함 전일 대비 금액
   signed_change_rate: number; // 부호 포함 전일 대비 비율
@@ -121,6 +123,7 @@ export const convertTickerData = (
       high_price: data.high_price,
       low_price: data.low_price,
       trade_price: data.trade_price,
+      trade_volume: data.trade_volume,
       change: data.change,
       signed_change_price: data.signed_change_price,
       signed_change_rate: data.signed_change_rate,
@@ -139,6 +142,7 @@ export const convertTickerData = (
       high_price: data.high_price,
       low_price: data.low_price,
       trade_price: data.trade_price,
+      trade_volume: data.trade_volume,
       change: data.change,
       signed_change_price: data.signed_change_price,
       signed_change_rate: data.signed_change_rate,

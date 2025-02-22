@@ -1,22 +1,34 @@
-import { candleQueryAtom, selectedPriceChartOptionAtom } from '@/store/chart';
+import {
+  candleQueryAtom,
+  PriceChartOption,
+  selectedPriceChartOptionAtom,
+} from '@/store/chart';
 import { useAtomValue } from 'jotai';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './pricechart.module.css';
 import {
   CandlestickSeries,
+  ChartOptions,
   CrosshairMode,
+  DeepPartial,
   HistogramSeries,
   IChartApi,
   ISeriesApi,
   LogicalRange,
+  Time,
   createChart,
 } from 'lightweight-charts';
 
-import { convertPriceData, convertVolumeData } from '@/types/upbit';
+import {
+  convertPriceData,
+  convertVolumeData,
+  PriceChart as PriceChartType,
+} from '@/types/upbit';
 import { chartMinMove, chartVolume } from '@/utils/formatting';
 import dayjs from 'dayjs';
-import { parseTime } from '@/utils/parse';
+import { parseTime } from '@/utils/time';
 import { throttle } from '@/utils/throttle';
+import { useCoin } from '@/store/utils';
 
 const mainblue = 'rgba(74, 133, 253, 1)';
 const mainred = 'rgb(240, 97, 109)';
@@ -30,6 +42,8 @@ const PriceChart = ({ code }: { code: string }) => {
   const chartClientRef = useRef<IChartApi>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'>>(null);
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'>>(null);
+
+  const coin = useCoin(code);
 
   const selected = useAtomValue(selectedPriceChartOptionAtom);
 
@@ -57,14 +71,21 @@ const PriceChart = ({ code }: { code: string }) => {
         })
       : [];
 
-  const getChartOptions = (container: HTMLDivElement) => {
+  const getChartOptions = (
+    container: HTMLDivElement,
+    selected: PriceChartOption,
+  ): DeepPartial<ChartOptions> => {
     return {
       width: container.clientWidth,
       height: container.clientHeight,
       localization: {
-        locale: 'ko-KR',
+        locale: 'ko-kr',
         timeFormatter: (time: number) => {
-          return dayjs.unix(time).add(9, 'hour').format('YYYY-MM-DD HH:mm');
+          if (selected.type === 'minutes') {
+            return dayjs.unix(time).format('YYYY-MM-DD  HH:mm');
+          } else {
+            return dayjs.unix(time).format('YYYY-MM-DD');
+          }
         },
       },
 
@@ -86,12 +107,17 @@ const PriceChart = ({ code }: { code: string }) => {
 
       rightPriceScale: {
         borderColor: mainborder,
+        autoScale: true,
       },
       crosshair: {
         mode: CrosshairMode.Normal,
       },
       timeScale: {
         borderColor: mainborder,
+        allowShiftVisibleRangeOnWhitespaceReplacement: true,
+        // shiftVisibleRangeOnNewBar: true,
+        // rightBarStaysOnScroll: true,
+        minBarSpacing: 1,
       },
     };
   };
@@ -114,7 +140,7 @@ const PriceChart = ({ code }: { code: string }) => {
   }, []);
 
   const fetchNextCandleData = (range: LogicalRange) => {
-    if (range.from < 30 && selected.code === code) {
+    if ((range.from < 60 || range.from < 0) && selected.code === code) {
       throttleFunc(() => {
         if (hasNextPage && !isFetching && !isPending) {
           fetchNextPage();
@@ -131,7 +157,7 @@ const PriceChart = ({ code }: { code: string }) => {
 
     const chart = createChart(
       chartRef.current,
-      getChartOptions(chartRef.current),
+      getChartOptions(chartRef.current, selected),
     );
 
     chartClientRef.current = chart;
@@ -182,6 +208,7 @@ const PriceChart = ({ code }: { code: string }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
       chart.remove();
+
       chart.timeScale().unsubscribeVisibleLogicalRangeChange((range) => {
         range && fetchNextCandleData(range);
       });
@@ -192,6 +219,7 @@ const PriceChart = ({ code }: { code: string }) => {
     if (!chartClientRef.current) return;
     if (!candleSeriesRef.current) return;
     if (!volumeSeriesRef.current) return;
+    if (selected.code !== code) return;
     if (prices.length === 0 || volumes.length === 0) return;
 
     const currentRange = chartClientRef.current
@@ -203,7 +231,7 @@ const PriceChart = ({ code }: { code: string }) => {
 
     currentRange &&
       chartClientRef.current.timeScale().setVisibleLogicalRange(currentRange);
-  }, [prices, volumes]);
+  }, [candles]);
 
   return <div ref={chartRef} className={styles.priceChart}></div>;
 };

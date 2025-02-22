@@ -1,6 +1,6 @@
 import { CandleType, CandleUnit } from '@/types/upbit';
 import { fetchCandleData } from '@/utils/chart';
-import { parseTime } from '@/utils/parse';
+import { parseTime } from '@/utils/time';
 import dayjs from 'dayjs';
 import { atom } from 'jotai';
 import { atomWithSuspenseInfiniteQuery } from 'jotai-tanstack-query';

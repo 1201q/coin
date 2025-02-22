@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useHydrateAtoms } from 'jotai/utils';
 
 import dayjs from 'dayjs';
-import { parseTime } from '@/utils/parse';
+import { parseTime } from '@/utils/time';
 
 const TestChart = ({ code }: { code: string }) => {
   useHydrateAtoms([[hydratedCoinAtom, code]], {
