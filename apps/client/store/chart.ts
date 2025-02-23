@@ -74,8 +74,6 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
       const sortedData = res.convertedData.sort(
         (a, b) => parseTime(a.time) - parseTime(b.time),
       );
-
-      console.log(sortedData);
       return sortedData;
     },
     getNextPageParam: (lastPage) => {
@@ -90,6 +88,18 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
 
       return undefined;
     },
+
+    select: (data) => ({
+      pages: data.pages
+        .flatMap((page) => page)
+        .filter((candle) => candle !== undefined && candle !== null)
+        .sort((a, b) => {
+          if (!a || !b) return 0;
+          return parseTime(a.time) - parseTime(b.time);
+        }),
+      pageParams: data.pageParams,
+    }),
+
     staleTime: 1000 * 60,
     gcTime: 1000 * 60 * 5,
     initialPageParam: undefined,

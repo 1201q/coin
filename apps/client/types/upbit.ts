@@ -106,6 +106,7 @@ export type TickerData = {
   signed_change_rate: number; // 부호 포함 전일 대비 비율
   acc_trade_volume_24h: number; // 24시간 누적 거래량
   acc_trade_price_24h: number; // 24시간 누적 거래대금
+  trade_timestamp: number; // 체결 타임스탬프 (milliseconds)
   timestamp: number; // 데이터 생성 타임스탬프 (milliseconds)
   prev_closing_price: number;
   highest_52_week_price: number;
@@ -129,6 +130,7 @@ export const convertTickerData = (
       signed_change_rate: data.signed_change_rate,
       acc_trade_volume_24h: data.acc_trade_volume_24h,
       acc_trade_price_24h: data.acc_trade_price_24h,
+      trade_timestamp: data.trade_timestamp,
       timestamp: data.timestamp,
       prev_closing_price: data.prev_closing_price,
       highest_52_week_price: data.highest_52_week_price,
@@ -149,6 +151,7 @@ export const convertTickerData = (
       acc_trade_volume_24h: data.acc_trade_volume_24h,
       acc_trade_price_24h: data.acc_trade_price_24h,
       timestamp: data.timestamp,
+      trade_timestamp: data.trade_timestamp,
       prev_closing_price: data.prev_closing_price,
       highest_52_week_price: data.highest_52_week_price,
       lowest_52_week_price: data.lowest_52_week_price,
