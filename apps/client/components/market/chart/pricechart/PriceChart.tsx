@@ -30,10 +30,12 @@ import {
   TickerData,
 } from '@/types/upbit';
 import { chartMinMove, chartVolume } from '@/utils/formatting';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { parseTime } from '@/utils/time';
 import { throttle } from '@/utils/throttle';
 import { useCoin } from '@/store/utils';
+import { queryClientAtom } from 'jotai-tanstack-query';
+import { fetchCandleData } from '@/utils/chart';
 
 const mainblue = 'rgba(74, 133, 253, 1)';
 const mainred = 'rgb(240, 97, 109)';
@@ -55,7 +57,9 @@ const PriceChart = ({ code }: { code: string }) => {
     useAtomValue(candleQueryAtom);
   const candles = data.pages;
   const [lastCandle, setLastCandle] = useState(candles[candles.length - 1]);
-  const [isNextCandleFetched, setIsNextCandleFetched] = useState(false);
+  const [isNextCandleFetched, setIsNextCandleFetched] = useState(true);
+
+  const queryClient = useAtomValue(queryClientAtom);
 
   useEffect(() => {
     if (option.code !== code) return;
@@ -246,9 +250,70 @@ const PriceChart = ({ code }: { code: string }) => {
     candleSeriesRef.current.setData(sortedPrices);
     volumeSeriesRef.current.setData(sortedVolumes);
 
+    console.log(
+      sortedPrices.map((item) =>
+        dayjs.unix(parseTime(item.time)).format('YYYY-MM-DD HH:mm'),
+      ),
+    );
+
     currentRange &&
       chartClientRef.current.timeScale().setVisibleLogicalRange(currentRange);
   }, [candles]);
+
+  const fetchNextCandle = async (nextCandleTime: dayjs.Dayjs) => {
+    const lastData = lastCandle;
+    console.log(`마지막 봉 : ${parseTime(lastData.time)}`);
+    console.log(`새로운 봉 : ${nextCandleTime.unix()}`);
+
+    setTimeout(async () => {
+      try {
+        const newCandleData = await fetchCandleData({
+          market: code,
+          type: option.type,
+          unit: option.minutes,
+        });
+
+        const lastCandleIndex = newCandleData.convertedData.findIndex(
+          (item) => item.time === lastData.time,
+        );
+        const newCandleIndex = newCandleData.convertedData.findIndex(
+          (item) => item.time === nextCandleTime.unix(),
+        );
+
+        if (lastCandleIndex !== -1 && newCandleIndex !== -1) {
+          console.log(
+            `데이터 확인 마지막 봉: ${lastData.time}, 새로운 봉: ${nextCandleTime.unix()}`,
+          );
+
+          queryClient.setQueryData(
+            ['candle', code, option.type, option.minutes],
+            (oldData: { pages: any }) => {
+              if (!oldData) return;
+
+              const updatePages = [...oldData.pages];
+
+              updatePages[0] = [
+                ...updatePages[0].slice(0, -1),
+                newCandleData.convertedData[lastCandleIndex],
+              ];
+
+              updatePages[0].push(newCandleData.convertedData[newCandleIndex]);
+
+              return { ...oldData, pages: updatePages };
+            },
+          );
+
+          setLastCandle(newCandleData.convertedData[newCandleIndex]);
+        } else {
+          console.log('데이터가 존재하지않습니다.');
+          fetchNextCandle(nextCandleTime);
+        }
+      } catch (error) {
+        console.error(error);
+        fetchNextCandle(nextCandleTime);
+      }
+    }, 1000);
+  };
 
   useEffect(() => {
     if (!coin || !lastCandle) return;
@@ -267,8 +332,6 @@ const PriceChart = ({ code }: { code: string }) => {
     const newCandleTime = dayjs(coin.trade_timestamp).add(-9, 'hours');
 
     if (nextCandleTime.isAfter(newCandleTime)) {
-      console.log('이전');
-
       const data = {
         ...lastCandle,
         close: coin.trade_price,
@@ -291,12 +354,12 @@ const PriceChart = ({ code }: { code: string }) => {
 
       setLastCandle(data);
 
-      if (!isNextCandleFetched) {
-        setIsNextCandleFetched(true);
+      if (isNextCandleFetched) {
+        setIsNextCandleFetched(false);
       }
     } else {
-      if (isNextCandleFetched) {
-        refetch();
+      if (!isNextCandleFetched) {
+        fetchNextCandle(nextCandleTime);
         setIsNextCandleFetched(true);
       }
     }

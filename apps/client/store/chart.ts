@@ -62,7 +62,7 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
   return {
     queryKey: ['candle', options.code, options.type, options.minutes],
     queryFn: async ({ pageParam }) => {
-      if (options.code === undefined) return;
+      if (!options.code) return;
 
       const res = await fetchCandleData({
         market: options.code,
@@ -77,7 +77,7 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
       return sortedData;
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage && lastPage.length === 200) {
+      if (lastPage && lastPage.length >= 200) {
         const firstData = lastPage[0];
         const to = dayjs
           .unix(parseTime(firstData.time) - 1)
