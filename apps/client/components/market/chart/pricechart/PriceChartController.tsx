@@ -9,9 +9,11 @@ import {
   minutesOptionAtom,
   priceChartOptionAtom,
   setPriceChartOptionAtom,
+  selectedPriceChartOptionAtom,
 } from '@/store/chart';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { CandleType, CandleUnit } from '@/types/upbit';
+import { queryClientAtom } from 'jotai-tanstack-query';
 
 interface Option {
   type: CandleType;
@@ -31,6 +33,9 @@ const PriceChartController = () => {
 
   const selectedPriceChartOption = useAtomValue(priceChartOptionAtom);
   const selectedMinutesOption = useAtomValue(minutesOptionAtom);
+  const selectedOptions = useAtomValue(selectedPriceChartOptionAtom);
+
+  const queryClient = useAtomValue(queryClientAtom);
 
   const setOption = useSetAtom(setPriceChartOptionAtom);
   const [isSelectedMinuteOption, setIsSelectedMinuteOption] = useAtom(
@@ -53,6 +58,20 @@ const PriceChartController = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (selectedOptions.type === 'minutes') {
+      console.log(selectedOptions);
+      queryClient.removeQueries({
+        queryKey: [
+          'candle',
+          selectedOptions.code,
+          selectedOptions.type,
+          selectedOptions.minutes,
+        ],
+      });
+    }
+  }, [selectedOptions]);
 
   return (
     <div className={styles.chartHeaderContainer}>

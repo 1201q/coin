@@ -250,11 +250,11 @@ const PriceChart = ({ code }: { code: string }) => {
     candleSeriesRef.current.setData(sortedPrices);
     volumeSeriesRef.current.setData(sortedVolumes);
 
-    console.log(
-      sortedPrices.map((item) =>
+    console.log({
+      data: sortedPrices.map((item) =>
         dayjs.unix(parseTime(item.time)).format('YYYY-MM-DD HH:mm'),
       ),
-    );
+    });
 
     currentRange &&
       chartClientRef.current.timeScale().setVisibleLogicalRange(currentRange);
