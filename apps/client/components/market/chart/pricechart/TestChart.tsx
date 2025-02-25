@@ -4,7 +4,7 @@ import PriceChartController from './PriceChartController';
 const TestChart = ({ code }: { code: string }) => {
   return (
     <div className={styles.container}>
-      <PriceChartController />
+      <PriceChartController code={code} />
     </div>
   );
 };

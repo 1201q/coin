@@ -23,7 +23,7 @@ const PriceChartClient = ({ code }: { code: string }) => {
   return (
     <div className={styles.container}>
       <PriceChartController code={code} />
-      <Suspense fallback={<div>로딩</div>}>
+      <Suspense fallback={<div>1231231313</div>}>
         <PriceChart code={code} />
       </Suspense>
     </div>

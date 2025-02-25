@@ -3,7 +3,14 @@ import {
   selectedPriceChartOptionAtom,
 } from '@/store/chart';
 import { useAtomValue } from 'jotai';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import styles from './pricechart.module.css';
 import {
   CandlestickSeries,
