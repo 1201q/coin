@@ -1,48 +1,35 @@
 import {
-  candleQueryAtom,
-  PriceChartOption,
+  candleHistoryQueryAtom,
   selectedPriceChartOptionAtom,
 } from '@/store/chart';
 import { useAtomValue } from 'jotai';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './pricechart.module.css';
 import {
   CandlestickSeries,
-  CandlestickSeriesOptions,
-  ChartOptions,
-  CrosshairMode,
-  DeepPartial,
   HistogramSeries,
   IChartApi,
   ISeriesApi,
   LogicalRange,
-  TickMarkType,
-  Time,
   createChart,
 } from 'lightweight-charts';
 
 import {
-  convertCandleData,
   convertPriceData,
   convertVolumeData,
-  PriceCandle,
   PriceChart as PriceChartType,
-  TickerData,
 } from '@/types/upbit';
-import { chartMinMove, chartVolume } from '@/utils/formatting';
-import dayjs, { Dayjs } from 'dayjs';
-import { parseTime } from '@/utils/time';
+import { chartVolume } from '@/utils/formatting';
+import dayjs from 'dayjs';
+import { getNextCandleTime } from '@/utils/time';
 import { throttle } from '@/utils/throttle';
 import { useCoin } from '@/store/utils';
-import { queryClientAtom } from 'jotai-tanstack-query';
-import { fetchCandleData } from '@/utils/chart';
-
-const mainblue = 'rgba(74, 133, 253, 1)';
-const mainred = 'rgb(240, 97, 109)';
-
-const mainborder = 'rgb(209, 217, 224)';
-const lighterborder = 'rgba(237, 237, 237,0.5)';
-const fontgray = '#64748b';
+import {
+  getCandleStickSeriesOptions,
+  getChartOptions,
+  getVolumeCandleWithColor,
+} from './settings/utils';
+import { useUpdateFirstPageQuery } from '@/hooks/useUpdateFirstPageQuery';
 
 const PriceChart = ({ code }: { code: string }) => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -50,121 +37,63 @@ const PriceChart = ({ code }: { code: string }) => {
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'>>(null);
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'>>(null);
 
-  const coin = useCoin(code);
+  const lastCandleRef = useRef<PriceChartType | null>(null);
 
-  const option = useAtomValue(selectedPriceChartOptionAtom);
-  const { data, fetchNextPage, hasNextPage, isFetching, isPending, refetch } =
-    useAtomValue(candleQueryAtom);
+  const chartOptions = useAtomValue(selectedPriceChartOptionAtom);
+  const { data, fetchNextPage, hasNextPage, isFetching, isPending } =
+    useAtomValue(candleHistoryQueryAtom);
+
+  const update = useUpdateFirstPageQuery(code);
+
+  const ticker = useCoin(code);
   const candles = data.pages;
-  const [lastCandle, setLastCandle] = useState(candles[candles.length - 1]);
-  const [isNextCandleFetched, setIsNextCandleFetched] = useState(true);
 
-  const queryClient = useAtomValue(queryClientAtom);
+  const [hasFetchedLatest, setHasFetchedLatest] = useState(false);
 
-  useEffect(() => {
-    if (option.code !== code) return;
-    if (candles.length === 0) return;
-    setLastCandle(candles[candles.length - 1]);
-  }, [candles]);
+  const throttleFunc = useMemo(() => throttle(250), []);
 
-  const getChartOptions = (
-    container: HTMLDivElement,
-    option: PriceChartOption,
-  ): DeepPartial<ChartOptions> => {
-    return {
-      width: container.clientWidth,
-      height: container.clientHeight,
-      localization: {
-        locale: 'ko-kr',
-        timeFormatter: (time: number) => {
-          if (option.type === 'minutes') {
-            return dayjs.unix(time).format('YYYY-MM-DD  HH:mm');
+  const fetchPreviousCandleData = useCallback(
+    (range: LogicalRange) => {
+      if ((range.from < 60 || range.from < 0) && chartOptions.code === code) {
+        throttleFunc(() => {
+          if (hasNextPage && !isFetching && !isPending) {
+            fetchNextPage();
           } else {
-            return dayjs.unix(time).format('YYYY-MM-DD');
+            console.log('실행x');
           }
-        },
-      },
+        });
+      }
+    },
+    [
+      chartOptions.code,
+      code,
+      throttleFunc,
+      hasNextPage,
+      isFetching,
+      isPending,
+      fetchNextPage,
+    ],
+  );
 
-      layout: {
-        panes: {
-          separatorColor: mainborder,
-        },
-        textColor: fontgray,
-        fontFamily: 'Pretendard',
-      },
+  const getSortedData = (candles: PriceChartType[]) => {
+    const sortedPrices = candles.length > 0 ? convertPriceData(candles) : [];
+    const sortedVolumes =
+      candles.length > 0 && sortedPrices.length > 0
+        ? getVolumeCandleWithColor(convertVolumeData(candles), sortedPrices)
+        : [];
 
-      grid: {
-        vertLines: {
-          color: lighterborder,
-        },
-        horzLines: {
-          color: lighterborder,
-        },
-      },
-
-      rightPriceScale: {
-        borderColor: mainborder,
-        autoScale: true,
-      },
-      crosshair: {
-        mode: CrosshairMode.Normal,
-      },
-      timeScale: {
-        borderColor: mainborder,
-        allowShiftVisibleRangeOnWhitespaceReplacement: true,
-
-        timeVisible: true,
-        rightOffset: 10,
-        tickMarkFormatter: (time: Time) => {
-          if (option.type === 'minutes') {
-            return dayjs.unix(parseTime(time)).format('HH:mm');
-          }
-          return null;
-        },
-
-        minBarSpacing: 1,
-      },
-    };
-  };
-
-  const getCandleStickSeriesOptions = (
-    firstItemClose: number,
-  ): DeepPartial<CandlestickSeriesOptions> => {
-    return {
-      upColor: mainred,
-      downColor: mainblue,
-      wickDownColor: mainblue,
-      wickUpColor: mainred,
-      borderVisible: false,
-      priceFormat: {
-        minMove: chartMinMove(firstItemClose),
-      },
-    };
-  };
-
-  const throttleFunc = useMemo(() => {
-    return throttle(250);
-  }, []);
-
-  const fetchPreviousCandleData = (range: LogicalRange) => {
-    if ((range.from < 60 || range.from < 0) && option.code === code) {
-      throttleFunc(() => {
-        if (hasNextPage && !isFetching && !isPending) {
-          fetchNextPage();
-        } else {
-          console.log('실행되지안흥ㅁ');
-        }
-      });
-    }
+    return { price: sortedPrices, volume: sortedVolumes };
   };
 
   useEffect(() => {
-    if (!chartRef.current) return;
-    if (candles.length === 0) return;
+    if (!chartRef.current || candles.length === 0) return;
+
+    setHasFetchedLatest(false);
+    lastCandleRef.current = null;
 
     const chart = createChart(
       chartRef.current,
-      getChartOptions(chartRef.current, option),
+      getChartOptions(chartRef.current, chartOptions),
     );
 
     chartClientRef.current = chart;
@@ -212,158 +141,83 @@ const PriceChart = ({ code }: { code: string }) => {
       range && fetchPreviousCandleData(range);
     });
 
+    lastCandleRef.current = candles[candles.length - 1];
+
     return () => {
       window.removeEventListener('resize', handleResize);
       chart.remove();
-
-      chart.timeScale().unsubscribeVisibleLogicalRangeChange((range) => {
-        range && fetchPreviousCandleData(range);
-      });
     };
-  }, [option]);
+  }, [chartOptions]);
 
   useEffect(() => {
-    if (!chartClientRef.current) return;
-    if (!candleSeriesRef.current) return;
-    if (!volumeSeriesRef.current) return;
-    if (option.code !== code) return;
+    if (
+      !chartClientRef.current ||
+      !candleSeriesRef.current ||
+      !volumeSeriesRef.current
+    )
+      return;
+
+    const { price, volume } = getSortedData(candles);
+
+    candleSeriesRef.current.setData(price);
+    volumeSeriesRef.current.setData(volume);
 
     const currentRange = chartClientRef.current
       .timeScale()
       .getVisibleLogicalRange();
 
-    const sortedPrices = candles.length > 0 ? convertPriceData(candles) : [];
-    const sortedVolumes =
-      candles.length > 0 && sortedPrices.length > 0
-        ? convertVolumeData(candles).map((item, index) => {
-            return {
-              time: item.time,
-              value: item.value / 1000000,
-              color:
-                sortedPrices[index].close >= sortedPrices[index].open
-                  ? mainred
-                  : mainblue,
-            };
-          })
-        : [];
-
-    candleSeriesRef.current.setData(sortedPrices);
-    volumeSeriesRef.current.setData(sortedVolumes);
-
-    console.log({
-      data: sortedPrices.map((item) =>
-        dayjs.unix(parseTime(item.time)).format('YYYY-MM-DD HH:mm'),
-      ),
-    });
-
-    currentRange &&
+    if (currentRange) {
       chartClientRef.current.timeScale().setVisibleLogicalRange(currentRange);
+    }
   }, [candles]);
 
-  const fetchNextCandle = async (nextCandleTime: dayjs.Dayjs) => {
-    const lastData = lastCandle;
-    console.log(`마지막 봉 : ${parseTime(lastData.time)}`);
-    console.log(`새로운 봉 : ${nextCandleTime.unix()}`);
-
-    setTimeout(async () => {
-      try {
-        const newCandleData = await fetchCandleData({
-          market: code,
-          type: option.type,
-          unit: option.minutes,
-        });
-
-        const lastCandleIndex = newCandleData.convertedData.findIndex(
-          (item) => item.time === lastData.time,
-        );
-        const newCandleIndex = newCandleData.convertedData.findIndex(
-          (item) => item.time === nextCandleTime.unix(),
-        );
-
-        if (lastCandleIndex !== -1 && newCandleIndex !== -1) {
-          console.log(
-            `데이터 확인 마지막 봉: ${lastData.time}, 새로운 봉: ${nextCandleTime.unix()}`,
-          );
-
-          queryClient.setQueryData(
-            ['candle', code, option.type, option.minutes],
-            (oldData: { pages: any }) => {
-              if (!oldData) return;
-
-              const updatePages = [...oldData.pages];
-
-              updatePages[0] = [
-                ...updatePages[0].slice(0, -1),
-                newCandleData.convertedData[lastCandleIndex],
-              ];
-
-              updatePages[0].push(newCandleData.convertedData[newCandleIndex]);
-
-              return { ...oldData, pages: updatePages };
-            },
-          );
-
-          setLastCandle(newCandleData.convertedData[newCandleIndex]);
-        } else {
-          console.log('데이터가 존재하지않습니다.');
-          fetchNextCandle(nextCandleTime);
-        }
-      } catch (error) {
-        console.error(error);
-        fetchNextCandle(nextCandleTime);
-      }
-    }, 1000);
-  };
-
   useEffect(() => {
-    if (!coin || !lastCandle) return;
-    if (option.code !== code) return;
-    if (!chartClientRef.current) return;
-    if (!candleSeriesRef.current) return;
-    if (!volumeSeriesRef.current) return;
-    if (!lastCandle) return;
+    if (chartOptions.code !== code) return;
+    if (!ticker) return;
+    if (
+      !chartClientRef.current ||
+      !candleSeriesRef.current ||
+      !volumeSeriesRef.current
+    )
+      return;
+    if (lastCandleRef.current === null) return;
 
-    const nextCandleTime = dayjs
-      .unix(parseTime(lastCandle.time))
-      .add(
-        option.type === 'minutes' && option.minutes ? option.minutes : 1,
-        option.type,
-      );
-    const newCandleTime = dayjs(coin.trade_timestamp).add(-9, 'hours');
+    const updatedCandleData = {
+      ...candles[candles.length - 1],
+      close: ticker.trade_price,
+      high: Math.max(lastCandleRef.current.high, ticker.trade_price),
+      low: Math.min(lastCandleRef.current.low, ticker.trade_price),
+      volume:
+        chartOptions.type === 'minutes'
+          ? lastCandleRef.current.volume + ticker.trade_volume
+          : lastCandleRef.current.volume + ticker.trade_volume,
+    };
 
-    if (nextCandleTime.isAfter(newCandleTime)) {
-      const data = {
-        ...lastCandle,
-        close: coin.trade_price,
-        high: Math.max(coin.trade_price, lastCandle.high),
-        low: Math.min(coin.trade_price, lastCandle.low),
-        volume: lastCandle.volume + coin.trade_volume,
-      };
+    const { price, volume } = getSortedData([updatedCandleData]);
 
-      const [candle] = convertPriceData([data]);
-      const [volume] = convertVolumeData([data]).map((item) => {
-        return {
-          time: item.time,
-          value: item.value / 1000000,
-          color: candle.close >= candle.open ? mainred : mainblue,
-        };
-      });
+    const nextCandleTime = getNextCandleTime(
+      candles[candles.length - 1].time,
+      chartOptions,
+    );
+    const latestCandleTime = dayjs(ticker.trade_timestamp);
 
-      candleSeriesRef.current.update(candle);
-      volumeSeriesRef.current.update(volume);
-
-      setLastCandle(data);
-
-      if (isNextCandleFetched) {
-        setIsNextCandleFetched(false);
+    if (nextCandleTime.isBefore(latestCandleTime)) {
+      if (!hasFetchedLatest) {
+        setHasFetchedLatest(true);
+        setTimeout(() => {
+          update.updateFirstPageQuery();
+        }, 1500);
       }
     } else {
-      if (!isNextCandleFetched) {
-        fetchNextCandle(nextCandleTime);
-        setIsNextCandleFetched(true);
+      candleSeriesRef.current.update(price[0]);
+      volumeSeriesRef.current.update(volume[0]);
+      lastCandleRef.current = updatedCandleData;
+
+      if (hasFetchedLatest) {
+        setHasFetchedLatest(false);
       }
     }
-  }, [coin]);
+  }, [candles, ticker, chartOptions, code, hasFetchedLatest]);
 
   return <div ref={chartRef} className={styles.priceChart}></div>;
 };

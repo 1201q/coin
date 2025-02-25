@@ -16,7 +16,8 @@ import {
   Trade,
   TradeData,
 } from '@/types/upbit';
-import { atomWithDefault } from 'jotai/utils';
+import { atomWithDefault, atomWithReset } from 'jotai/utils';
+import { coinAtom } from './chart';
 
 type SocketEvent = 'connect' | 'disconnect';
 type StatusEvent =

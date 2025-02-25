@@ -1,6 +1,6 @@
 import { CandleType, CandleUnit } from '@/types/upbit';
 import { fetchCandleData } from '@/utils/chart';
-import { parseTime } from '@/utils/time';
+import { parseTime, unixToDayjs } from '@/utils/time';
 import dayjs from 'dayjs';
 import { atom } from 'jotai';
 import { atomWithSuspenseInfiniteQuery } from 'jotai-tanstack-query';
@@ -56,7 +56,7 @@ export const candleToAtom = atom<string | null>(null);
 export const isSelectedMinuteOptionAtom = atom(false);
 export const isChartOptionDropDownOpenAtom = atom(false);
 
-export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
+export const candleHistoryQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
   const options = get(selectedPriceChartOptionAtom);
 
   return {
@@ -69,15 +69,23 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
         type: options.type,
         unit: options.minutes,
         to: typeof pageParam === 'string' ? pageParam : undefined,
+        ...(!pageParam && { count: 150 }),
       });
 
       const sortedData = res.convertedData.sort(
         (a, b) => parseTime(a.time) - parseTime(b.time),
       );
+
+      console.log(
+        unixToDayjs(sortedData[sortedData.length - 1].time)
+          .add(9, 'hours')
+          .format('YYYY-MM-DD HH:mm:ss'),
+      );
+
       return sortedData;
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage && lastPage.length >= 200) {
+      if (lastPage && lastPage.length >= 150) {
         const firstData = lastPage[0];
         const to = dayjs
           .unix(parseTime(firstData.time) - 1)
@@ -100,8 +108,8 @@ export const candleQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
       pageParams: data.pageParams,
     }),
 
-    staleTime: 1000 * 60,
-    gcTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
     initialPageParam: undefined,
   };
 });

@@ -10,6 +10,7 @@ interface FetchCandleProps {
   unit?: CandleUnit;
   to?: string;
   type: CandleType;
+  count?: number;
 }
 
 export const fetchCandleData = async ({
@@ -17,6 +18,7 @@ export const fetchCandleData = async ({
   unit,
   to,
   type,
+  count,
 }: FetchCandleProps) => {
   const url = new URL(`https://api.coingosu.live/upbit/candle/${type}`);
   url.searchParams.append('market', market);
@@ -27,6 +29,10 @@ export const fetchCandleData = async ({
 
   if (to) {
     url.searchParams.append('to', to);
+  }
+
+  if (count) {
+    url.searchParams.append('count', count.toString());
   }
 
   const res = await fetch(url.toString());

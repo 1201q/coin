@@ -8,12 +8,12 @@ import {
   isSelectedMinuteOptionAtom,
   minutesOptionAtom,
   priceChartOptionAtom,
-  setPriceChartOptionAtom,
   selectedPriceChartOptionAtom,
+  setPriceChartOptionAtom,
 } from '@/store/chart';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { CandleType, CandleUnit } from '@/types/upbit';
-import { queryClientAtom } from 'jotai-tanstack-query';
+import { useUpdateFirstPageQuery } from '@/hooks/useUpdateFirstPageQuery';
 
 interface Option {
   type: CandleType;
@@ -28,14 +28,12 @@ const options: Option[] = [
 
 const MINUTES_OPTIONS: CandleUnit[] = [1, 3, 5, 10, 15, 30, 60];
 
-const PriceChartController = () => {
+const PriceChartController = ({ code }: { code: string }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const selectedPriceChartOption = useAtomValue(priceChartOptionAtom);
   const selectedMinutesOption = useAtomValue(minutesOptionAtom);
   const selectedOptions = useAtomValue(selectedPriceChartOptionAtom);
-
-  const queryClient = useAtomValue(queryClientAtom);
 
   const setOption = useSetAtom(setPriceChartOptionAtom);
   const [isSelectedMinuteOption, setIsSelectedMinuteOption] = useAtom(
@@ -44,6 +42,8 @@ const PriceChartController = () => {
   const [isChartOptionDropDownOpen, setIsChartOptionDropDownOpen] = useAtom(
     isChartOptionDropDownOpenAtom,
   );
+
+  const update = useUpdateFirstPageQuery(code);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -60,17 +60,9 @@ const PriceChartController = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedOptions.type === 'minutes') {
-      console.log(selectedOptions);
-      queryClient.removeQueries({
-        queryKey: [
-          'candle',
-          selectedOptions.code,
-          selectedOptions.type,
-          selectedOptions.minutes,
-        ],
-      });
-    }
+    if (code !== selectedOptions.code) return;
+
+    update.updateFirstPageQuery();
   }, [selectedOptions]);
 
   return (
@@ -78,7 +70,6 @@ const PriceChartController = () => {
       <div className={styles.minutesChartOption}>
         <button
           onClick={() => {
-            console.log(isSelectedMinuteOption);
             if (!isSelectedMinuteOption) {
               setIsSelectedMinuteOption(true);
             } else {

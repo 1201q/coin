@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import styles from './pricechart.module.css';
 import PriceChartController from './PriceChartController';
 import { coinAtom, hydratedCoinAtom } from '@/store/chart';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useHydrateAtoms } from 'jotai/utils';
 import PriceChart from './PriceChart';
 
@@ -22,8 +22,10 @@ const PriceChartClient = ({ code }: { code: string }) => {
 
   return (
     <div className={styles.container}>
-      <PriceChartController />
-      <PriceChart code={code} />
+      <PriceChartController code={code} />
+      <Suspense fallback={<div>로딩</div>}>
+        <PriceChart code={code} />
+      </Suspense>
     </div>
   );
 };
