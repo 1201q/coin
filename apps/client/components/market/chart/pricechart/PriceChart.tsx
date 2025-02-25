@@ -43,7 +43,6 @@ const PriceChart = ({ code }: { code: string }) => {
   const chartClientRef = useRef<IChartApi>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'>>(null);
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'>>(null);
-
   const lastCandleRef = useRef<PriceChartType | null>(null);
 
   const chartOptions = useAtomValue(selectedPriceChartOptionAtom);
@@ -111,13 +110,17 @@ const PriceChart = ({ code }: { code: string }) => {
       1,
     );
 
-    volumeSeriesRef.current = chart.addSeries(HistogramSeries, {
-      priceFormat: {
-        type: 'custom',
-        formatter: chartVolume,
+    volumeSeriesRef.current = chart.addSeries(
+      HistogramSeries,
+      {
+        priceFormat: {
+          type: 'custom',
+          formatter: chartVolume,
+        },
+        priceLineVisible: false,
       },
-      priceLineVisible: false,
-    });
+      0,
+    );
 
     volumeSeriesRef.current.priceScale().applyOptions({
       scaleMargins: {
@@ -133,17 +136,6 @@ const PriceChart = ({ code }: { code: string }) => {
       panes[1].setHeight(350);
     }
 
-    const handleResize = () => {
-      if (chartRef.current) {
-        chart.applyOptions({
-          width: chartRef.current.clientWidth,
-          height: chartRef.current.clientHeight,
-        });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
     chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
       range && fetchPreviousCandleData(range);
     });
@@ -151,7 +143,6 @@ const PriceChart = ({ code }: { code: string }) => {
     lastCandleRef.current = candles[candles.length - 1];
 
     return () => {
-      window.removeEventListener('resize', handleResize);
       chart.remove();
     };
   }, [chartOptions]);
@@ -226,7 +217,11 @@ const PriceChart = ({ code }: { code: string }) => {
     }
   }, [candles, ticker, chartOptions, code, hasFetchedLatest]);
 
-  return <div ref={chartRef} className={styles.priceChart}></div>;
+  return (
+    <>
+      <div ref={chartRef} className={styles.priceChart}></div>
+    </>
+  );
 };
 
 export default PriceChart;

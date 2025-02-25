@@ -76,12 +76,6 @@ export const candleHistoryQueryAtom = atomWithSuspenseInfiniteQuery((get) => {
         (a, b) => parseTime(a.time) - parseTime(b.time),
       );
 
-      console.log(
-        unixToDayjs(sortedData[sortedData.length - 1].time)
-          .add(9, 'hours')
-          .format('YYYY-MM-DD HH:mm:ss'),
-      );
-
       return sortedData;
     },
     getNextPageParam: (lastPage) => {
