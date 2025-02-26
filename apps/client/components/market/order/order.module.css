@@ -3,3 +3,33 @@
   flex-direction: column;
   height: 100%;
 }
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 12px;
+}
+
+.optionContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+}
+
+.inputContainer {
+  flex: 1;
+  background-color: var(--bg-gray-color);
+  height: 28px;
+}
+
+.optionContainer label {
+  font-size: 15px;
+  color: var(--font-black-color);
+  white-space: nowrap;
+}
+
+.inputContainer input {
+  height: 100%;
+  background-color: blue;
+}

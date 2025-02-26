@@ -30,7 +30,7 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <div>
+    <>
       <div className={styles.logoContainer}>1</div>
       <nav className={styles.navContainer}>
         {MENU.map(({ id, href, icon: Icon, label }) => (
@@ -48,6 +48,6 @@ export default function Sidebar() {
           </Link>
         ))}
       </nav>
-    </div>
+    </>
   );
 }
