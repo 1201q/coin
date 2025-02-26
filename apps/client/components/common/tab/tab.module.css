@@ -40,3 +40,7 @@
   background-color: var(--font-black-color);
   margin-top: 2.2px;
 }
+
+.flex1 {
+  flex: 1;
+}

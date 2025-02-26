@@ -42,54 +42,55 @@ const Websocket: React.FC = () => {
   }, [socket, pathname, tickerStatus]);
 
   return (
-    <div
-      style={{
-        width: '150px',
-        backgroundColor: '#f2f4f6',
-        height: 'min-content',
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        zIndex: 20000,
-      }}
-    >
-      <div>
-        <span>ticker: </span>
-        <span>{tickerStatus ? 'O' : 'X'}</span>
-      </div>
-      <div>
-        <span>room: </span>
-        <span>{room === '' ? '없음' : room}</span>
-      </div>
-      <div>
-        <button
-          onClick={() => {
-            setSocket({ action: 'emit', event: 'ticker' });
-          }}
-        >
-          ticker 클릭
-        </button>
+    <></>
+    // <div
+    //   style={{
+    //     width: '150px',
+    //     backgroundColor: '#f2f4f6',
+    //     height: 'min-content',
+    //     position: 'fixed',
+    //     top: 0,
+    //     right: 0,
+    //     zIndex: 20000,
+    //   }}
+    // >
+    //   <div>
+    //     <span>ticker: </span>
+    //     <span>{tickerStatus ? 'O' : 'X'}</span>
+    //   </div>
+    //   <div>
+    //     <span>room: </span>
+    //     <span>{room === '' ? '없음' : room}</span>
+    //   </div>
+    //   <div>
+    //     <button
+    //       onClick={() => {
+    //         setSocket({ action: 'emit', event: 'ticker' });
+    //       }}
+    //     >
+    //       ticker 클릭
+    //     </button>
 
-        <button
-          onClick={() => {
-            setSocket({ action: 'emit', event: 'ticker:stop' });
-          }}
-        >
-          ticker 중단
-        </button>
+    //     <button
+    //       onClick={() => {
+    //         setSocket({ action: 'emit', event: 'ticker:stop' });
+    //       }}
+    //     >
+    //       ticker 중단
+    //     </button>
 
-        <button
-          onClick={() => {
-            setSocket({ action: 'emit', event: 'leave' });
-          }}
-        >
-          leave
-        </button>
-      </div>
-      <div>
-        <p></p>
-      </div>
-    </div>
+    //     <button
+    //       onClick={() => {
+    //         setSocket({ action: 'emit', event: 'leave' });
+    //       }}
+    //     >
+    //       leave
+    //     </button>
+    //   </div>
+    //   <div>
+    //     <p></p>
+    //   </div>
+    // </div>
   );
 };
 
