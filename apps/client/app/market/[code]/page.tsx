@@ -35,7 +35,7 @@ export default async function MarketCodePage(props: Props) {
               <div className={styles.bottomContainer}>3123</div>
             </div>
             <div className={styles.rightContainer}>
-              <OrderClient />
+              <OrderClient code={code} />
             </div>
           </div>
         </div>

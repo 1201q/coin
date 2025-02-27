@@ -7,29 +7,102 @@
 .formContainer {
   display: flex;
   flex-direction: column;
-  padding: 0px 12px;
+  padding: 20px 12px;
+  row-gap: 15px;
 }
 
 .optionContainer {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  height: 60px;
+  margin: 0px 0px 0px 0px;
 }
 
-.inputContainer {
-  flex: 1;
-  background-color: var(--bg-gray-color);
-  height: 28px;
+.infoContainer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.infoContainer span {
+  font-size: 13px;
+}
+
+.numericText {
+  color: var(--font-black-color);
+  letter-spacing: -0.5px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .optionContainer label {
-  font-size: 15px;
-  color: var(--font-black-color);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--font-darkgray-color);
   white-space: nowrap;
 }
 
-.inputContainer input {
+.optionButtonContainer {
+  height: 25px;
+  display: flex;
+  gap: 8px;
+}
+
+.optionButtonContainer button {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.4px;
+  color: var(--font-darkgray-color);
   height: 100%;
-  background-color: blue;
+  border-radius: 6px;
+  border: 1px solid var(--border-main-color);
+  transition: background-color 0.2s;
+}
+
+.optionButtonContainer button:hover {
+  background-color: var(--main-gray-hover-color);
+}
+
+.divider {
+  margin: 5px 0px;
+  height: 1px;
+  background-color: var(--border-main2-color);
+}
+
+.submitButtonContainer {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 4fr 6fr;
+  column-gap: 8px;
+  height: 33px;
+}
+
+.submitButtonContainer button {
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: filter 0.2s;
+}
+
+.submitButtonContainer button:hover {
+  filter: brightness(0.9);
+}
+
+.resetButton {
+  background-color: var(--bg-gray-color);
+  color: var(--font-black-color);
+}
+
+.submitButton {
+  color: white;
+}
+
+.red {
+  background-color: var(--main-red-color);
+}
+
+.blue {
+  background-color: var(--main-blue-color);
 }

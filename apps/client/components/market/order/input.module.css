@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: var(--bg-gray-color);
+  height: 28px;
+
+  background-color: white;
+  position: relative;
+  border-radius: 6px;
+  border: 1px solid var(--border-main-color);
+  padding: 0px 0px 0px 9px;
+  overflow: hidden;
+}
+
+.inputContainer {
+  height: 100%;
+}
+
+.container input {
+  width: calc(100% - 54px);
+  height: 100%;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.4px;
+}
+
+.buttonContainer {
+  position: absolute;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--border-main-color);
+  height: 100%;
+  width: 50px;
+  gap: 1px;
+  border-left: 1px solid var(--border-main-color);
+}
+
+.stepperButton {
+  height: 100%;
+  flex: 1;
+  font-size: 15px;
+  background-color: var(--main-gray-hover-color);
+}
