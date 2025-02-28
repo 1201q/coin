@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import NumericStepperInput from './NumericStepperInput';
 import styles from './order.module.css';
+import { useCoin } from '@/store/utils';
+import { useSetAtom } from 'jotai';
+import { selectedPriceAtom } from '@/store/user';
 
 const OrderForm = ({
   selectedTab,
@@ -12,6 +15,17 @@ const OrderForm = ({
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // e.preventDefault();
   };
+
+  const coin = useCoin(code);
+  const setSelectedPrice = useSetAtom(selectedPriceAtom);
+
+  useEffect(() => {
+    if (coin) {
+      // console.log(coin.trade_price);
+      // setPrice(coin?.trade_price);
+      setSelectedPrice(coin.trade_price);
+    }
+  }, []);
 
   const [price, setPrice] = useState(0);
   const [amount, setAmount] = useState(0);
@@ -34,6 +48,7 @@ const OrderForm = ({
           setValue={setPrice}
         />
       </div>
+      {price}
       <div className={styles.optionContainer}>
         <label htmlFor="수량">수량</label>
         <NumericStepperInput
@@ -41,6 +56,7 @@ const OrderForm = ({
           placeholder="수량"
           value={amount}
           setValue={setAmount}
+          isDisplayButton={false}
         />
       </div>
       <div className={styles.optionButtonContainer}>

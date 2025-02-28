@@ -28,8 +28,10 @@ export const comma = (value: number, target: number) => {
     return target.toFixed(6);
   } else if (comparisonValue >= 0.0001) {
     return target.toFixed(7);
-  } else {
+  } else if (comparisonValue >= 0.00001) {
     return target.toFixed(8);
+  } else {
+    return '0';
   }
 };
 

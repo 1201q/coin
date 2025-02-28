@@ -2,6 +2,8 @@ import React from 'react';
 import styles from './orderbook.row.module.css';
 import { comma, orderbook, plusMark, rate } from '@/utils/formatting';
 import { useCoin } from '@/store/utils';
+import { useSetAtom } from 'jotai';
+import { selectedPriceAtom } from '@/store/user';
 
 type Type = 'buy' | 'sell';
 
@@ -68,6 +70,8 @@ const CenterComponent = ({ price, prevPrice, code }: SellBuyProps) => {
   const calc = (price - prevPrice) / prevPrice;
   const data = useCoin(code);
 
+  const setSelectedPrice = useSetAtom(selectedPriceAtom);
+
   const getColor = (calc: number) => {
     if (calc > 0) {
       return styles.red;
@@ -81,6 +85,7 @@ const CenterComponent = ({ price, prevPrice, code }: SellBuyProps) => {
   return (
     <div className={`${styles.centerContainer}`}>
       <div
+        onClick={() => setSelectedPrice(price)}
         className={`${styles.currentPriceContainer} ${price === data?.trade_price && styles.currentPrice}`}
       >
         <span className={`${styles.priceText} ${getColor(calc)}`}>
