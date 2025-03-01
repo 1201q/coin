@@ -4,10 +4,12 @@ import { useState } from 'react';
 import styles from './order.module.css';
 import Tab from '@/components/common/tab/Tab';
 import OrderForm from './OrderForm';
+import React from 'react';
 
 const OrderClient = ({ code }: { code: string }) => {
   const tabs = ['매수', '매도'];
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
+
   return (
     <div className={styles.container}>
       <Tab
@@ -23,4 +25,4 @@ const OrderClient = ({ code }: { code: string }) => {
   );
 };
 
-export default OrderClient;
+export default React.memo(OrderClient);

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import StepperInput from './StepperInput';
 import styles from './order.module.css';
-import { useCoin } from '@/store/utils';
-import { useAtom } from 'jotai';
+
+import { useAtomValue } from 'jotai';
 import { selectedPriceAtom } from '@/store/user';
 import OrderInput from './OrderInput';
 import {
@@ -10,6 +10,7 @@ import {
   MAX_ORDER_PRICE,
   MAX_ORDER_SUM,
 } from './constants/constants';
+import React from 'react';
 
 const OrderForm = ({
   selectedTab,
@@ -22,17 +23,13 @@ const OrderForm = ({
     // e.preventDefault();
   };
 
-  const coin = useCoin(code);
-  const [selectedPrice, setSelectedPrice] = useAtom(selectedPriceAtom);
+  const selectedPrice = useAtomValue(selectedPriceAtom);
 
   useEffect(() => {
-    if (coin) {
-      setSelectedPrice(coin.trade_price);
+    console.log(selectedPrice);
+    if (selectedPrice > 0) {
+      handlePriceChange(selectedPrice);
     }
-  }, []);
-
-  useEffect(() => {
-    handlePriceChange(selectedPrice);
   }, [selectedPrice]);
 
   const [krw, setKrw] = useState(20000000);
@@ -41,12 +38,17 @@ const OrderForm = ({
   const [sum, setSum] = useState(0);
   const [orderType, setOrderType] = useState<'지정가' | '시장가'>('지정가');
 
+  useEffect(() => {
+    setAmount(0);
+    setSum(0);
+  }, [selectedTab]);
+
   /* 
     관계 로직  
     4-1. 가격이 수정되면, 총액 = 가격 × 수량  
-         단, 만약 총액이 최대 총액(MAX_ORDER_SUM)을 초과하면, 
-         총액은 MAX_ORDER_SUM으로 고정하고 수량은 MAX_ORDER_SUM ÷ 가격로 조정.
-         또한, 수량이 최대 수량(MAX_ORDER_AMOUNT)을 초과하면, 수량을 클램핑합니다.
+        단, 만약 총액이 최대 총액(MAX_ORDER_SUM)을 초과하면, 
+        총액은 MAX_ORDER_SUM으로 고정하고 수량은 MAX_ORDER_SUM ÷ 가격로 조정.
+        또한, 수량이 최대 수량(MAX_ORDER_AMOUNT)을 초과하면, 수량을 클램핑합니다.
   */
   const handlePriceChange = (newPrice: number) => {
     // 최대 가격 체크
@@ -68,8 +70,8 @@ const OrderForm = ({
 
   /* 
           4-2. 수량이 수정되면, 가격은 그대로, 총액 = 가격 × 수량.
-               만약 총액이 MAX_ORDER_SUM을 초과하면, 총액은 MAX_ORDER_SUM으로, 
-               수량은 MAX_ORDER_SUM ÷ 가격로 조정.
+              만약 총액이 MAX_ORDER_SUM을 초과하면, 총액은 MAX_ORDER_SUM으로, 
+              수량은 MAX_ORDER_SUM ÷ 가격로 조정.
         */
   const handleAmountChange = (newAmount: number) => {
     newAmount = Math.min(newAmount, MAX_ORDER_AMOUNT);
@@ -84,7 +86,7 @@ const OrderForm = ({
 
   /* 
           4-3. 총액이 수정되면, 가격은 그대로, 수량 = 총액 ÷ 가격.
-               단, 만약 수량이 MAX_ORDER_AMOUNT을 초과하면, 수량을 클램핑하고 총액을 재계산.
+              단, 만약 수량이 MAX_ORDER_AMOUNT을 초과하면, 수량을 클램핑하고 총액을 재계산.
         */
   const handleSumChange = (newSum: number) => {
     newSum = Math.min(newSum, MAX_ORDER_SUM);
@@ -102,9 +104,9 @@ const OrderForm = ({
 
   /* 
           4-4. 예외 케이스: 만약 어느 한 값(또는 둘)이 최대치를 초과하면, 
-               가격은 그대로 두고 총액을 MAX_ORDER_SUM으로 클램핑, 
-               그리고 수량 = MAX_ORDER_SUM ÷ 가격로 조정.
-               (위 로직들이 기본적으로 이 역할을 합니다.)
+              가격은 그대로 두고 총액을 MAX_ORDER_SUM으로 클램핑, 
+              그리고 수량 = MAX_ORDER_SUM ÷ 가격로 조정.
+
         */
 
   const handleAmountButton = (ratio: number) => {
@@ -128,6 +130,12 @@ const OrderForm = ({
 
   const handleRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOrderType(event.target.id as '지정가' | '시장가');
+  };
+
+  const handleResetButton = () => {
+    setPrice(0);
+    setAmount(0);
+    setSum(0);
   };
 
   return (
@@ -162,44 +170,51 @@ const OrderForm = ({
           <span>{selectedTab === '매수' ? 'KRW' : code.split('-')[1]}</span>
         </div>
       </div>
-      <div className={styles.optionContainer}>
-        <label htmlFor="가격">가격</label>
-        <StepperInput
-          id="가격"
-          placeholder="가격"
-          value={price}
-          setValue={handlePriceChange}
-          maxPrice={MAX_ORDER_PRICE}
-        />
-      </div>
-      {price}
-      <div className={styles.optionContainer}>
-        <label htmlFor="수량">수량</label>
-        <OrderInput
-          id="수량"
-          placeholder="수량"
-          value={amount}
-          setValue={handleAmountChange}
-          inputType="quantity"
-          maxValue={MAX_ORDER_AMOUNT}
-        />
-      </div>
-      <div className={styles.optionButtonContainer}>
-        <button type="button" onClick={() => handleAmountButton(0.1)}>
-          10%
-        </button>
-        <button type="button" onClick={() => handleAmountButton(0.25)}>
-          25%
-        </button>
-        <button type="button" onClick={() => handleAmountButton(0.5)}>
-          50%
-        </button>
-        <button type="button" onClick={() => handleAmountButton(1)}>
-          최대
-        </button>
-      </div>
-      {amount}
-      <div className={styles.divider}></div>
+
+      {orderType === '지정가' && (
+        <>
+          {' '}
+          <div className={styles.optionContainer}>
+            <label htmlFor="가격">가격</label>
+            <StepperInput
+              id="가격"
+              placeholder="가격"
+              value={price}
+              setValue={handlePriceChange}
+              maxPrice={MAX_ORDER_PRICE}
+            />
+          </div>
+          {price}
+          <div className={styles.optionContainer}>
+            <label htmlFor="수량">수량</label>
+            <OrderInput
+              id="수량"
+              placeholder="수량"
+              value={amount}
+              setValue={handleAmountChange}
+              inputType="quantity"
+              maxValue={MAX_ORDER_AMOUNT}
+            />
+          </div>
+          <div className={styles.optionButtonContainer}>
+            <button type="button" onClick={() => handleAmountButton(0.1)}>
+              10%
+            </button>
+            <button type="button" onClick={() => handleAmountButton(0.25)}>
+              25%
+            </button>
+            <button type="button" onClick={() => handleAmountButton(0.5)}>
+              50%
+            </button>
+            <button type="button" onClick={() => handleAmountButton(1)}>
+              최대
+            </button>
+          </div>
+          {amount}
+          <div className={styles.divider}></div>
+        </>
+      )}
+
       <div className={styles.optionContainer}>
         <label htmlFor="총액">총액</label>
         <OrderInput
@@ -227,7 +242,11 @@ const OrderForm = ({
       </div>
       {sum}
       <div className={styles.submitButtonContainer}>
-        <button type="reset" className={styles.resetButton}>
+        <button
+          className={styles.resetButton}
+          type="reset"
+          onClick={handleResetButton}
+        >
           초기화
         </button>
         <button
@@ -241,4 +260,4 @@ const OrderForm = ({
   );
 };
 
-export default OrderForm;
+export default React.memo(OrderForm);
