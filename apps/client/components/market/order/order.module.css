@@ -106,3 +106,29 @@
 .blue {
   background-color: var(--main-blue-color);
 }
+
+.infoContainer input[type='radio'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  margin: 0px 2px 0px 10px;
+}
+
+.infoContainer input[type='radio']:checked {
+  border: 2px solid white;
+}
+
+.redradio {
+  background-color: var(--main-red-color);
+  box-shadow: 0 0 0 1.5px var(--main-red-color);
+}
+.blueradio {
+  background-color: var(--main-blue-color);
+  box-shadow: 0 0 0 1.5px var(--main-blue-color);
+}
