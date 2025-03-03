@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import styles from '../../main.module.css';
 
 interface Props {
@@ -24,7 +24,9 @@ export default function MarketPageLayout({
           <div className={styles.leftContainer}>
             <div className={styles.centerContainer}>
               <div className={styles.chartContainer}>{chart}</div>
-              <div className={styles.orderbookContainer}>{info}</div>
+              <div className={styles.orderbookContainer}>
+                <Suspense fallback={<div></div>}>{info}</Suspense>
+              </div>
             </div>
             <div className={styles.bottomContainer}>3123</div>
           </div>
