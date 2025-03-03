@@ -3,20 +3,20 @@
 import styles from './search.dialog.module.css';
 import SearchIcon from '@/public/search.svg';
 import SearchDialogItem from './SearchDialogItem';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { isSearchDialogOpenAtom } from '@/store/ui';
+import { useAtomValue } from 'jotai';
+
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
 import { motion } from 'framer-motion';
 import { tickersAtom } from '@/store/websocket';
 import { TickerData } from '@/types/upbit';
+import { useRouter } from 'next/navigation';
 
 const TABS = ['마켓', '즐겨찾기'];
 
 export default function SearchDialog() {
-  const setIsDialogOpen = useSetAtom(isSearchDialogOpenAtom);
-
   const data = useAtomValue(tickersAtom);
+  const router = useRouter();
 
   const [keyword, setKeyword] = useState('');
   const [selectedTab, setSelectedTab] = useState(TABS[0]);
@@ -29,7 +29,7 @@ export default function SearchDialog() {
 
   const handleBackgroundClick = (e: MouseEvent) => {
     if (bgRef.current && bgRef.current === e.target) {
-      setIsDialogOpen(false);
+      router.back();
     }
   };
 

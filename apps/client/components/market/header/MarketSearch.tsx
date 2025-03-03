@@ -2,9 +2,10 @@
 
 import Image from 'next/image';
 import styles from './marketsearch.module.css';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { loadableMarketAtom } from '@/store/atom';
-import { isSearchDialogOpenAtom } from '@/store/ui';
+
+import { useRouter, usePathname } from 'next/navigation';
 
 interface Props {
   market: string;
@@ -12,19 +13,20 @@ interface Props {
 
 export default function MarketSearch({ market }: Props) {
   const code = market.split('-')[1];
+  const router = useRouter();
+  const pathname = usePathname();
 
   const getMarket = useAtomValue(loadableMarketAtom);
-  const [isDialogOpen, setIsDialogOpen] = useAtom(isSearchDialogOpenAtom);
 
   return (
     <div
       className={styles.container}
       onClick={() => {
-        setIsDialogOpen((prev) => !prev);
+        router.push(`/market/${market}/list`);
       }}
     >
       <div
-        className={`${styles.searchContainer} ${isDialogOpen ? styles.open : ''}`}
+        className={`${styles.searchContainer} ${pathname.split('/')[3] === 'list' ? styles.open : ''}`}
       >
         <div className={styles.logoContainer}>
           <Image
