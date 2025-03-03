@@ -22,7 +22,7 @@ export default function MarketSearch({ market }: Props) {
     <div
       className={styles.container}
       onClick={() => {
-        router.push(`/market/${market}/list`);
+        router.push(`/market/${market}/list`, { scroll: false });
       }}
     >
       <div
