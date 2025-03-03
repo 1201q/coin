@@ -1,5 +1,5 @@
 import { convertTradeData, TradeSnapshot } from '@/types/upbit';
-import { Suspense } from 'react';
+
 import InfoClient from './InfoClient';
 
 async function getTrade(code: string) {
@@ -26,9 +26,5 @@ export default async function InfoServer({ code }: { code: string }) {
   );
   const convertData = uniqueData.map((item) => convertTradeData(item));
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <InfoClient data={convertData} code={code} />
-    </Suspense>
-  );
+  return <InfoClient data={convertData} code={code} />;
 }
