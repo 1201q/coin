@@ -23,9 +23,11 @@ export default function MarketPageLayout({
         <div className={styles.flexContainer}>
           <div className={styles.leftContainer}>
             <div className={styles.centerContainer}>
-              <div className={styles.chartContainer}>{chart}</div>
+              <div className={styles.chartContainer}>
+                <Suspense fallback={<div>차트 로딩</div>}>{chart}</Suspense>
+              </div>
               <div className={styles.orderbookContainer}>
-                <Suspense fallback={<div></div>}>{info}</Suspense>
+                <Suspense fallback={<div>인포 로딩</div>}>{info}</Suspense>
               </div>
             </div>
             <div className={styles.bottomContainer}>3123</div>
