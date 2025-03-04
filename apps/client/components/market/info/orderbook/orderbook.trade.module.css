@@ -3,13 +3,16 @@
   flex-direction: column;
   padding: 7px;
   row-gap: 7px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .itemContainer {
   display: flex;
   flex-direction: column;
   width: 100%;
-  user-select: none;
 }
 
 .priceText {

@@ -30,6 +30,7 @@
   font-family: var(--font-pretendard);
   font-variant-numeric: tabular-nums;
   color: var(--font-black-color);
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -60,4 +61,8 @@ button {
 
   border: none;
   background: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
