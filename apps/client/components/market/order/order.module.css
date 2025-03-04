@@ -86,10 +86,6 @@
   transition: filter 0.2s;
 }
 
-.submitButtonContainer button:hover {
-  filter: brightness(0.9);
-}
-
 .resetButton {
   background-color: var(--bg-gray-color);
   color: var(--font-black-color);

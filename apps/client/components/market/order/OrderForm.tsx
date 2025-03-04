@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import StepperInput from './StepperInput';
 import styles from './order.module.css';
-
+import { motion } from 'framer-motion';
 import { useAtomValue } from 'jotai';
 import { selectedPriceAtom } from '@/store/user';
 import OrderInput from './OrderInput';
@@ -242,19 +242,23 @@ const OrderForm = ({
       </div>
       {sum}
       <div className={styles.submitButtonContainer}>
-        <button
+        <motion.button
           className={styles.resetButton}
           type="reset"
           onClick={handleResetButton}
+          whileHover={{ filter: 'brightness(0.95)' }}
+          whileTap={{ scale: 0.97 }}
         >
           초기화
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           type="submit"
           className={`${styles.submitButton} ${selectedTab === '매수' ? styles.red : styles.blue}`}
+          whileHover={{ filter: 'brightness(0.9)' }}
+          whileTap={{ scale: 0.97 }}
         >
           주문
-        </button>
+        </motion.button>
       </div>
     </form>
   );

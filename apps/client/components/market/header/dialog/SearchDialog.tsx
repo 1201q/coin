@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai';
 
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { allMarketAtom } from '@/store/atom';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { tickersAtom } from '@/store/websocket';
 import { TickerData } from '@/types/upbit';
 import { useRouter } from 'next/navigation';
@@ -90,7 +90,12 @@ export default function SearchDialog() {
 
   return (
     <div className={styles.container} ref={bgRef}>
-      <div className={styles.dialogContainer}>
+      <motion.div
+        className={styles.dialogContainer}
+        initial={{ opacity: 0.5 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.1 }}
+      >
         {/* title */}
         <div className={styles.titleContainer}>
           <div className={styles.tabmenuContainer}>
@@ -167,7 +172,7 @@ export default function SearchDialog() {
             )}
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

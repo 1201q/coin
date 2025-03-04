@@ -6,6 +6,7 @@ import { useAtomValue } from 'jotai';
 import { loadableMarketAtom } from '@/store/atom';
 
 import { useRouter, usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 interface Props {
   market: string;
@@ -19,11 +20,12 @@ export default function MarketSearch({ market }: Props) {
   const getMarket = useAtomValue(loadableMarketAtom);
 
   return (
-    <div
+    <motion.div
       className={styles.container}
       onClick={() => {
         router.push(`/market/${market}/list`, { scroll: false });
       }}
+      whileTap={{ scale: 0.98 }}
     >
       <div
         className={`${styles.searchContainer} ${pathname.split('/')[3] === 'list' ? styles.open : ''}`}
@@ -51,6 +53,6 @@ export default function MarketSearch({ market }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

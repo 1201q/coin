@@ -84,7 +84,7 @@ const CenterComponent = ({ price, prevPrice, code }: SellBuyProps) => {
 
   return (
     <div className={`${styles.centerContainer}`}>
-      <div
+      <button
         onClick={() => setSelectedPrice(price)}
         className={`${styles.currentPriceContainer} ${price === data?.trade_price && styles.currentPrice}`}
       >
@@ -95,7 +95,7 @@ const CenterComponent = ({ price, prevPrice, code }: SellBuyProps) => {
           {plusMark(calc)}
           {rate(calc)}%
         </span>
-      </div>
+      </button>
     </div>
   );
 };
