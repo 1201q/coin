@@ -1,0 +1,210 @@
+.container {
+  left: 0;
+  top: 0;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 98;
+}
+
+.dialogContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 450px;
+  max-height: 80dvh;
+  background-color: white;
+  z-index: 99;
+  position: relative;
+  top: var(--header-height);
+  left: calc(var(--sidebar-width) + 10px);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 상단 컨테이너 */
+.titleContainer {
+  padding: 17px 16px 15px 18px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.searchContainer {
+  display: flex;
+  width: 200px;
+  height: 32px;
+  margin-bottom: 5px;
+
+  border-radius: 16px;
+}
+
+.loadingContainer {
+  height: 500px;
+}
+
+.inputBox {
+  flex: 1;
+}
+
+/* tab menu */
+.tabmenuContainer {
+  display: flex;
+  flex: 1;
+  column-gap: 15px;
+}
+
+.tabmenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40px;
+  height: 32px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.tabmenu span {
+  height: 100%;
+}
+
+/* 리스트 헤더 */
+.listHeaderContainer {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  padding: 0px 18px 5px 18px;
+  gap: 5px;
+}
+
+.listHeaderBox {
+  flex: 1;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.listHeaderText {
+  padding: 2px;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.contentsContainer {
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+.noresultContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80%;
+  line-height: 200%;
+}
+
+.alertText {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--font-black-color);
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.left {
+  flex: 1.5;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.right {
+  justify-content: flex-end;
+  text-align: right;
+  align-items: flex-end;
+}
+
+.text {
+  height: 19px;
+  border-radius: 5px;
+}
+
+.selected span {
+  font-weight: 800;
+  color: var(--font-black-color);
+}
+
+.listContainer {
+  display: flex;
+  height: 46px;
+  padding: 0px 18px 0px 17px;
+  gap: 5px;
+  margin: 2px 0px;
+}
+
+.logoBox {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.listBox {
+  flex: 1;
+  height: calc(100%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  column-gap: 10px;
+}
+
+.flex {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: 3px;
+}
+
+.left {
+  flex: 1.5;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.small {
+  height: 12px;
+}
+
+.text,
+.logoBox,
+.listHeaderText,
+.tabmenu,
+.searchContainer {
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-color: rgba(232, 230, 230, 0.2);
+  }
+  50% {
+    background-color: rgba(199, 204, 213, 0.8);
+  }
+  100% {
+    background-color: rgba(232, 230, 230, 0.2);
+  }
+}
