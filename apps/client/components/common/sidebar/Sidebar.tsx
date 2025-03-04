@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 
 import { useCallback, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import React from 'react';
 
 const MENU = [
   { id: 'market', href: '/market/KRW-BTC', icon: ChartIcon, label: '정보' },
@@ -16,7 +17,7 @@ const MENU = [
   { id: 'orders', href: '/orders', icon: NoteIcon, label: '주문' },
 ];
 
-export default function Sidebar() {
+const Sidebar = () => {
   const path = usePathname();
   const menu = path.split('/')[1];
 
@@ -51,4 +52,6 @@ export default function Sidebar() {
       </nav>
     </>
   );
-}
+};
+
+export default React.memo(Sidebar);
