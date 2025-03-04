@@ -5,6 +5,7 @@ import styles from './sidebar.module.css';
 import WalletIcon from '@/public/wallet.svg';
 import ChartIcon from '@/public/chart.svg';
 import NoteIcon from '@/public/note.svg';
+import { motion } from 'framer-motion';
 
 import { useCallback, useState } from 'react';
 import { usePathname } from 'next/navigation';
@@ -41,9 +42,9 @@ export default function Sidebar() {
             onMouseLeave={handleMouseLeave}
             className={menu === id || hovered === id ? styles.hovered : ''}
           >
-            <button className={styles.button}>
+            <motion.button className={styles.button} whileTap={{ scale: 0.95 }}>
               <Icon className={styles.svg} />
-            </button>
+            </motion.button>
             <p className={styles.buttonText}>{label}</p>
           </Link>
         ))}

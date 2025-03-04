@@ -14,6 +14,7 @@ import {
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { CandleType, CandleUnit } from '@/types/upbit';
 import { useUpdateFirstPageQuery } from '@/hooks/useUpdateFirstPageQuery';
+import { motion } from 'framer-motion';
 
 interface Option {
   type: CandleType;
@@ -68,7 +69,7 @@ const PriceChartController = ({ code }: { code: string }) => {
   return (
     <div className={styles.chartHeaderContainer}>
       <div className={styles.minutesChartOption}>
-        <button
+        <motion.button
           onClick={() => {
             if (!isSelectedMinuteOption) {
               setIsSelectedMinuteOption(true);
@@ -76,11 +77,12 @@ const PriceChartController = ({ code }: { code: string }) => {
               setIsChartOptionDropDownOpen(true);
             }
           }}
+          whileTap={{ scale: 0.95 }}
           className={`${styles.charOptionButton} ${isSelectedMinuteOption ? styles.selected : ''}`}
         >
           <span>{selectedMinutesOption}분</span>
           <AngleDown />
-        </button>
+        </motion.button>
         {isChartOptionDropDownOpen && (
           <div ref={containerRef} className={styles.minutesChartOptions}>
             {MINUTES_OPTIONS.map((option) => (
@@ -103,15 +105,16 @@ const PriceChartController = ({ code }: { code: string }) => {
       </div>
 
       {options.map((option) => (
-        <button
+        <motion.button
           onClick={() => {
             setOption({ type: option.type });
           }}
           key={option.type}
+          whileTap={{ scale: 0.95 }}
           className={`${styles.charOptionButton} ${selectedPriceChartOption === option.type && !isSelectedMinuteOption ? styles.selected : ''} `}
         >
           <span>{option.name}</span>
-        </button>
+        </motion.button>
       ))}
     </div>
   );

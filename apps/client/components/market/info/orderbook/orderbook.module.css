@@ -35,6 +35,7 @@
 
 .infoContainer {
   grid-area: info;
+  user-select: none;
 }
 
 .tradeContainer {
