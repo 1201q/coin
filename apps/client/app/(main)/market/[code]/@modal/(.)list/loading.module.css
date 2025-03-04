@@ -199,12 +199,12 @@
 
 @keyframes loading {
   0% {
-    background-color: rgba(232, 230, 230, 0.2);
+    background-color: rgba(199, 204, 213, 0.1);
   }
   50% {
-    background-color: rgba(199, 204, 213, 0.8);
+    background-color: rgba(199, 204, 213, 0.4);
   }
   100% {
-    background-color: rgba(232, 230, 230, 0.2);
+    background-color: rgba(199, 204, 213, 0.1);
   }
 }
