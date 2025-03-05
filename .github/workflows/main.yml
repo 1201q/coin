@@ -44,7 +44,8 @@ jobs:
             cd /home/ubuntu/coin
             sudo su
             docker system prune -f
-            echo "${{secrets.TEST_ENV}}" > .env
+            echo "TEST_ENV=${{secrets.TEST_ENV}}" > .env
+            echo "TEST_ENV2=${{secrets.TEST_ENV2}}" >> .env
             docker-compose down
             docker-compose pull
             docker-compose up -d --build
