@@ -22,10 +22,6 @@ jobs:
           docker build -t ${{secrets.DOCKERHUB_USERNAME}}/coin ./apps/server
           docker push ${{secrets.DOCKERHUB_USERNAME}}/coin
 
-      - name: Generate .env file
-        run: |
-          echo "${{secrets.TEST_ENV}}" > /home/ubuntu/coin/.env
-
       - name: Send files
         uses: appleboy/scp-action@master
         with:
@@ -33,7 +29,7 @@ jobs:
           username: ${{secrets.SSH_USERNAME}}
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
-          source: "nginx.conf,docker-compose.yml,.env"
+          source: "nginx.conf, docker-compose.yml"
           target: /home/ubuntu/coin
           overwrite: true
 
@@ -48,6 +44,6 @@ jobs:
             cd /home/ubuntu/coin
             sudo su
             docker system prune -f
+            echo "${{secrets.TEST_ENV}}" > .env
             docker-compose down
-            docker-compose pull
             docker-compose up -d --build

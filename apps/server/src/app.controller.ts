@@ -4,6 +4,6 @@ import { Controller, Get } from "@nestjs/common";
 export class AppController {
   @Get()
   getHello(): string {
-    return `테스트 + ${process.env.TEST_ENV} 서버 `;
+    return `테스트 + ${process.env.TEST_ENV} `;
   }
 }

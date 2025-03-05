@@ -5,14 +5,14 @@ services:
     image: 1201q/coin:latest
     container_name: coin
     restart: always
-    env_file:
-      - .env
     expose:
       - "8000"
     networks:
       - app-network
+    env_file:
+      - .env
     environment:
-      TZ: "Asia/Seoul"
+      - TZ=Asia/Seoul
 
   nginx:
     image: nginx:latest
@@ -30,7 +30,7 @@ services:
     networks:
       - app-network
     environment:
-      TZ: "Asia/Seoul"
+      - TZ=Asia/Seoul
 
 networks:
   app-network:
