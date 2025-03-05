@@ -5,6 +5,8 @@ services:
     image: 1201q/coin:latest
     container_name: coin
     restart: always
+    env_file:
+      - .env
     expose:
       - "8000"
     networks:
