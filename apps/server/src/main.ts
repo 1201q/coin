@@ -8,12 +8,12 @@ async function bootstrap() {
 
   app.use(passport.initialize());
 
-  app.enableCors({
-    origin: ["https://coingosu.live", "http://localhost:5500"],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  });
+  // app.enableCors({
+  //   origin: ["https://coingosu.live", "http://localhost:5500"],
+  //   credentials: true,
+  //   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  //   allowedHeaders: ["Content-Type", "Authorization"],
+  // });
 
   app.useGlobalPipes(
     new ValidationPipe({
