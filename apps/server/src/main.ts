@@ -9,7 +9,7 @@ async function bootstrap() {
   app.use(passport.initialize());
 
   app.enableCors({
-    origin: "http://localhost:5500",
+    origin: ["https://coingosu.live", "http://localhost:5500"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
