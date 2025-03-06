@@ -46,6 +46,13 @@ jobs:
             docker system prune -f
             echo "TEST_ENV=${{secrets.TEST_ENV}}" > .env
             echo "TEST_ENV2=${{secrets.TEST_ENV2}}" >> .env
+            echo "GOOGLE_CLIENT_ID=${{secrets.GOOGLE_CLIENT_ID}}" >> .env
+            echo "GOOGLE_CLIENT_SECRET=${{secrets.GOOGLE_CLIENT_SECRET}}" >> .env
+            echo "GOOGLE_OAUTH_CALLBACK_URL=${{secrets.GOOGLE_OAUTH_CALLBACK_URL}}" >> .env
+            echo "JWT_SECRET=${{secrets.JWT_SECRET}}" >> .env
+            echo "DB_USERNAME=${{secrets.DB_USERNAME}}" >> .env
+            echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> .env
+            echo "DB_CONNECTION=${{secrets.DB_CONNECTION}}" >> .env
             docker-compose down
             docker-compose pull
             docker-compose up -d --build
