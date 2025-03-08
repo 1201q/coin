@@ -53,6 +53,7 @@ jobs:
             echo "DB_USERNAME=${{secrets.DB_USERNAME}}" >> .env
             echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> .env
             echo "DB_CONNECTION=${{secrets.DB_CONNECTION}}" >> .env
+            echo "JWT_REFRESH_SECRET=${{secrets.JWT_REFRESH_SECRET}}" >> .env
             docker-compose down
             docker-compose pull
             docker-compose up -d --build

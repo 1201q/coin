@@ -37,4 +37,17 @@ export class UserService {
       await queryRunner.release();
     }
   }
+
+  async updateRefreshToken(id: string, refreshToken: string) {
+    const user = await this.userRepository.findOne({ where: { user_id: id } });
+    if (!user) throw new Error("User not found");
+
+    user.refresh_token = refreshToken;
+    await this.userRepository.save(user);
+  }
+
+  async getRefreshToken(id: string) {
+    const user = await this.userRepository.findOne({ where: { user_id: id } });
+    return user.refresh_token || null;
+  }
 }

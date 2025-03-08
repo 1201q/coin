@@ -1,23 +1,54 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private configService: ConfigService,
+    private userService: UserService,
   ) {}
 
-  async generateJWT(user: any) {
-    if (!user || !user.email) {
-      throw new BadRequestException("Invalid user data: Email is required.");
-    }
+  async generateTokens(userId: string) {
+    const payload = { id: userId };
 
-    const payload = { email: user.email, sub: user.id };
-    return this.jwtService.sign(payload, {
+    const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>("JWT_SECRET"),
-      expiresIn: "1h",
+      expiresIn: "20s",
     });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
+      expiresIn: "7d",
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      const decoded = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
+      });
+
+      console.log(decoded);
+      const user = await this.userService.findUserByGoogleId(decoded.id);
+
+      if (!user || user.refresh_token !== refreshToken) {
+        throw new BadRequestException("Invalid refresh token");
+      }
+
+      const newToken = await this.generateTokens(user.user_id);
+
+      return { accessToken: newToken.accessToken };
+    } catch (error) {
+      throw new UnauthorizedException("Invalid refresh token");
+    }
   }
 }

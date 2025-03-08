@@ -1,4 +1,10 @@
-import { Controller, Get, Req, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Req,
+  UnauthorizedException,
+  UseGuards,
+} from "@nestjs/common";
 import { JwtAuthGuard } from "../guard/jwt-auth.guard";
 import { UserService } from "./user.service";
 import { TestUser, User } from "../types/entities/user.entity";
@@ -10,7 +16,11 @@ export class UserController {
   @Get("profile")
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
-    return req.user;
+    if (!req.user) {
+      throw new UnauthorizedException("인증되지 않은 사용자");
+    }
+
+    return { ...req.user, expiresIn: req.user.expiresIn };
   }
 
   @Get()

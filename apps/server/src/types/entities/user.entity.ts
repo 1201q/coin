@@ -40,6 +40,9 @@ export class User {
   @Column({ unique: true })
   wallet_id: string;
 
+  @Column({ type: "clob", nullable: true })
+  refresh_token: string;
+
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
@@ -49,7 +52,7 @@ export class User {
 
 export interface GoogleUser {
   provider: string;
-  id: string;
+  userId: string;
   email: string;
   name: string;
   accessToken: string;

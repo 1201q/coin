@@ -1,4 +1,13 @@
-import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { GoogleAuthGuard } from "../guard/google-auth.guard";
 import { Request, Response } from "express";
@@ -20,28 +29,29 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const user = req.user as GoogleUser;
+    const findUser = await this.userService.findUserByGoogleId(user.userId);
 
-    const findUser = await this.userService.findUserByGoogleId(user.id);
+    const { accessToken, refreshToken } = await this.authService.generateTokens(
+      user.userId,
+    );
 
     if (!findUser) {
       console.log("user not found");
 
-      const complete = await this.userService.createGoogleUser({
+      await this.userService.createGoogleUser({
         name: user.name,
         email: user.email,
-        user_id: user.id,
+        user_id: user.userId,
         type: "google",
       });
-      console.log(complete);
+
+      await this.userService.updateRefreshToken(user.userId, refreshToken);
     } else {
-      console.log("user found");
-      console.log(findUser);
+      await this.userService.updateRefreshToken(user.userId, refreshToken);
     }
 
-    const token = await this.authService.generateJWT(user);
-
     return res.redirect(
-      `http://localhost:5500/nestjs/login.html?token=${token}`,
+      `http://localhost:5500/nestjs/login.html?token=${accessToken}`,
     );
   }
 }
