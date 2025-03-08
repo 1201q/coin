@@ -6,7 +6,7 @@ import {
   GetOrderbookSnapshotDto,
   GetTickerSnapshotDto,
   GetTradeDto,
-} from "./types/upbit.dto";
+} from "../types/dtos/upbit.dto";
 import { SnapshotService } from "./snapshot.service";
 import { UpbitMarketUpdaterService } from "./upbit-market-updater.service";
 

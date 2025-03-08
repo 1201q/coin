@@ -1,7 +1,7 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { BehaviorSubject, Subject } from "rxjs";
 import * as WebSocket from "ws";
-import { Orderbook, Ticker, Trade } from "./types/upbit.entity";
+import { Orderbook, Ticker, Trade } from "../types/entities/upbit.entity";
 import { AppLogger } from "src/logger.service";
 
 export type SocketType = "ticker" | "orderbook" | "trade";

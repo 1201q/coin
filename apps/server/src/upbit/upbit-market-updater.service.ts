@@ -1,7 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { firstValueFrom, map } from "rxjs";
-import { MarketInfo } from "./types/upbit.entity";
+import { MarketInfo } from "../types/entities/upbit.entity";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { UpbitWebsocketStreamService } from "./upbit-websocket-stream.service";
 import { AppLogger } from "src/logger.service";

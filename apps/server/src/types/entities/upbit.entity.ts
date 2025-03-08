@@ -2,7 +2,7 @@ import {
   UPBIT_CANDLE_TYPE,
   UPBIT_CANDLE_UNIT,
   UPBIT_MARKET_TYPE,
-} from '../constants/constants';
+} from "../../upbit/constants/constants";
 
 export class MarketInfo {
   market: string;
@@ -41,7 +41,7 @@ export type TickerSnapshot = {
   low_price: number; // 저가
   trade_price: number; // 현재가
   prev_closing_price: number; // 전일 종가
-  change: 'RISE' | 'EVEN' | 'FALL'; // 전일 대비 상태
+  change: "RISE" | "EVEN" | "FALL"; // 전일 대비 상태
   change_price: number; // 전일 대비 금액
   change_rate: number; // 전일 대비 비율
   signed_change_price: number; // 부호 포함 전일 대비 금액
@@ -66,7 +66,7 @@ export type Ticker = {
   low_price: number; // 저가
   trade_price: number; // 현재가
   prev_closing_price: number; // 전일 종가
-  change: 'RISE' | 'EVEN' | 'FALL'; // 전일 대비
+  change: "RISE" | "EVEN" | "FALL"; // 전일 대비
   change_price: number; // 부호 없는 전일 대비 값
   signed_change_price: number; // 전일 대비 값
   change_rate: number; // 부호 없는 전일 대비 등락율
@@ -79,19 +79,19 @@ export type Ticker = {
   trade_date: string; // 최근 거래 일자(UTC) yyyyMMdd
   trade_time: string; // 최근 거래 시각(UTC) HHmmss
   trade_timestamp: number; // 체결 타임스탬프 (milliseconds)
-  ask_bid: 'ASK' | 'BID'; // 매수/매도 구분
+  ask_bid: "ASK" | "BID"; // 매수/매도 구분
   acc_ask_volume: number; // 누적 매도량
   acc_bid_volume: number; // 누적 매수량
   highest_52_week_price: number; // 52주 최고가
   highest_52_week_date: string; // 52주 최고가 달성일 yyyy-MM-dd
   lowest_52_week_price: number; // 52주 최저가
   lowest_52_week_date: string; // 52주 최저가 달성일 yyyy-MM-dd
-  market_state: 'PREVIEW' | 'ACTIVE' | 'DELISTED'; // 거래상태
+  market_state: "PREVIEW" | "ACTIVE" | "DELISTED"; // 거래상태
   is_trading_suspended?: boolean; // 거래 정지 여부 (*Deprecated)
   delisting_date?: string | null; // 거래지원 종료일
-  market_warning: 'NONE' | 'CAUTION'; // 유의 종목 여부
+  market_warning: "NONE" | "CAUTION"; // 유의 종목 여부
   timestamp: number; // 타임스탬프 (millisecond)
-  stream_type: 'SNAPSHOT' | 'REALTIME'; // 스트림 타입
+  stream_type: "SNAPSHOT" | "REALTIME"; // 스트림 타입
 };
 
 export type TradeSnapshot = {
@@ -103,7 +103,7 @@ export type TradeSnapshot = {
   trade_volume: number;
   prev_closing_price: number;
   change_price: number;
-  ask_bid: 'ASK' | 'BID'; // 매수/매도 구분 (ASK: 매도, BID: 매수)
+  ask_bid: "ASK" | "BID"; // 매수/매도 구분 (ASK: 매도, BID: 매수)
   sequential_id: number;
 };
 
@@ -112,9 +112,9 @@ export interface Trade {
   code: string; // 마켓 코드 (ex. KRW-BTC)
   trade_price: number; // 체결 가격
   trade_volume: number; // 체결량
-  ask_bid: 'ASK' | 'BID'; // 매수/매도 구분 (ASK: 매도, BID: 매수)
+  ask_bid: "ASK" | "BID"; // 매수/매도 구분 (ASK: 매도, BID: 매수)
   prev_closing_price: number; // 전일 종가
-  change: 'RISE' | 'EVEN' | 'FALL'; // 전일 대비 (RISE: 상승, EVEN: 보합, FALL: 하락)
+  change: "RISE" | "EVEN" | "FALL"; // 전일 대비 (RISE: 상승, EVEN: 보합, FALL: 하락)
   change_price: number; // 부호 없는 전일 대비 값
   trade_date: string; // 체결 일자 (UTC 기준) (yyyy-MM-dd)
   trade_time: string; // 체결 시각 (UTC 기준) (HH:mm:ss)
@@ -125,7 +125,7 @@ export interface Trade {
   best_ask_size: number; // 최우선 매도 잔량
   best_bid_price: number; // 최우선 매수 호가
   best_bid_size: number; // 최우선 매수 잔량
-  stream_type: 'SNAPSHOT' | 'REALTIME'; // 스트림 타입 (SNAPSHOT: 스냅샷, REALTIME: 실시간)
+  stream_type: "SNAPSHOT" | "REALTIME"; // 스트림 타입 (SNAPSHOT: 스냅샷, REALTIME: 실시간)
 }
 
 export interface Orderbook {
@@ -137,7 +137,7 @@ export interface Orderbook {
   orderbook_units: OrderbookUnit[]; // 호가 상세 정보 리스트
   timestamp: number; // 타임스탬프 (millisecond)
   level: number; // 호가 모아보기 단위
-  stream_type?: 'SNAPSHOT' | 'REALTIME'; // 스트림 타입 (SNAPSHOT: 스냅샷, REALTIME: 실시간)
+  stream_type?: "SNAPSHOT" | "REALTIME"; // 스트림 타입 (SNAPSHOT: 스냅샷, REALTIME: 실시간)
 }
 
 export interface OrderbookUnit {

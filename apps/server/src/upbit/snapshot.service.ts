@@ -1,10 +1,18 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
-import { MarketType, Orderbook, TickerSnapshot } from "./types/upbit.entity";
+import {
+  MarketType,
+  Orderbook,
+  TickerSnapshot,
+} from "../types/entities/upbit.entity";
 import { firstValueFrom, map } from "rxjs";
 
-import { CandleData } from "./types/upbit.entity";
-import { CandleParamsDto, GetCandleDto, GetTradeDto } from "./types/upbit.dto";
+import { CandleData } from "../types/entities/upbit.entity";
+import {
+  CandleParamsDto,
+  GetCandleDto,
+  GetTradeDto,
+} from "../types/dtos/upbit.dto";
 
 @Injectable()
 export class SnapshotService {

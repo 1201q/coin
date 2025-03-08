@@ -1,11 +1,16 @@
 import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { GoogleAuthGuard } from "./google-auth.guard";
+import { GoogleAuthGuard } from "../guard/google-auth.guard";
 import { Request, Response } from "express";
+import { GoogleUser } from "src/types/entities/user.entity";
+import { UserService } from "src/user/user.service";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @Get("google")
   @UseGuards(GoogleAuthGuard)
@@ -14,8 +19,24 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    const { user } = req;
-    console.log(user);
+    const user = req.user as GoogleUser;
+
+    const findUser = await this.userService.findUserByGoogleId(user.id);
+
+    if (!findUser) {
+      console.log("user not found");
+
+      const complete = await this.userService.createGoogleUser({
+        name: user.name,
+        email: user.email,
+        user_id: user.id,
+        type: "google",
+      });
+      console.log(complete);
+    } else {
+      console.log("user found");
+      console.log(findUser);
+    }
 
     const token = await this.authService.generateJWT(user);
 
