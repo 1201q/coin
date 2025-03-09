@@ -44,9 +44,16 @@ export class AuthService {
         throw new BadRequestException("Invalid refresh token");
       }
 
-      const newToken = await this.generateTokens(user.user_id);
+      const newTokens = await this.generateTokens(user.user_id);
+      await this.userService.updateRefreshToken(
+        user.user_id,
+        newTokens.refreshToken,
+      );
 
-      return { accessToken: newToken.accessToken };
+      return {
+        accessToken: newTokens.accessToken,
+        refreshToken: newTokens.refreshToken,
+      };
     } catch (error) {
       throw new UnauthorizedException("Invalid refresh token");
     }

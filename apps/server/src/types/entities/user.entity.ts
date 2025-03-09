@@ -40,7 +40,7 @@ export class User {
   @Column({ unique: true })
   wallet_id: string;
 
-  @Column({ type: "clob", nullable: true })
+  @Column({ type: "varchar", length: 500, nullable: true })
   refresh_token: string;
 
   @CreateDateColumn({

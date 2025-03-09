@@ -50,4 +50,15 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { user_id: id } });
     return user.refresh_token || null;
   }
+
+  async removeRefreshToken(refreshToken: string) {
+    await this.userRepository.update(
+      {
+        refresh_token: refreshToken,
+      },
+      {
+        refresh_token: null,
+      },
+    );
+  }
 }

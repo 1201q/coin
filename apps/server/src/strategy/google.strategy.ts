@@ -19,8 +19,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     try {
       const { id, name, emails } = profile;
 
-      console.log(profile);
-
       const user: GoogleUser = {
         provider: "google",
         userId: id,
@@ -28,8 +26,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
         name: name.givenName,
         accessToken,
       };
-
-      console.log(user);
 
       return user;
     } catch (error) {
