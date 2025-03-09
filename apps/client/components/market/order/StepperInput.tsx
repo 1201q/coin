@@ -73,10 +73,16 @@ const StepperInput = ({
 
   const decrementPrice = (current: number): number => {
     if (current === 0) return 0;
+
+    /*
+
     if (current >= 10000) {
       // 만단위 이상: 10씩 감소
       return current - 10;
     }
+
+*/
+
     const step = getStepValue(current);
     let newPrice = current - step;
     // 100000 이상부터는 step 단위로 내림 처리
@@ -92,12 +98,17 @@ const StepperInput = ({
   const incrementPrice = (current: number): number => {
     // 만약 현재 가격이 0이면, 1의 범위 step을 사용
     if (current === 0) return getStepValue(1);
+
+    /*
+    
     if (current >= 10000) {
       // 만단위 이상: 10씩 증가
       return current + 10;
     }
+*/
 
     const step = getStepValue(current);
+
     let newPrice = current + step;
     // 100000 이상부터는 step 단위로 올림 처리
     if (current >= 100000) {

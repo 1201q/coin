@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './order.module.css';
 import Tab from '@/components/common/tab/Tab';
 import OrderForm from './OrderForm';

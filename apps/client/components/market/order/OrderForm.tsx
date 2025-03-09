@@ -43,6 +43,10 @@ const OrderForm = ({
     setSum(0);
   }, [selectedTab]);
 
+  useEffect(() => {
+    setPrice(0);
+  }, [code]);
+
   /* 
     관계 로직  
     4-1. 가격이 수정되면, 총액 = 가격 × 수량  
