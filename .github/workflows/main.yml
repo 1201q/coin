@@ -54,6 +54,7 @@ jobs:
             echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> .env
             echo "DB_CONNECTION=${{secrets.DB_CONNECTION}}" >> .env
             echo "JWT_REFRESH_SECRET=${{secrets.JWT_REFRESH_SECRET}}" >> .env
+            echo "NODE_ENV=${{secrets.NODE_ENV}}" >> .env
             docker-compose down
             docker-compose pull
             docker-compose up -d --build
