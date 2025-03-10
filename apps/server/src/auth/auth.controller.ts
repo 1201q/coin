@@ -51,6 +51,20 @@ export class AuthController {
     // db에 refreshToken 저장
     await this.userService.updateRefreshToken(user.userId, refreshToken);
 
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: this.configService.get<string>("NODE_ENV") === "production",
+      sameSite:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? "none"
+          : "strict",
+      domain:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? ".coingosu.live"
+          : undefined,
+      maxAge: 1000 * 60 * 2,
+    });
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: this.configService.get<string>("NODE_ENV") === "production",
@@ -67,7 +81,7 @@ export class AuthController {
 
     const url =
       this.configService.get<string>("NODE_ENV") === "production"
-        ? `https://coingosu.live/auth/callback?token=${accessToken}`
+        ? `https://coingosu.live/auth/callback`
         : `http://localhost:5500/nestjs/login.html?token=${accessToken}`;
 
     return res.redirect(url);
@@ -88,6 +102,20 @@ export class AuthController {
     }
 
     const newTokens = await this.authService.refreshAccessToken(refreshToken);
+
+    res.cookie("accessToken", newTokens.accessToken, {
+      httpOnly: true,
+      secure: this.configService.get<string>("NODE_ENV") === "production",
+      sameSite:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? "none"
+          : "strict",
+      domain:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? ".coingosu.live"
+          : undefined,
+      maxAge: 1000 * 60 * 2,
+    });
 
     res.cookie("refreshToken", newTokens.refreshToken, {
       httpOnly: true,
