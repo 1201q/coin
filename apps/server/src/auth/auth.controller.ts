@@ -81,8 +81,8 @@ export class AuthController {
 
     const url =
       this.configService.get<string>("NODE_ENV") === "production"
-        ? `https://coingosu.live/auth/callback`
-        : `http://localhost:5500/nestjs/login.html?token=${accessToken}`;
+        ? `https://coingosu.live/auth/user`
+        : `http://localhost:3000/auth/user`;
 
     return res.redirect(url);
   }
