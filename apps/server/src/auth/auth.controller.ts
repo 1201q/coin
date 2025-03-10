@@ -64,9 +64,13 @@ export class AuthController {
           : undefined,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    return res.redirect(
-      `http://localhost:5500/nestjs/login.html?token=${accessToken}`,
-    );
+
+    const url =
+      this.configService.get<string>("NODE_ENV") === "production"
+        ? `https://coingosu.live/auth/callback?token=${accessToken}`
+        : `http://localhost:5500/nestjs/login.html?token=${accessToken}`;
+
+    return res.redirect(url);
   }
 
   @Get("check-cookie")
