@@ -1,3 +1,4 @@
+import MarketHeaderController from '@/components/market/header/MarketHeaderController';
 import styles from './header.module.css';
 import MarketHeader from '@/components/market/header/MarketHeader';
 
@@ -11,7 +12,9 @@ export default function Header({ market }: Props) {
       <div className={styles.titleContainer}>
         <MarketHeader market={market} />
       </div>
-      <div className={styles.controlContainer}></div>
+      <div className={styles.controlContainer}>
+        <MarketHeaderController />
+      </div>
     </div>
   );
 }
