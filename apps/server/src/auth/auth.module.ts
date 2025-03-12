@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "../strategy/jwt.strategy";
 import { UserService } from "src/user/user.service";
 import { UserModule } from "src/user/user.module";
+import { LoggerModule } from "src/logger.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from "src/user/user.module";
       }),
     }),
     UserModule,
+    LoggerModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy, JwtStrategy],

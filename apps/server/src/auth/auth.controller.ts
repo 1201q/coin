@@ -15,6 +15,7 @@ import { Request, Response } from "express";
 import { GoogleUser } from "src/types/entities/user.entity";
 import { UserService } from "src/user/user.service";
 import { ConfigService } from "@nestjs/config";
+import { AppLogger } from "src/logger.service";
 
 @Controller("auth")
 export class AuthController {
@@ -22,6 +23,7 @@ export class AuthController {
     private readonly configService: ConfigService,
     private readonly authService: AuthService,
     private readonly userService: UserService,
+    private readonly logger: AppLogger,
   ) {}
 
   @Get("google")
@@ -140,6 +142,8 @@ export class AuthController {
   async logout(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies["refreshToken"];
 
+    this.logger.log(`refreshToken: ${refreshToken}`);
+
     if (refreshToken) {
       await this.userService.removeRefreshToken(refreshToken);
     }
@@ -152,6 +156,10 @@ export class AuthController {
           ? "none"
           : "strict",
       path: "/",
+      domain:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? ".coingosu.live"
+          : undefined,
     });
     res.clearCookie("accessToken", {
       httpOnly: true,
@@ -160,6 +168,10 @@ export class AuthController {
         this.configService.get<string>("NODE_ENV") === "production"
           ? "none"
           : "strict",
+      domain:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? ".coingosu.live"
+          : undefined,
       path: "/",
     });
 
