@@ -5,6 +5,7 @@ import { coinAtom, hydratedCoinAtom } from '@/store/chart';
 import { Suspense, useEffect } from 'react';
 import { useHydrateAtoms } from 'jotai/utils';
 import PriceChart from './PriceChart';
+import ChartLoading from './ChartLoading';
 
 const PriceChartClient = ({ code }: { code: string }) => {
   useHydrateAtoms([[hydratedCoinAtom, code]], {
@@ -23,7 +24,7 @@ const PriceChartClient = ({ code }: { code: string }) => {
   return (
     <div className={styles.container}>
       <PriceChartController code={code} />
-      <Suspense fallback={<div>1231231313</div>}>
+      <Suspense fallback={<ChartLoading />}>
         <PriceChart code={code} />
       </Suspense>
     </div>

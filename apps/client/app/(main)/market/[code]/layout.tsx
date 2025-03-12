@@ -1,6 +1,5 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import styles from '../../main.module.css';
-import Loading from './@info/loading';
 
 interface Props {
   children: React.ReactNode;
@@ -28,9 +27,7 @@ export default function MarketPageLayout({
           <div className={styles.flexContainer}>
             <div className={styles.leftContainer}>
               <div className={styles.centerContainer}>
-                <div className={styles.chartContainer}>
-                  <Suspense fallback={<div>차트 로딩</div>}>{chart}</Suspense>
-                </div>
+                <div className={styles.chartContainer}>{chart}</div>
                 <div className={styles.orderbookContainer}>{info}</div>
               </div>
               <div className={styles.bottomContainer}></div>
