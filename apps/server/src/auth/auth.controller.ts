@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Post,
   Req,
   Res,
@@ -135,6 +136,7 @@ export class AuthController {
   }
 
   @Post("logout")
+  @HttpCode(200)
   async logout(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies["refreshToken"];
 
@@ -142,7 +144,25 @@ export class AuthController {
       await this.userService.removeRefreshToken(refreshToken);
     }
 
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: this.configService.get<string>("NODE_ENV") === "production",
+      sameSite:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? "none"
+          : "strict",
+      path: "/",
+    });
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: this.configService.get<string>("NODE_ENV") === "production",
+      sameSite:
+        this.configService.get<string>("NODE_ENV") === "production"
+          ? "none"
+          : "strict",
+      path: "/",
+    });
+
     return res.json({ message: "로그아웃 성공" });
   }
 }
