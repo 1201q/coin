@@ -62,7 +62,7 @@ export class AuthController {
         this.configService.get<string>("NODE_ENV") === "production"
           ? ".coingosu.live"
           : undefined,
-      maxAge: 1000 * 60 * 2,
+      maxAge: 1000 * 60 * 15,
     });
 
     res.cookie("refreshToken", refreshToken, {
@@ -81,8 +81,8 @@ export class AuthController {
 
     const url =
       this.configService.get<string>("NODE_ENV") === "production"
-        ? `https://coingosu.live/auth/user`
-        : `http://localhost:3000/auth/user`;
+        ? `https://coingosu.live`
+        : `http://localhost:3000`;
 
     return res.redirect(url);
   }
@@ -114,7 +114,7 @@ export class AuthController {
         this.configService.get<string>("NODE_ENV") === "production"
           ? ".coingosu.live"
           : undefined,
-      maxAge: 1000 * 60 * 2,
+      maxAge: 1000 * 60 * 15,
     });
 
     res.cookie("refreshToken", newTokens.refreshToken, {
@@ -131,7 +131,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    return res.json({ accessToken: newTokens.accessToken });
+    return res.status(200).json({ accessToken: newTokens.accessToken });
   }
 
   @Post("logout")
