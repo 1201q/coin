@@ -1,5 +1,4 @@
 import Header from '@/components/common/header/Header';
-import InfoServer from '@/components/market/info/InfoServer';
 
 interface Props {
   params: Promise<{ code: string }>;

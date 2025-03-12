@@ -21,8 +21,6 @@ export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get('refreshToken');
   const pathname = request.nextUrl.pathname;
 
-  console.log();
-
   if (request.cookies.has('accessToken') && pathname.startsWith('/auth')) {
     return NextResponse.redirect(new URL('/', request.url));
   }
@@ -32,10 +30,10 @@ export async function middleware(request: NextRequest) {
 
     if (decoded) {
       const expiresIn = getRemainingAccessTokenTime(decoded.exp);
-      console.log(`남은시간: ${expiresIn}초`);
 
       if (expiresIn < 300 && refreshToken) {
         console.log(`300초미만 재갱신 시작: ${expiresIn}초`);
+        console.log(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`);
         try {
           const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
@@ -49,12 +47,19 @@ export async function middleware(request: NextRequest) {
             },
           );
 
+          console.log('res');
+          console.log(res);
+
           if (res.ok) {
             const response = NextResponse.next();
             const responseCookies = new ResponseCookies(res.headers);
 
             const newAccessToken = responseCookies.get('accessToken');
             const newRefreshToken = responseCookies.get('refreshToken');
+
+            console.log('토큰');
+            console.log(newAccessToken);
+            console.log(newRefreshToken);
 
             if (newAccessToken) {
               response.cookies.set('accessToken', newAccessToken.value, {
