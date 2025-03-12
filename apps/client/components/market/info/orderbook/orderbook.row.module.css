@@ -23,6 +23,12 @@
   height: calc(100% - 8px);
 }
 
+.currentPriceContainer::after {
+  content: '';
+  width: 120%;
+  height: 120%;
+}
+
 .currentPriceContainer:hover {
   background-color: var(--main-gray-hover-color);
   border-radius: 7px;
