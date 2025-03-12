@@ -26,6 +26,8 @@ export default async function Header({ market }: Props) {
         },
       );
 
+      console.log(response);
+
       if (!response.ok) {
         throw new Error('로그아웃에 실패했습니다.');
       }
