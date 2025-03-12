@@ -25,6 +25,7 @@
   align-items: center;
   height: 100%;
   cursor: pointer;
+  font-weight: 400;
 }
 
 .tabmenu span {

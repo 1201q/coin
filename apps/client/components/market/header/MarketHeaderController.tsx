@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import styles from './marketheader.controller.module.css';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 const MarketHeaderController = ({
   token,
@@ -21,9 +22,13 @@ const MarketHeaderController = ({
             router.refresh();
           }}
         >
-          <button className={styles.loginButton} type="submit">
+          <motion.button
+            layoutId="headerButton"
+            className={styles.loginButton}
+            type="submit"
+          >
             로그아웃
-          </button>
+          </motion.button>
         </form>
         <div className={styles.profileIcon}></div>
       </div>
@@ -33,7 +38,9 @@ const MarketHeaderController = ({
   return (
     <div className={styles.container}>
       <Link href={'/auth/login'}>
-        <button className={styles.loginButton}>로그인</button>
+        <motion.button layoutId="headerButton" className={styles.loginButton}>
+          로그인
+        </motion.button>
       </Link>
     </div>
   );

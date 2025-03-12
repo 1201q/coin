@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import StepperInput from './StepperInput';
 import styles from './order.module.css';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useAtomValue } from 'jotai';
 import { selectedPriceAtom } from '@/store/user';
 import OrderInput from './OrderInput';
@@ -175,95 +175,109 @@ const OrderForm = ({
         </div>
       </div>
 
-      {orderType === '지정가' && (
-        <>
-          {' '}
-          <div className={styles.optionContainer}>
-            <label htmlFor="가격">가격</label>
-            <StepperInput
-              id="가격"
-              placeholder="가격"
-              value={price}
-              setValue={handlePriceChange}
-              maxPrice={MAX_ORDER_PRICE}
-            />
-          </div>
-          {price}
-          <div className={styles.optionContainer}>
-            <label htmlFor="수량">수량</label>
-            <OrderInput
-              id="수량"
-              placeholder="수량"
-              value={amount}
-              setValue={handleAmountChange}
-              inputType="quantity"
-              maxValue={MAX_ORDER_AMOUNT}
-            />
-          </div>
-          <div className={styles.optionButtonContainer}>
-            <button type="button" onClick={() => handleAmountButton(0.1)}>
-              10%
-            </button>
-            <button type="button" onClick={() => handleAmountButton(0.25)}>
-              25%
-            </button>
-            <button type="button" onClick={() => handleAmountButton(0.5)}>
-              50%
-            </button>
-            <button type="button" onClick={() => handleAmountButton(1)}>
-              최대
-            </button>
-          </div>
-          {amount}
-          <div className={styles.divider}></div>
-        </>
-      )}
+      <AnimatePresence mode={'popLayout'} initial={false}>
+        {orderType === '지정가' && (
+          <motion.div
+            initial={{ scaleY: 0, opacity: 0 }}
+            animate={{ scaleY: 1, opacity: 1 }}
+            exit={{ scaleY: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            layout
+            className={styles.motionFormContainer}
+          >
+            <div className={styles.optionContainer}>
+              <label htmlFor="가격">가격</label>
+              <StepperInput
+                id="가격"
+                placeholder="가격"
+                value={price}
+                setValue={handlePriceChange}
+                maxPrice={MAX_ORDER_PRICE}
+              />
+            </div>
+            {price}
+            <div className={styles.optionContainer}>
+              <label htmlFor="수량">수량</label>
+              <OrderInput
+                id="수량"
+                placeholder="수량"
+                value={amount}
+                setValue={handleAmountChange}
+                inputType="quantity"
+                maxValue={MAX_ORDER_AMOUNT}
+              />
+            </div>
+            <div className={styles.optionButtonContainer}>
+              <button type="button" onClick={() => handleAmountButton(0.1)}>
+                10%
+              </button>
+              <button type="button" onClick={() => handleAmountButton(0.25)}>
+                25%
+              </button>
+              <button type="button" onClick={() => handleAmountButton(0.5)}>
+                50%
+              </button>
+              <button type="button" onClick={() => handleAmountButton(1)}>
+                최대
+              </button>
+            </div>
+            {amount}
+            <div className={styles.divider}></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className={styles.optionContainer}>
-        <label htmlFor="총액">총액</label>
-        <OrderInput
-          id="총액"
-          placeholder="총액"
-          value={sum}
-          setValue={handleSumChange}
-          inputType="price"
-          maxValue={MAX_ORDER_SUM}
-        />
-      </div>
-      <div className={styles.optionButtonContainer}>
-        <button type="button" onClick={() => handleSumButton(10000)}>
-          +1만
-        </button>
-        <button type="button" onClick={() => handleSumButton(100000)}>
-          +10만
-        </button>
-        <button type="button" onClick={() => handleSumButton(1000000)}>
-          +100만
-        </button>
-        <button type="button" onClick={() => handleSumButton(10000000)}>
-          +1000만
-        </button>
-      </div>
-      {sum}
-      <div className={styles.submitButtonContainer}>
-        <motion.button
-          className={styles.resetButton}
-          type="reset"
-          onClick={handleResetButton}
-          whileHover={{ filter: 'brightness(0.95)' }}
-          whileTap={{ scale: 0.97 }}
-        >
-          초기화
-        </motion.button>
-        <motion.button
-          type="submit"
-          className={`${styles.submitButton} ${selectedTab === '매수' ? styles.red : styles.blue}`}
-          whileHover={{ filter: 'brightness(0.9)' }}
-          whileTap={{ scale: 0.97 }}
-        >
-          주문
-        </motion.button>
-      </div>
+      <motion.div
+        transition={{ duration: 0.25, ease: 'easeInOut' }}
+        layout
+        className={styles.motionFormContainer}
+      >
+        <div className={styles.optionContainer}>
+          <label htmlFor="총액">총액</label>
+          <OrderInput
+            id="총액"
+            placeholder="총액"
+            value={sum}
+            setValue={handleSumChange}
+            inputType="price"
+            maxValue={MAX_ORDER_SUM}
+          />
+        </div>
+        <div className={styles.optionButtonContainer}>
+          <button type="button" onClick={() => handleSumButton(10000)}>
+            +1만
+          </button>
+          <button type="button" onClick={() => handleSumButton(100000)}>
+            +10만
+          </button>
+          <button type="button" onClick={() => handleSumButton(1000000)}>
+            +100만
+          </button>
+          <button type="button" onClick={() => handleSumButton(10000000)}>
+            +1000만
+          </button>
+        </div>
+        {sum}
+        <div className={styles.submitButtonContainer}>
+          <motion.button
+            className={styles.resetButton}
+            type="reset"
+            onClick={handleResetButton}
+            whileHover={{ filter: 'brightness(0.95)' }}
+            whileTap={{ scale: 0.97 }}
+          >
+            초기화
+          </motion.button>
+          <motion.button
+            type="submit"
+            className={`${styles.submitButton} ${selectedTab === '매수' ? styles.red : styles.blue}`}
+            whileHover={{ filter: 'brightness(0.9)' }}
+            whileTap={{ scale: 0.97 }}
+          >
+            주문
+          </motion.button>
+        </div>
+      </motion.div>
     </form>
   );
 };

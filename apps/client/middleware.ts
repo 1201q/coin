@@ -62,6 +62,7 @@ export async function middleware(request: NextRequest) {
                 sameSite: newAccessToken.sameSite,
                 path: newAccessToken.path,
                 secure: newAccessToken.secure,
+                maxAge: newAccessToken.maxAge,
               });
 
               console.log(newAccessToken);
@@ -73,6 +74,7 @@ export async function middleware(request: NextRequest) {
                 sameSite: newRefreshToken.sameSite,
                 path: newRefreshToken.path,
                 secure: newRefreshToken.secure,
+                maxAge: newRefreshToken.maxAge,
               });
               console.log(newRefreshToken);
             }
