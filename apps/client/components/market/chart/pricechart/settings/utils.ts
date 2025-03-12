@@ -25,6 +25,7 @@ export const getChartOptions = (
   return {
     width: container.clientWidth,
     height: container.clientHeight,
+    autoSize: true,
     localization: {
       locale: 'ko-kr',
       timeFormatter: (time: number) => {
