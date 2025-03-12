@@ -57,10 +57,7 @@ export class AuthController {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: this.configService.get<string>("NODE_ENV") === "production",
-      sameSite:
-        this.configService.get<string>("NODE_ENV") === "production"
-          ? "none"
-          : "strict",
+      sameSite: "strict",
       domain:
         this.configService.get<string>("NODE_ENV") === "production"
           ? ".coingosu.live"
@@ -71,10 +68,7 @@ export class AuthController {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: this.configService.get<string>("NODE_ENV") === "production",
-      sameSite:
-        this.configService.get<string>("NODE_ENV") === "production"
-          ? "none"
-          : "strict",
+      sameSite: "strict",
       domain:
         this.configService.get<string>("NODE_ENV") === "production"
           ? ".coingosu.live"
