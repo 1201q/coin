@@ -80,18 +80,19 @@
 }
 
 .submitButtonContainer {
-  margin-top: 40px;
-  display: grid;
-  grid-template-columns: 4fr 6fr;
-  column-gap: 8px;
-  height: 33px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+
+  row-gap: 8px;
 }
 
 .submitButtonContainer button {
-  border-radius: 6px;
+  height: 33px;
   font-size: 14px;
   font-weight: 600;
   transition: filter 0.2s;
+  border-radius: 16px;
 }
 
 .resetButton {
