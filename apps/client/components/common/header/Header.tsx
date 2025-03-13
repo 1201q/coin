@@ -20,6 +20,7 @@ export default async function Header({ market }: Props) {
         {
           method: 'POST',
           credentials: 'include',
+
           headers: {
             'Content-Type': 'application/json',
           },
@@ -32,8 +33,18 @@ export default async function Header({ market }: Props) {
         throw new Error('로그아웃에 실패했습니다.');
       }
 
-      (await cookies()).delete('accessToken');
-      (await cookies()).delete('refreshToken');
+      (await cookies()).delete({
+        name: 'accessToken',
+        domain: process.env.NEXT_PUBLIC_URL
+          ? `.${new URL(process.env.NEXT_PUBLIC_URL).hostname}`
+          : '',
+      });
+      (await cookies()).delete({
+        name: 'refreshToken',
+        domain: process.env.NEXT_PUBLIC_URL
+          ? `.${new URL(process.env.NEXT_PUBLIC_URL).hostname}`
+          : '',
+      });
     } catch (error) {
       console.error(error);
     }
