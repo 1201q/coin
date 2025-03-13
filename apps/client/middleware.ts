@@ -21,6 +21,20 @@ export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get('refreshToken');
   const pathname = request.nextUrl.pathname;
 
+  if (pathname.match(/^\/market\/[^/]+\/list$/)) {
+    const referer = request.headers.get('referer');
+
+    if (!referer || !referer.includes('/market/')) {
+      const url = request.nextUrl.clone();
+
+      // [' ', 'market', 'KRW-BTC', 'list']
+      if (pathname.split('/')[1] === 'market' && pathname.split('/')[2]) {
+        url.pathname = `/market/${pathname.split('/')[2]}`;
+        return NextResponse.redirect(url);
+      }
+    }
+  }
+
   if (request.cookies.has('accessToken') && pathname.startsWith('/auth')) {
     return NextResponse.redirect(new URL('/', request.url));
   }
@@ -96,5 +110,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/auth/:path', '/market/:code', '/wallet', '/orders'],
+  matcher: [
+    '/auth/:path',
+    '/market/:code',
+    '/market/:code/list',
+    '/wallet',
+    '/orders',
+  ],
 };

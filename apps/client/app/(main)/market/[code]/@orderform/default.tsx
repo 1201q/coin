@@ -1,7 +1,5 @@
-'use client';
-
 function Default() {
-  return <></>;
+  return null;
 }
 
 export default Default;

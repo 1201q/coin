@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from '../../main.module.css';
-import Loading from './@info/loading';
 
 interface Props {
   children: React.ReactNode;
