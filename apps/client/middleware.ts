@@ -2,19 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { ResponseCookies } from 'next/dist/compiled/@edge-runtime/cookies';
-
-interface Token {
-  exp: number;
-  iat: number;
-  id: string;
-}
-
-const getRemainingAccessTokenTime = (exp: number) => {
-  const currentTime = Math.floor(Date.now() / 1000);
-  const expiresIn = exp - currentTime;
-
-  return expiresIn;
-};
+import { Token } from './types/token';
+import { getRemainingAccessTokenTime } from './utils/token';
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessToken');
@@ -43,7 +32,7 @@ export async function middleware(request: NextRequest) {
     const decoded = jwt.decode(accessToken.value) as Token;
 
     if (decoded) {
-      const expiresIn = getRemainingAccessTokenTime(decoded.exp);
+      const expiresIn = getRemainingAccessTokenTime(decoded);
 
       if (expiresIn < 300 && refreshToken) {
         console.log(`300초미만 재갱신 시작: ${expiresIn}초`);

@@ -11,13 +11,69 @@ import {
   MAX_ORDER_SUM,
 } from './constants/constants';
 import React from 'react';
+import Link from 'next/link';
+
+interface OrderFormButtonType {
+  handleResetButton: () => void;
+  selectedTab: string;
+  hasCookie: boolean;
+}
+
+const OrderFormButton = ({
+  handleResetButton,
+  selectedTab,
+  hasCookie,
+}: OrderFormButtonType) => {
+  console.log(`tlqkf: ${hasCookie}`);
+
+  if (!hasCookie) {
+    return (
+      <div className={styles.submitButtonContainer}>
+        <Link href={'/auth/login'}>
+          <motion.button
+            type="submit"
+            className={`${styles.submitButton} ${selectedTab === '매수' ? styles.red : styles.blue}`}
+            whileHover={{ filter: 'brightness(0.9)' }}
+            whileTap={{ scale: 0.97 }}
+          >
+            로그인하고 이용 가능해요
+          </motion.button>
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.submitButtonContainer}>
+      <motion.button
+        className={styles.resetButton}
+        type="reset"
+        onClick={handleResetButton}
+        whileHover={{ filter: 'brightness(0.95)' }}
+        whileTap={{ scale: 0.97 }}
+      >
+        초기화
+      </motion.button>
+      <motion.button
+        type="submit"
+        className={`${styles.submitButton} ${selectedTab === '매수' ? styles.red : styles.blue}`}
+        whileHover={{ filter: 'brightness(0.9)' }}
+        whileTap={{ scale: 0.97 }}
+      >
+        주문
+      </motion.button>
+    </div>
+  );
+};
 
 const OrderForm = ({
   selectedTab,
   code,
+  hasCookie,
 }: {
   selectedTab: string;
   code: string;
+  hasCookie: boolean;
 }) => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // e.preventDefault();
@@ -258,25 +314,11 @@ const OrderForm = ({
           </button>
         </div>
         {sum}
-        <div className={styles.submitButtonContainer}>
-          <motion.button
-            className={styles.resetButton}
-            type="reset"
-            onClick={handleResetButton}
-            whileHover={{ filter: 'brightness(0.95)' }}
-            whileTap={{ scale: 0.97 }}
-          >
-            초기화
-          </motion.button>
-          <motion.button
-            type="submit"
-            className={`${styles.submitButton} ${selectedTab === '매수' ? styles.red : styles.blue}`}
-            whileHover={{ filter: 'brightness(0.9)' }}
-            whileTap={{ scale: 0.97 }}
-          >
-            주문
-          </motion.button>
-        </div>
+        <OrderFormButton
+          handleResetButton={handleResetButton}
+          hasCookie={hasCookie}
+          selectedTab={selectedTab}
+        />
       </motion.div>
     </form>
   );
