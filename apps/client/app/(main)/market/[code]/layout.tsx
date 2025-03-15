@@ -27,12 +27,24 @@ export default function MarketPageLayout({
           <div className={styles.flexContainer}>
             <div className={styles.leftContainer}>
               <div className={styles.centerContainer}>
-                <div className={styles.chartContainer}>{chart}</div>
-                <div className={styles.orderbookContainer}>{info}</div>
+                <section
+                  className={`${styles.section} ${styles.chartContainer}`}
+                >
+                  {chart}
+                </section>
+                <section
+                  className={`${styles.section} ${styles.orderbookContainer}`}
+                >
+                  {info}
+                </section>
               </div>
-              <div className={styles.bottomContainer}></div>
+              <section
+                className={`${styles.section} ${styles.bottomContainer}`}
+              ></section>
             </div>
-            <div className={styles.rightContainer}>{orderform}</div>
+            <section className={`${styles.section} ${styles.rightContainer}`}>
+              {orderform}
+            </section>
           </div>
         </div>
       </div>
