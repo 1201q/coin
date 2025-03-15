@@ -19,7 +19,7 @@ export default async function Home() {
     return (
       <div>
         <Link href={'/market/KRW-BTC'}>
-          <button>쿠키가잇다. </button>
+          <button>쿠키가있다. </button>
         </Link>
       </div>
     );
