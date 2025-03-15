@@ -2,23 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-
-@Entity({ name: "test_users" })
-export class TestUser {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  name: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  created_at: Date;
-}
+import { Wallet } from "./wallet.entity";
 
 @Entity({ name: "users" })
 export class User {
@@ -39,6 +27,10 @@ export class User {
 
   @Column({ unique: true })
   wallet_id: string;
+
+  @OneToOne(() => Wallet, (wallet) => wallet.user)
+  @JoinColumn({ name: "wallet_id" })
+  wallet: Wallet;
 
   @Column({ type: "varchar", length: 500, nullable: true })
   refresh_token: string;

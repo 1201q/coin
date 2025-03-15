@@ -4,21 +4,19 @@ import {
   Entity,
   JoinColumn,
   OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./user.entity";
 
 @Entity({ name: "wallets" })
 export class Wallet {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @OneToOne(() => User, (user) => user.wallet_id)
-  @JoinColumn({ name: "user_id" })
-  user: User;
-
-  @Column({ unique: true })
+  @PrimaryColumn({ unique: true })
   wallet_id: string;
+
+  @OneToOne(() => User, (user) => user.wallet)
+  @JoinColumn({ name: "wallet_id" })
+  user: User;
 
   @Column({ type: "decimal", precision: 18, scale: 8, default: 0 })
   balance: number;

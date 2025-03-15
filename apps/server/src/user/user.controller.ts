@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../guard/jwt-auth.guard";
 import { UserService } from "./user.service";
-import { TestUser, User } from "../types/entities/user.entity";
+import { User } from "../types/entities/user.entity";
 
 @Controller("user")
 export class UserController {
@@ -19,6 +19,8 @@ export class UserController {
     if (!req.user) {
       throw new UnauthorizedException("인증되지 않은 사용자");
     }
+
+    console.log(req.user);
 
     return { ...req.user, expiresIn: req.user.expiresIn };
   }

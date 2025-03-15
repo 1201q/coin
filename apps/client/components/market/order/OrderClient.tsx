@@ -6,7 +6,13 @@ import Tab from '@/components/common/tab/Tab';
 import OrderForm from './OrderForm';
 import React from 'react';
 
-const OrderClient = ({ code }: { code: string }) => {
+const OrderClient = ({
+  code,
+  hasCookie,
+}: {
+  code: string;
+  hasCookie: boolean;
+}) => {
   const tabs = ['매수', '매도'];
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
@@ -20,7 +26,7 @@ const OrderClient = ({ code }: { code: string }) => {
         flex1={true}
         colors={['rgb(240, 97, 109)', 'rgba(0, 82, 254, 0.7)']}
       />
-      <OrderForm selectedTab={selectedTab} code={code} />
+      <OrderForm selectedTab={selectedTab} code={code} hasCookie={hasCookie} />
     </div>
   );
 };
