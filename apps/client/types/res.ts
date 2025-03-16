@@ -15,3 +15,19 @@ export interface WsJoinResponse extends WsResponse {
 export interface WsLeaveResponse extends WsResponse {
   leftRoom?: string;
 }
+
+export interface WalletResponse {
+  wallet_id: string;
+  balance: number;
+  available_balance: number;
+  locked_balance: number;
+  created_at: string;
+}
+
+export interface ProfileRespons {
+  id: string;
+  email: string;
+  name: string;
+  wallet_id: string;
+  expiresIn: number;
+}

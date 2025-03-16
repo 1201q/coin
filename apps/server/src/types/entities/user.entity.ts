@@ -13,6 +13,9 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ unique: true })
+  user_id: string;
+
   @Column()
   name: string;
 
@@ -20,15 +23,9 @@ export class User {
   email: string;
 
   @Column({ type: "varchar", length: 50 })
-  type: "google";
+  provider: "google";
 
-  @Column({ unique: true })
-  user_id: string;
-
-  @Column({ unique: true })
-  wallet_id: string;
-
-  @OneToOne(() => Wallet, (wallet) => wallet.user)
+  @OneToOne(() => Wallet, { cascade: true })
   @JoinColumn({ name: "wallet_id" })
   wallet: Wallet;
 
@@ -44,7 +41,7 @@ export class User {
 
 export interface GoogleUser {
   provider: string;
-  userId: string;
+  user_id: string;
   email: string;
   name: string;
   accessToken: string;

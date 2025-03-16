@@ -10,6 +10,7 @@ interface Props {
 export default async function Header({ market }: Props) {
   const cookie = await cookies();
   const accessToken = cookie.get('accessToken')?.value;
+  const refreshToken = cookie.get('refreshToken')?.value;
 
   const logout = async () => {
     'use server';
@@ -23,6 +24,7 @@ export default async function Header({ market }: Props) {
 
           headers: {
             'Content-Type': 'application/json',
+            Cookie: `refreshToken=${refreshToken}`,
           },
         },
       );

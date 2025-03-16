@@ -1,8 +1,6 @@
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 
-const getUserProfile = () => {};
-
 export default async function Home() {
   const cookie = (await cookies()).get('accessToken');
 
@@ -14,12 +12,11 @@ export default async function Home() {
     });
 
     const data = await res.json();
-    console.log(data);
 
     return (
       <div>
         <Link href={'/market/KRW-BTC'}>
-          <button>쿠키가잇다. </button>
+          <button>쿠키가있다. </button>
         </Link>
       </div>
     );

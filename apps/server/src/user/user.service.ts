@@ -2,6 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../types/entities/user.entity";
 import { Repository, DataSource } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
+import { Wallet } from "src/types/entities/wallet.entity";
+import { INIT_WALLET_BALANCE } from "src/constants/constants";
 
 @Injectable()
 export class UserService {
@@ -9,6 +12,9 @@ export class UserService {
     private readonly dataSource: DataSource,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Wallet)
+    private readonly walletRepository: Repository<Wallet>,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -16,16 +22,50 @@ export class UserService {
   }
 
   async findUserByGoogleId(id: string) {
-    return this.userRepository.findOne({ where: { user_id: id } });
+    const user = this.userRepository.findOne({
+      where: { user_id: id },
+      relations: ["wallet"],
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
+  }
+
+  async findUserWallet(walletId: string) {
+    const wallet = this.walletRepository.findOne({
+      where: { wallet_id: walletId },
+    });
+
+    if (!wallet) {
+      throw new Error("Wallet not found");
+    }
+
+    return wallet;
   }
 
   async createGoogleUser(user: Partial<User>) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
-      const newUser = this.userRepository.create(user);
+      const newWallet = new Wallet();
+      newWallet.wallet_id = uuidv4();
+      newWallet.balance = INIT_WALLET_BALANCE;
+      newWallet.available_balance = INIT_WALLET_BALANCE;
+      newWallet.locked_balance = 0;
+
+      const savedWallet = await queryRunner.manager.save(newWallet);
+
+      const newUser = new User();
+      newUser.user_id = user.user_id;
+      newUser.email = user.email;
+      newUser.name = user.name;
+      newUser.provider = user.provider;
+      newUser.wallet = savedWallet;
+
       const savedUser = await queryRunner.manager.save(newUser);
 
       await queryRunner.commitTransaction();

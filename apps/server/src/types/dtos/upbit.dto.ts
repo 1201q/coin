@@ -13,7 +13,7 @@ import {
   UPBIT_CANDLE_TYPE,
   UPBIT_CANDLE_UNIT,
   UPBIT_MARKET_TYPE,
-} from "../../upbit/constants/constants";
+} from "../../constants/constants";
 import { CandleType, CandleUnit, MarketType } from "../entities/upbit.entity";
 
 export class GetMarketInfoDto {

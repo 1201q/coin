@@ -34,25 +34,25 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const user = req.user as GoogleUser;
-    const findUser = await this.userService.findUserByGoogleId(user.userId);
+    const findUser = await this.userService.findUserByGoogleId(user.user_id);
 
     if (!findUser) {
       // 유저가 새로운 유저인 경우
       await this.userService.createGoogleUser({
         name: user.name,
         email: user.email,
-        user_id: user.userId,
-        type: "google",
+        user_id: user.user_id,
+        provider: "google",
       });
     }
 
     // 새로운 토큰 생성
     const { accessToken, refreshToken } = await this.authService.generateTokens(
-      user.userId,
+      user.user_id,
     );
 
     // db에 refreshToken 저장
-    await this.userService.updateRefreshToken(user.userId, refreshToken);
+    await this.userService.updateRefreshToken(user.user_id, refreshToken);
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
@@ -130,7 +130,7 @@ export class AuthController {
   async logout(@Req() req: Request, @Res() res: Response) {
     const refreshToken = req.cookies["refreshToken"];
 
-    this.logger.log(`refreshToken: ${refreshToken}`);
+    this.logger.log(`1refreshToken: ${refreshToken}`);
 
     if (refreshToken) {
       await this.userService.removeRefreshToken(refreshToken);

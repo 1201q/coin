@@ -12,6 +12,8 @@ import {
 } from './constants/constants';
 import React from 'react';
 import Link from 'next/link';
+import { WalletResponse } from '@/types/res';
+import { orderformAmount } from '@/utils/formatting';
 
 interface OrderFormButtonType {
   handleResetButton: () => void;
@@ -70,10 +72,12 @@ const OrderForm = ({
   selectedTab,
   code,
   hasCookie,
+  walletData,
 }: {
   selectedTab: string;
   code: string;
   hasCookie: boolean;
+  walletData?: WalletResponse;
 }) => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // e.preventDefault();
@@ -88,7 +92,9 @@ const OrderForm = ({
     }
   }, [selectedPrice]);
 
-  const [krw, setKrw] = useState(20000000);
+  const [krw, setKrw] = useState(walletData?.available_balance || 0);
+  const [holdingCoins, setHoldingCoins] = useState(0);
+
   const [price, setPrice] = useState(0);
   const [amount, setAmount] = useState(0);
   const [sum, setSum] = useState(0);
@@ -226,7 +232,13 @@ const OrderForm = ({
       <div className={styles.optionContainer}>
         <label htmlFor="주문가능">주문가능</label>
         <div className={styles.infoContainer}>
-          <span className={styles.numericText}>{krw.toLocaleString()}</span>
+          <span className={styles.numericText}>
+            {selectedTab === '매수'
+              ? krw.toLocaleString()
+              : holdingCoins === 0
+                ? '0'
+                : orderformAmount(holdingCoins)}
+          </span>
           <span>{selectedTab === '매수' ? 'KRW' : code.split('-')[1]}</span>
         </div>
       </div>

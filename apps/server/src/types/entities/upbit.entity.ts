@@ -2,7 +2,7 @@ import {
   UPBIT_CANDLE_TYPE,
   UPBIT_CANDLE_UNIT,
   UPBIT_MARKET_TYPE,
-} from "../../upbit/constants/constants";
+} from "../../constants/constants";
 
 export class MarketInfo {
   market: string;
