@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import styles from './input.module.css';
-import { comma } from '@/utils/formatting';
+import { comma, orderformAmount } from '@/utils/formatting';
 
 interface Props {
   id: string;
@@ -85,9 +85,7 @@ const OrderInput = ({
     if (inputType === 'price') {
       return Number(value.toFixed()).toLocaleString();
     } else {
-      const fixed = value.toFixed(8);
-      const [front, back] = fixed.split('.');
-      return `${Number(front).toLocaleString()}.${back}`;
+      return orderformAmount(value);
     }
   };
 

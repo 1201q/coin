@@ -97,3 +97,9 @@ export const orderbook = (value: number, target: number) => {
 export const plusMark = (changeRate: number) => {
   return changeRate > 0 ? '+' : ' ';
 };
+
+export const orderformAmount = (value: number) => {
+  const fixed = value.toFixed(8);
+  const [front, back] = fixed.split('.');
+  return `${Number(front).toLocaleString()}.${back}`;
+};
