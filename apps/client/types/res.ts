@@ -28,6 +28,6 @@ export interface ProfileRespons {
   id: string;
   email: string;
   name: string;
-  walletId: string;
+  wallet_id: string;
   expiresIn: number;
 }

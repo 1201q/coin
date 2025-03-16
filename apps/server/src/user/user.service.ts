@@ -22,7 +22,10 @@ export class UserService {
   }
 
   async findUserByGoogleId(id: string) {
-    const user = this.userRepository.findOne({ where: { user_id: id } });
+    const user = this.userRepository.findOne({
+      where: { user_id: id },
+      relations: ["wallet"],
+    });
 
     if (!user) {
       throw new Error("User not found");
@@ -47,22 +50,22 @@ export class UserService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
-      const walletId = uuidv4();
+      const newWallet = new Wallet();
+      newWallet.wallet_id = uuidv4();
+      newWallet.balance = INIT_WALLET_BALANCE;
+      newWallet.available_balance = INIT_WALLET_BALANCE;
+      newWallet.locked_balance = 0;
 
-      const newWallet = this.walletRepository.create({
-        wallet_id: walletId,
-        balance: INIT_WALLET_BALANCE,
-        available_balance: INIT_WALLET_BALANCE,
-        locked_balance: 0,
-      });
-      await queryRunner.manager.save(newWallet);
+      const savedWallet = await queryRunner.manager.save(newWallet);
 
-      const newUser = this.userRepository.create({
-        ...user,
-        wallet_id: walletId,
-      });
+      const newUser = new User();
+      newUser.user_id = user.user_id;
+      newUser.email = user.email;
+      newUser.name = user.name;
+      newUser.provider = user.provider;
+      newUser.wallet = savedWallet;
+
       const savedUser = await queryRunner.manager.save(newUser);
 
       await queryRunner.commitTransaction();

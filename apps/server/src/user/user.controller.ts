@@ -20,8 +20,6 @@ export class UserController {
       throw new UnauthorizedException("인증되지 않은 사용자");
     }
 
-    console.log(req.user);
-
     return { ...req.user, expiresIn: req.user.expiresIn };
   }
 
@@ -32,7 +30,7 @@ export class UserController {
       throw new UnauthorizedException("인증되지 않은 사용자");
     }
 
-    return this.userService.findUserWallet(req.user.walletId);
+    return this.userService.findUserWallet(req.user.wallet_id);
   }
 
   @Get()
