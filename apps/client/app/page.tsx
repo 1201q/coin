@@ -1,13 +1,11 @@
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 
-const getUserProfile = () => {};
-
 export default async function Home() {
   const cookie = (await cookies()).get('accessToken');
 
   if (cookie) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/wallet`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${cookie.value}` },
       credentials: 'include',

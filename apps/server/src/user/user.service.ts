@@ -4,6 +4,7 @@ import { User } from "../types/entities/user.entity";
 import { Repository, DataSource } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 import { Wallet } from "src/types/entities/wallet.entity";
+import { INIT_WALLET_BALANCE } from "src/constants/constants";
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,10 @@ export class UserService {
     return this.userRepository.findOne({ where: { user_id: id } });
   }
 
+  async findUserWallet(walletId: string) {
+    return this.walletRepository.findOne({ where: { wallet_id: walletId } });
+  }
+
   async createGoogleUser(user: Partial<User>) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -34,8 +39,8 @@ export class UserService {
 
       const newWallet = this.walletRepository.create({
         wallet_id: walletId,
-        balance: 10000,
-        available_balance: 0,
+        balance: INIT_WALLET_BALANCE,
+        available_balance: INIT_WALLET_BALANCE,
         locked_balance: 0,
       });
       await queryRunner.manager.save(newWallet);

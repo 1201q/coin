@@ -25,6 +25,16 @@ export class UserController {
     return { ...req.user, expiresIn: req.user.expiresIn };
   }
 
+  @Get("wallet")
+  @UseGuards(JwtAuthGuard)
+  getWallet(@Req() req) {
+    if (!req.user) {
+      throw new UnauthorizedException("인증되지 않은 사용자");
+    }
+
+    return this.userService.findUserWallet(req.user.walletId);
+  }
+
   @Get()
   async getAllusers(): Promise<User[]> {
     return this.userService.findAll();
