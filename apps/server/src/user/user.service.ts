@@ -22,11 +22,25 @@ export class UserService {
   }
 
   async findUserByGoogleId(id: string) {
-    return this.userRepository.findOne({ where: { user_id: id } });
+    const user = this.userRepository.findOne({ where: { user_id: id } });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
   }
 
   async findUserWallet(walletId: string) {
-    return this.walletRepository.findOne({ where: { wallet_id: walletId } });
+    const wallet = this.walletRepository.findOne({
+      where: { wallet_id: walletId },
+    });
+
+    if (!wallet) {
+      throw new Error("Wallet not found");
+    }
+
+    return wallet;
   }
 
   async createGoogleUser(user: Partial<User>) {

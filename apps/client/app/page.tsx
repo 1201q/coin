@@ -5,7 +5,7 @@ export default async function Home() {
   const cookie = (await cookies()).get('accessToken');
 
   if (cookie) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/wallet`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${cookie.value}` },
       credentials: 'include',
