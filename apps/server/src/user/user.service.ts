@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../types/entities/user.entity";
 import { Repository, DataSource } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
+import { Wallet } from "src/types/entities/wallet.entity";
 
 @Injectable()
 export class UserService {
@@ -9,6 +11,9 @@ export class UserService {
     private readonly dataSource: DataSource,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Wallet)
+    private readonly walletRepository: Repository<Wallet>,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -25,7 +30,20 @@ export class UserService {
     await queryRunner.startTransaction();
 
     try {
-      const newUser = this.userRepository.create(user);
+      const walletId = uuidv4();
+
+      const newWallet = this.walletRepository.create({
+        wallet_id: walletId,
+        balance: 10000,
+        available_balance: 0,
+        locked_balance: 0,
+      });
+      await queryRunner.manager.save(newWallet);
+
+      const newUser = this.userRepository.create({
+        ...user,
+        wallet_id: walletId,
+      });
       const savedUser = await queryRunner.manager.save(newUser);
 
       await queryRunner.commitTransaction();

@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -7,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Wallet } from "./wallet.entity";
+import { v4 as uuidv4 } from "uuid";
 
 @Entity({ name: "users" })
 export class User {
@@ -28,7 +30,7 @@ export class User {
   @Column({ unique: true })
   wallet_id: string;
 
-  @OneToOne(() => Wallet, (wallet) => wallet.user)
+  @OneToOne(() => Wallet, (wallet) => wallet.user, { cascade: true })
   @JoinColumn({ name: "wallet_id" })
   wallet: Wallet;
 
@@ -40,6 +42,13 @@ export class User {
     default: () => "CURRENT_TIMESTAMP",
   })
   created_at: Date;
+
+  @BeforeInsert()
+  generateWalletId() {
+    if (!this.wallet_id) {
+      this.wallet_id = uuidv4();
+    }
+  }
 }
 
 export interface GoogleUser {

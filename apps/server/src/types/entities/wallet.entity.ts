@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -29,4 +30,11 @@ export class Wallet {
 
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: Date;
+
+  @BeforeInsert()
+  generateWalletId() {
+    if (!this.wallet_id) {
+      throw new Error("walletid가 없음.");
+    }
+  }
 }
