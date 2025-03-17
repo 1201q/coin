@@ -13,6 +13,7 @@ services:
       - .env
     environment:
       - TZ=Asia/Seoul
+    platform: linux/arm64
 
   nginx:
     image: nginx:latest
@@ -31,6 +32,7 @@ services:
       - app-network
     environment:
       - TZ=Asia/Seoul
+    platform: linux/arm64
 
 networks:
   app-network:
