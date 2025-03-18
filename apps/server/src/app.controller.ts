@@ -5,6 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 export class AppController {
   @Get()
   getHello(): string {
-    return `테스트 - ${uuidv4()}`;
+    return `테스트 + ${uuidv4()}`;
   }
 }
